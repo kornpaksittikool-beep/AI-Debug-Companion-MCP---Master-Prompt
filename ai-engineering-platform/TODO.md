@@ -47,8 +47,9 @@
 | Database schema reader | Phase 4 | Completed |
 | Database relation explorer | Phase 4 | Completed |
 | Read-only query preview | Phase 4 | Completed |
-| Git recent changes reader | Phase 5 | Planned |
-| Git blame reader | Phase 5 | Planned |
+| Git recent changes reader | Phase 5 | Completed |
+| Git blame reader | Phase 5 | Completed |
+| Git file commit lookup | Phase 5 | Completed |
 | Planning engine | Phase 6 | Planned |
 | Impact engine | Phase 6 | Planned |
 | Patch proposal engine | Phase 7 | Planned |

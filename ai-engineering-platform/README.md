@@ -2,7 +2,7 @@
 
 AI Engineering Platform is a production-oriented MCP foundation for evidence-driven software engineering workflows.
 
-Phase 4 provides the Core MCP Framework, Investigation Engine, bounded Repository Intelligence, and read-only SQLite Database Intelligence. It does not include git intelligence, planning engine, patch engine, verification engine, or project memory.
+Phase 5 provides the Core MCP Framework, Investigation Engine, bounded Repository Intelligence, read-only SQLite Database Intelligence, and read-only Git Intelligence. It does not include planning engine, patch engine, verification engine, project memory, or remote Git hosting integration.
 
 ## Requirements
 
@@ -58,6 +58,9 @@ The Phase 1 server uses stdio transport through the official Model Context Proto
 - Read-only SQLite schema discovery.
 - Read-only SQLite foreign-key relation discovery.
 - Read-only SQLite query preview with row limits.
+- Read-only git recent change discovery.
+- Read-only git blame metadata for tracked files.
+- Read-only git file history lookup.
 - Jest unit and integration test baseline.
 
 ## Registered Tools
@@ -130,6 +133,18 @@ Reads SQLite foreign-key relations through a read-only connection.
 
 Runs read-only SQLite query previews with explicit row limits.
 
+### `git.recent_changes`
+
+Reads recent commits from a local git repository using read-only `git log`.
+
+### `git.blame`
+
+Reads line ownership metadata for one file using read-only `git blame`.
+
+### `git.find_commit_by_file`
+
+Reads commit history for one file using read-only `git log -- <file>`.
+
 ## Architecture Boundary
 
 Core owns MCP transport integration, execution, logging, errors, security policy foundations, and registry behavior.
@@ -144,7 +159,8 @@ The current implementation intentionally excludes:
 - Full symbol index.
 - Full call graph.
 - Full import graph.
-- Git history reader.
+- Git writes, branches, merges, commits, resets, and pushes.
+- Remote Git hosting integration.
 - Database writes.
 - Production database secret management.
 - Postgres/MySQL adapters.

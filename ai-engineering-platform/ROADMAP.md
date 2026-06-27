@@ -22,7 +22,7 @@ The system must be developed iteratively. Each phase must produce usable, verifi
 
 | Milestone | Phase | Feature | Dependency | Priority | Estimated Complexity | Status |
 | --- | --- | --- | --- | --- | --- | --- |
-| M0: Foundation | Phase 0 | Roadmap, architecture, ADR, TODO, and governance documentation | None | Critical | Medium | In Progress |
+| M0: Foundation | Phase 0 | Roadmap, architecture, ADR, TODO, and governance documentation | None | Critical | Medium | Completed |
 | M1: Core MCP Framework | Phase 1 | NestJS application scaffold with strict TypeScript baseline | Phase 0 approval | Critical | Medium | Completed |
 | M1: Core MCP Framework | Phase 1 | MCP transport boundary and core server abstraction | NestJS scaffold | Critical | High | Completed |
 | M1: Core MCP Framework | Phase 1 | Tool registry with plugin registration contract | Core server abstraction | Critical | High | Completed |
@@ -42,8 +42,8 @@ The system must be developed iteratively. Each phase must produce usable, verifi
 | M4: Database Intelligence | Phase 4 | Database connection abstraction with explicit permissions | Phase 1 | High | High | Completed |
 | M4: Database Intelligence | Phase 4 | Schema and relation discovery tools | Database abstraction | High | Medium | Completed |
 | M4: Database Intelligence | Phase 4 | Query preview with read-only enforcement | Database abstraction | High | Medium | Completed |
-| M5: Git Intelligence | Phase 5 | Recent change reader | Phase 1 | High | Medium | Planned |
-| M5: Git Intelligence | Phase 5 | Blame and commit lookup tools | Recent change reader | High | Medium | Planned |
+| M5: Git Intelligence | Phase 5 | Recent change reader | Phase 1 | High | Medium | Completed |
+| M5: Git Intelligence | Phase 5 | Blame and commit lookup tools | Recent change reader | High | Medium | Completed |
 | M5: Git Intelligence | Phase 5 | Change impact hints from file history | Git readers | Medium | Medium | Planned |
 | M6: Planning and Impact | Phase 6 | Multi-level planning engine for quick fix, normal fix, refactor, and architecture change | Investigation engine | Critical | High | Planned |
 | M6: Planning and Impact | Phase 6 | Impact report generator for files, modules, APIs, database, cache, queue, workers, and regression risk | Repository and Git intelligence | Critical | High | Planned |
@@ -74,4 +74,4 @@ Each phase must pass the following checks before the next phase begins:
 
 ## Current Phase
 
-Phase 0 is in progress. No implementation code is allowed in Phase 0.
+Phase 5 is completed. Phase 6 is planned and must not start until its execution plan is approved.
