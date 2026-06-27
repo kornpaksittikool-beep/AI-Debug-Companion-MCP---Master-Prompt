@@ -95,4 +95,18 @@ describe('GitIntelligenceService', () => {
       service.findCommitByFile({ rootPath, filePath: path.join(rootPath, '..', 'outside.ts') }),
     ).rejects.toThrow('outside the repository root');
   });
+
+  it('summarizes impact hints from recent file history', async () => {
+    const { rootPath } = await createGitFixture();
+    const service = createService();
+
+    const result = await service.impactHints({ rootPath, maxCommits: 2 });
+
+    expect(result.analyzedCommits).toBe(2);
+    expect(result.hints[0]).toMatchObject({
+      filePath: 'README.md',
+      changeCount: 2,
+      riskLevel: 'medium',
+    });
+  });
 });

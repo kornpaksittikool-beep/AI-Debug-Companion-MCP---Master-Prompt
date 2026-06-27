@@ -47,3 +47,25 @@ export interface GitFileHistoryResult {
   readonly filePath: string;
   readonly commits: readonly GitCommitSummary[];
 }
+
+export interface GitImpactHintsOptions extends GitRepositoryConfig {
+  readonly maxCommits?: number;
+}
+
+export type GitImpactRiskLevel = 'low' | 'medium' | 'high';
+
+export interface GitFileImpactHint {
+  readonly filePath: string;
+  readonly changeCount: number;
+  readonly lastCommitHash: string;
+  readonly lastSubject: string;
+  readonly recentSubjects: readonly string[];
+  readonly riskLevel: GitImpactRiskLevel;
+  readonly reason: string;
+}
+
+export interface GitImpactHintsResult {
+  readonly rootPath: string;
+  readonly analyzedCommits: number;
+  readonly hints: readonly GitFileImpactHint[];
+}

@@ -6,6 +6,9 @@ import type {
   GitCommitSummary,
   GitFileHistoryOptions,
   GitFileHistoryResult,
+  GitFileImpactHint,
+  GitImpactHintsOptions,
+  GitImpactHintsResult,
   GitRecentChangesOptions,
   GitRecentChangesResult,
 } from '../interfaces/git-intelligence.interface.js';
@@ -78,6 +81,46 @@ export class GitIntelligenceService {
     };
   }
 
+  async impactHints(options: GitImpactHintsOptions): Promise<GitImpactHintsResult> {
+    const rootPath = this.safety.resolveGitRoot(options.rootPath);
+    const maxCommits = this.normalizeMaxCommits(options.maxCommits);
+    const result = await this.runner.run(rootPath, [
+      'log',
+      `-${maxCommits}`,
+      `--pretty=format:${RECORD_SEPARATOR}%H${FIELD_SEPARATOR}%an${FIELD_SEPARATOR}%ae${FIELD_SEPARATOR}%aI${FIELD_SEPARATOR}%s`,
+      '--name-only',
+    ]);
+    const records = this.parseCommitFileRecords(result.stdout);
+    const byFile = new Map<string, GitFileImpactHint>();
+
+    for (const record of records) {
+      for (const filePath of record.filePaths) {
+        const existing = byFile.get(filePath);
+        const recentSubjects = existing
+          ? [...existing.recentSubjects, record.commit.subject].slice(0, 5)
+          : [record.commit.subject];
+        const changeCount = (existing?.changeCount ?? 0) + 1;
+        byFile.set(filePath, {
+          filePath,
+          changeCount,
+          lastCommitHash: existing?.lastCommitHash ?? record.commit.hash,
+          lastSubject: existing?.lastSubject ?? record.commit.subject,
+          recentSubjects,
+          riskLevel: this.toRiskLevel(changeCount),
+          reason: this.toImpactReason(changeCount),
+        });
+      }
+    }
+
+    return {
+      rootPath,
+      analyzedCommits: records.length,
+      hints: [...byFile.values()].sort(
+        (a, b) => b.changeCount - a.changeCount || a.filePath.localeCompare(b.filePath),
+      ),
+    };
+  }
+
   private parseCommitSummaries(output: string): readonly GitCommitSummary[] {
     return output
       .split(RECORD_SEPARATOR)
@@ -94,6 +137,44 @@ export class GitIntelligenceService {
           subject,
         };
       });
+  }
+
+  private parseCommitFileRecords(
+    output: string,
+  ): readonly { readonly commit: GitCommitSummary; readonly filePaths: readonly string[] }[] {
+    return output
+      .split(RECORD_SEPARATOR)
+      .map((record) => record.trim())
+      .filter(Boolean)
+      .map((record) => {
+        const [header = '', ...fileLines] = record.split(/\r?\n/);
+        const [hash = '', authorName = '', authorEmail = '', authoredAt = '', subject = ''] =
+          header.split(FIELD_SEPARATOR);
+        return {
+          commit: { hash, authorName, authorEmail, authoredAt, subject },
+          filePaths: fileLines.map((line) => line.trim()).filter(Boolean),
+        };
+      });
+  }
+
+  private toRiskLevel(changeCount: number): GitFileImpactHint['riskLevel'] {
+    if (changeCount >= 3) {
+      return 'high';
+    }
+    if (changeCount === 2) {
+      return 'medium';
+    }
+    return 'low';
+  }
+
+  private toImpactReason(changeCount: number): string {
+    if (changeCount >= 3) {
+      return 'File changed repeatedly in the recent git window.';
+    }
+    if (changeCount === 2) {
+      return 'File changed more than once in the recent git window.';
+    }
+    return 'File changed once in the recent git window.';
   }
 
   private normalizeMaxCommits(value: number | undefined): number {

@@ -5,10 +5,13 @@ import type {
   RepositoryOverviewInputDto,
   RepositoryReadFileContextInputDto,
   RepositoryReadModuleContextInputDto,
+  RepositoryReadSymbolContextInputDto,
   RepositoryScanInputDto,
   RepositorySearchFilesInputDto,
+  RepositorySearchSymbolsInputDto,
 } from '../dto/repository-intelligence.dto.js';
 import { RepositoryIntelligenceService } from '../services/repository-intelligence.service.js';
+import { RepositorySymbolService } from '../services/repository-symbol.service.js';
 
 @Injectable()
 export class RepositoryOverviewTool implements ToolHandler {
@@ -61,6 +64,28 @@ export class RepositoryReadModuleContextTool implements ToolHandler {
   execute(input: JsonSchemaObject): Promise<JsonSchemaObject> {
     return this.service
       .readModuleContext(input as unknown as RepositoryReadModuleContextInputDto)
+      .then((result) => result as unknown as JsonSchemaObject);
+  }
+}
+
+@Injectable()
+export class RepositorySearchSymbolsTool implements ToolHandler {
+  constructor(private readonly service: RepositorySymbolService) {}
+
+  execute(input: JsonSchemaObject): Promise<JsonSchemaObject> {
+    return this.service
+      .searchSymbols(input as unknown as RepositorySearchSymbolsInputDto)
+      .then((result) => result as unknown as JsonSchemaObject);
+  }
+}
+
+@Injectable()
+export class RepositoryReadSymbolContextTool implements ToolHandler {
+  constructor(private readonly service: RepositorySymbolService) {}
+
+  execute(input: JsonSchemaObject): Promise<JsonSchemaObject> {
+    return this.service
+      .readSymbolContext(input as unknown as RepositoryReadSymbolContextInputDto)
       .then((result) => result as unknown as JsonSchemaObject);
   }
 }

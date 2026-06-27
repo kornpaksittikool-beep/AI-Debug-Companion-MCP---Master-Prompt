@@ -37,14 +37,14 @@ The system must be developed iteratively. Each phase must produce usable, verifi
 | M3: Repository Intelligence | Phase 3 | Bounded file search by path, extension, and text preview | Repository scanner | Critical | Medium | Completed |
 | M3: Repository Intelligence | Phase 3 | File and module context reader with bounded content reads | Repository scanner | Critical | Medium | Completed |
 | M3: Repository Intelligence | Phase 3 | AST parser plugin interface for TypeScript and JavaScript | Repository scanner | High | High | Completed |
-| M3: Repository Intelligence | Phase 3 | Symbol search backed by an incremental index | AST parser interface | Critical | High | Planned |
-| M3: Repository Intelligence | Phase 3 | Function-level smart context reader | Symbol index | Critical | High | Planned |
+| M3: Repository Intelligence | Phase 3 | Symbol search backed by a bounded AST index | AST parser interface | Critical | High | Completed |
+| M3: Repository Intelligence | Phase 3 | Symbol-level smart context reader | Symbol index | Critical | High | Completed |
 | M4: Database Intelligence | Phase 4 | Database connection abstraction with explicit permissions | Phase 1 | High | High | Completed |
 | M4: Database Intelligence | Phase 4 | Schema and relation discovery tools | Database abstraction | High | Medium | Completed |
 | M4: Database Intelligence | Phase 4 | Query preview with read-only enforcement | Database abstraction | High | Medium | Completed |
 | M5: Git Intelligence | Phase 5 | Recent change reader | Phase 1 | High | Medium | Completed |
 | M5: Git Intelligence | Phase 5 | Blame and commit lookup tools | Recent change reader | High | Medium | Completed |
-| M5: Git Intelligence | Phase 5 | Change impact hints from file history | Git readers | Medium | Medium | Planned |
+| M5: Git Intelligence | Phase 5 | Change impact hints from file history | Git readers | Medium | Medium | Completed |
 | M6: Planning and Impact | Phase 6 | Multi-level planning engine for quick fix, normal fix, refactor, and architecture change | Investigation engine | Critical | High | Planned |
 | M6: Planning and Impact | Phase 6 | Impact report generator for files, modules, APIs, database, cache, queue, workers, and regression risk | Repository and Git intelligence | Critical | High | Planned |
 | M6: Planning and Impact | Phase 6 | Approval gate workflow | Planning engine | Critical | Medium | Planned |
@@ -74,4 +74,4 @@ Each phase must pass the following checks before the next phase begins:
 
 ## Current Phase
 
-Phase 5 is completed. Phase 6 is planned and must not start until its execution plan is approved.
+Phase 5.1 backlog cleanup is completed. Phase 6 is planned and must not start until its execution plan is approved.

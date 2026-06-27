@@ -28,6 +28,8 @@ describe('RepositoryIntelligenceModule integration', () => {
         'repository.search_files',
         'repository.read_file_context',
         'repository.read_module_context',
+        'repository.search_symbols',
+        'repository.read_symbol_context',
       ]),
     );
 
@@ -49,6 +51,26 @@ describe('RepositoryIntelligenceModule integration', () => {
     expect(result.ok).toBe(true);
     if (result.ok) {
       expect(result.output.fileCount).toBe(2);
+    }
+
+    await moduleRef.close();
+  });
+
+  it('executes symbol search through core execution', async () => {
+    const rootPath = await createFixture();
+    const moduleRef = await Test.createTestingModule({ imports: [AppModule] }).compile();
+    await moduleRef.init();
+
+    const execution = moduleRef.get(McpExecutionService);
+    const result = await execution.execute({
+      toolName: 'repository.search_symbols',
+      input: { rootPath, query: 'Service' },
+      correlationId: 'corr_symbols',
+    });
+
+    expect(result.ok).toBe(true);
+    if (result.ok) {
+      expect(result.output.symbols).toHaveLength(1);
     }
 
     await moduleRef.close();

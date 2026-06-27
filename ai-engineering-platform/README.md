@@ -2,7 +2,7 @@
 
 AI Engineering Platform is a production-oriented MCP foundation for evidence-driven software engineering workflows.
 
-Phase 5 provides the Core MCP Framework, Investigation Engine, bounded Repository Intelligence, read-only SQLite Database Intelligence, and read-only Git Intelligence. It does not include planning engine, patch engine, verification engine, project memory, or remote Git hosting integration.
+Phase 5.1 provides the Core MCP Framework, Investigation Engine, bounded Repository Intelligence, TypeScript/JavaScript symbol intelligence, read-only SQLite Database Intelligence, and read-only Git Intelligence. It does not include planning engine, patch engine, verification engine, project memory, or remote Git hosting integration.
 
 ## Requirements
 
@@ -55,12 +55,15 @@ The Phase 1 server uses stdio transport through the official Model Context Proto
 - File search by path, extension, and text preview.
 - Bounded file context reads.
 - Bounded module context reads.
+- TypeScript and JavaScript AST-backed symbol search.
+- Bounded symbol context reads for classes, functions, methods, interfaces, types, enums, and variables.
 - Read-only SQLite schema discovery.
 - Read-only SQLite foreign-key relation discovery.
 - Read-only SQLite query preview with row limits.
 - Read-only git recent change discovery.
 - Read-only git blame metadata for tracked files.
 - Read-only git file history lookup.
+- Read-only git change impact hints from recent file history.
 - Jest unit and integration test baseline.
 
 ## Registered Tools
@@ -121,6 +124,14 @@ Reads bounded content for one file inside the repository root.
 
 Reads bounded file context for files under a module directory.
 
+### `repository.search_symbols`
+
+Searches bounded TypeScript and JavaScript symbols using an AST-backed parser.
+
+### `repository.read_symbol_context`
+
+Reads bounded source context for a specific TypeScript or JavaScript symbol.
+
 ### `database.schema`
 
 Reads SQLite table and column metadata through a read-only connection.
@@ -145,6 +156,10 @@ Reads line ownership metadata for one file using read-only `git blame`.
 
 Reads commit history for one file using read-only `git log -- <file>`.
 
+### `git.impact_hints`
+
+Summarizes file-level change frequency hints from recent read-only git history.
+
 ## Architecture Boundary
 
 Core owns MCP transport integration, execution, logging, errors, security policy foundations, and registry behavior.
@@ -155,8 +170,8 @@ Tools are contributed by modules or plugins. Core execution resolves tools throu
 
 The current implementation intentionally excludes:
 
-- AST parser.
-- Full symbol index.
+- Cross-language AST parsers beyond TypeScript and JavaScript.
+- Persistent or incremental symbol index.
 - Full call graph.
 - Full import graph.
 - Git writes, branches, merges, commits, resets, and pushes.

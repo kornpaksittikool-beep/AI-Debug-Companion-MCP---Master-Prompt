@@ -149,3 +149,61 @@ export const REPOSITORY_READ_MODULE_CONTEXT_TOOL_DEFINITION: ToolDefinition = {
   sideEffects: 'read',
   examples: [{ input: { rootPath: '/repo', modulePath: 'src/core' }, output: { files: [] } }],
 };
+
+export const REPOSITORY_SEARCH_SYMBOLS_TOOL_DEFINITION: ToolDefinition = {
+  name: 'repository.search_symbols',
+  version: '1.0.0',
+  description: 'Searches TypeScript and JavaScript symbols using a bounded AST-backed index.',
+  module: 'repository-intelligence',
+  inputSchema: {
+    ...boundedScanSchema,
+    properties: {
+      ...(boundedScanSchema.properties as JsonSchemaObject),
+      query: { type: 'string' },
+      kind: {
+        type: 'string',
+        enum: ['class', 'function', 'method', 'interface', 'type', 'enum', 'variable'],
+      },
+    },
+  },
+  outputSchema: resultObjectSchema,
+  errorSchema: STANDARD_ERROR_SCHEMA,
+  permissions: REPOSITORY_READ_PERMISSION,
+  timeoutMs: 5000,
+  retryStrategy: NO_RETRY,
+  sideEffects: 'read',
+  examples: [{ input: { rootPath: '/repo', query: 'Service' }, output: { symbols: [] } }],
+};
+
+export const REPOSITORY_READ_SYMBOL_CONTEXT_TOOL_DEFINITION: ToolDefinition = {
+  name: 'repository.read_symbol_context',
+  version: '1.0.0',
+  description: 'Reads bounded context for a specific TypeScript or JavaScript symbol.',
+  module: 'repository-intelligence',
+  inputSchema: {
+    ...boundedScanSchema,
+    required: ['rootPath', 'symbolName'],
+    properties: {
+      ...(boundedScanSchema.properties as JsonSchemaObject),
+      symbolName: { type: 'string' },
+      filePath: { type: 'string' },
+      kind: {
+        type: 'string',
+        enum: ['class', 'function', 'method', 'interface', 'type', 'enum', 'variable'],
+      },
+      maxBytes: { type: 'number' },
+    },
+  },
+  outputSchema: resultObjectSchema,
+  errorSchema: STANDARD_ERROR_SCHEMA,
+  permissions: REPOSITORY_READ_PERMISSION,
+  timeoutMs: 5000,
+  retryStrategy: NO_RETRY,
+  sideEffects: 'read',
+  examples: [
+    {
+      input: { rootPath: '/repo', symbolName: 'Service', filePath: 'src/service.ts' },
+      output: { context: '' },
+    },
+  ],
+};

@@ -84,7 +84,53 @@ export interface ModuleContextResult {
   readonly truncated: boolean;
 }
 
-export interface LanguageParser<TSymbol = unknown> {
+export type RepositorySymbolKind =
+  | 'class'
+  | 'function'
+  | 'method'
+  | 'interface'
+  | 'type'
+  | 'enum'
+  | 'variable';
+
+export interface RepositorySymbol {
+  readonly name: string;
+  readonly kind: RepositorySymbolKind;
+  readonly filePath: string;
+  readonly relativePath: string;
+  readonly startLine: number;
+  readonly endLine: number;
+  readonly exported: boolean;
+  readonly containerName?: string;
+  readonly signature: string;
+}
+
+export interface SymbolSearchOptions extends RepositoryScanOptions {
+  readonly query?: string;
+  readonly kind?: RepositorySymbolKind;
+}
+
+export interface SymbolSearchResult {
+  readonly rootPath: string;
+  readonly symbols: readonly RepositorySymbol[];
+  readonly truncated: boolean;
+}
+
+export interface SymbolContextOptions extends RepositoryScanOptions {
+  readonly symbolName: string;
+  readonly filePath?: string;
+  readonly kind?: RepositorySymbolKind;
+  readonly maxBytes?: number;
+}
+
+export interface SymbolContextResult {
+  readonly rootPath: string;
+  readonly symbol: RepositorySymbol;
+  readonly context: string;
+  readonly truncated: boolean;
+}
+
+export interface LanguageParser<TSymbol = RepositorySymbol> {
   readonly language: string;
   supportsFile(filePath: string): boolean;
   parseSymbols(content: string, filePath: string): readonly TSymbol[];

@@ -6,11 +6,15 @@ import { RepositoryIgnoreService } from '../../src/modules/repository-intelligen
 import { RepositoryIntelligenceService } from '../../src/modules/repository-intelligence/services/repository-intelligence.service.js';
 import { RepositorySafetyService } from '../../src/modules/repository-intelligence/services/repository-safety.service.js';
 import { RepositoryScannerService } from '../../src/modules/repository-intelligence/services/repository-scanner.service.js';
+import { RepositorySymbolService } from '../../src/modules/repository-intelligence/services/repository-symbol.service.js';
+import { TypeScriptSymbolParserService } from '../../src/modules/repository-intelligence/services/typescript-symbol-parser.service.js';
 import {
   RepositoryOverviewTool,
   RepositoryReadFileContextTool,
+  RepositoryReadSymbolContextTool,
   RepositoryScanTool,
   RepositorySearchFilesTool,
+  RepositorySearchSymbolsTool,
 } from '../../src/modules/repository-intelligence/tools/repository.tools.js';
 
 async function createFixture(): Promise<string> {
@@ -24,6 +28,13 @@ function createService(): RepositoryIntelligenceService {
   const safety = new RepositorySafetyService(new PathPolicyService());
   const scanner = new RepositoryScannerService(new RepositoryIgnoreService(), safety);
   return new RepositoryIntelligenceService(scanner, safety);
+}
+
+function createSymbolService(): RepositorySymbolService {
+  const safety = new RepositorySafetyService(new PathPolicyService());
+  const scanner = new RepositoryScannerService(new RepositoryIgnoreService(), safety);
+  const parser = new TypeScriptSymbolParserService(safety);
+  return new RepositorySymbolService(scanner, safety, parser);
 }
 
 describe('Repository tools', () => {
@@ -46,6 +57,24 @@ describe('Repository tools', () => {
       new RepositoryReadFileContextTool(service).execute({ rootPath, filePath: 'README.md' }),
     ).resolves.toMatchObject({
       relativePath: 'README.md',
+    });
+  });
+
+  it('executes symbol search and symbol context handlers', async () => {
+    const rootPath = await createFixture();
+    const service = createSymbolService();
+
+    await expect(new RepositorySearchSymbolsTool(service).execute({ rootPath, query: 'Service' })).resolves.toMatchObject({
+      rootPath,
+    });
+    await expect(
+      new RepositoryReadSymbolContextTool(service).execute({
+        rootPath,
+        symbolName: 'Service',
+        filePath: 'service.ts',
+      }),
+    ).resolves.toMatchObject({
+      context: 'export class Service {}',
     });
   });
 });

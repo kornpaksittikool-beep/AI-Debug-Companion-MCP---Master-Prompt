@@ -4,6 +4,7 @@ import type { ToolHandler } from '../../../core/registry/interfaces/tool-handler
 import type {
   GitBlameInputDto,
   GitFindCommitByFileInputDto,
+  GitImpactHintsInputDto,
   GitRecentChangesInputDto,
 } from '../dto/git-intelligence.dto.js';
 import { GitIntelligenceService } from '../services/git-intelligence.service.js';
@@ -37,6 +38,17 @@ export class GitFindCommitByFileTool implements ToolHandler {
   execute(input: JsonSchemaObject): Promise<JsonSchemaObject> {
     return this.service
       .findCommitByFile(input as unknown as GitFindCommitByFileInputDto)
+      .then((result) => result as unknown as JsonSchemaObject);
+  }
+}
+
+@Injectable()
+export class GitImpactHintsTool implements ToolHandler {
+  constructor(private readonly service: GitIntelligenceService) {}
+
+  execute(input: JsonSchemaObject): Promise<JsonSchemaObject> {
+    return this.service
+      .impactHints(input as unknown as GitImpactHintsInputDto)
       .then((result) => result as unknown as JsonSchemaObject);
   }
 }

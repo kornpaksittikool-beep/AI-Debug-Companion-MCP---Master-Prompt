@@ -42,14 +42,15 @@
 | File search | Phase 3 | Completed |
 | File and module context reader | Phase 3 | Completed |
 | AST parser interface | Phase 3 | Completed |
-| Symbol search | Phase 3 | Planned |
-| Function-level smart context reader | Phase 3 | Planned |
+| Symbol search | Phase 3 | Completed |
+| Function-level smart context reader | Phase 3 | Completed |
 | Database schema reader | Phase 4 | Completed |
 | Database relation explorer | Phase 4 | Completed |
 | Read-only query preview | Phase 4 | Completed |
 | Git recent changes reader | Phase 5 | Completed |
 | Git blame reader | Phase 5 | Completed |
 | Git file commit lookup | Phase 5 | Completed |
+| Git change impact hints | Phase 5 | Completed |
 | Planning engine | Phase 6 | Planned |
 | Impact engine | Phase 6 | Planned |
 | Patch proposal engine | Phase 7 | Planned |

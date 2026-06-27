@@ -8,11 +8,13 @@ import { GitSafetyService } from './services/git-safety.service.js';
 import {
   GIT_BLAME_TOOL_DEFINITION,
   GIT_FIND_COMMIT_BY_FILE_TOOL_DEFINITION,
+  GIT_IMPACT_HINTS_TOOL_DEFINITION,
   GIT_RECENT_CHANGES_TOOL_DEFINITION,
 } from './tools/git-tool-schemas.js';
 import {
   GitBlameTool,
   GitFindCommitByFileTool,
+  GitImpactHintsTool,
   GitRecentChangesTool,
 } from './tools/git.tools.js';
 
@@ -25,6 +27,7 @@ import {
     GitRecentChangesTool,
     GitBlameTool,
     GitFindCommitByFileTool,
+    GitImpactHintsTool,
   ],
   exports: [GitIntelligenceService],
 })
@@ -34,11 +37,13 @@ export class GitIntelligenceModule implements OnModuleInit {
     private readonly recentChangesTool: GitRecentChangesTool,
     private readonly blameTool: GitBlameTool,
     private readonly findCommitByFileTool: GitFindCommitByFileTool,
+    private readonly impactHintsTool: GitImpactHintsTool,
   ) {}
 
   onModuleInit(): void {
     this.registry.register(GIT_RECENT_CHANGES_TOOL_DEFINITION, this.recentChangesTool);
     this.registry.register(GIT_BLAME_TOOL_DEFINITION, this.blameTool);
     this.registry.register(GIT_FIND_COMMIT_BY_FILE_TOOL_DEFINITION, this.findCommitByFileTool);
+    this.registry.register(GIT_IMPACT_HINTS_TOOL_DEFINITION, this.impactHintsTool);
   }
 }

@@ -113,3 +113,18 @@ export const GIT_FIND_COMMIT_BY_FILE_TOOL_DEFINITION: ToolDefinition = {
     },
   ],
 };
+
+export const GIT_IMPACT_HINTS_TOOL_DEFINITION: ToolDefinition = {
+  name: 'git.impact_hints',
+  version: '1.0.0',
+  description: 'Summarizes file-level change frequency hints from recent read-only git history.',
+  module: 'git-intelligence',
+  inputSchema: recentChangesInputSchema,
+  outputSchema: resultObjectSchema,
+  errorSchema: STANDARD_ERROR_SCHEMA,
+  permissions: GIT_READ_PERMISSION,
+  timeoutMs: 5000,
+  retryStrategy: NO_RETRY,
+  sideEffects: 'read',
+  examples: [{ input: { rootPath: '/repo', maxCommits: 20 }, output: { hints: [] } }],
+};

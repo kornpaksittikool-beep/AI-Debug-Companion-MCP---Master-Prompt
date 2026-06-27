@@ -10,6 +10,7 @@ import { GitSafetyService } from '../../src/modules/git-intelligence/services/gi
 import {
   GitBlameTool,
   GitFindCommitByFileTool,
+  GitImpactHintsTool,
   GitRecentChangesTool,
 } from '../../src/modules/git-intelligence/tools/git.tools.js';
 import { RepositorySafetyService } from '../../src/modules/repository-intelligence/services/repository-safety.service.js';
@@ -50,9 +51,11 @@ describe('Git tools', () => {
       rootPath,
       filePath: 'README.md',
     });
+    const impactHints = await new GitImpactHintsTool(service).execute({ rootPath });
 
     expect(Array.isArray(recentChanges.commits)).toBe(true);
     expect(Array.isArray(blame.lines)).toBe(true);
     expect(Array.isArray(fileHistory.commits)).toBe(true);
+    expect(Array.isArray(impactHints.hints)).toBe(true);
   });
 });

@@ -34,7 +34,12 @@ describe('GitIntelligenceModule integration', () => {
     const toolNames = registry.list().map((tool) => tool.name);
 
     expect(toolNames).toEqual(
-      expect.arrayContaining(['git.recent_changes', 'git.blame', 'git.find_commit_by_file']),
+      expect.arrayContaining([
+        'git.recent_changes',
+        'git.blame',
+        'git.find_commit_by_file',
+        'git.impact_hints',
+      ]),
     );
 
     await moduleRef.close();
