@@ -67,7 +67,7 @@
 | External tool plugin SDK contract | Phase 10 | Completed |
 | Semantic plugin compatibility resolver | Phase 11 | Completed |
 | Dynamic plugin loading | Phase 12 | Completed |
-| AI provider adapter boundary | Phase 13 | Planned |
+| AI provider adapter boundary | Phase 13 | Completed |
 | PostgreSQL and MySQL read-only adapters | Phase 14 | Planned |
 | Import graph, call graph, persistent index, and cross-repository search | Phase 15 | Planned |
 | Approved patch application engine | Phase 16 | Planned |

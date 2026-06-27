@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { CoreModule } from './core/core.module.js';
+import { AiProviderModule } from './modules/ai-provider/ai-provider.module.js';
 import { DatabaseIntelligenceModule } from './modules/database-intelligence/database-intelligence.module.js';
 import { GitIntelligenceModule } from './modules/git-intelligence/git-intelligence.module.js';
 import { HealthModule } from './modules/health/health.module.js';
@@ -14,6 +15,7 @@ import { RepositoryIntelligenceModule } from './modules/repository-intelligence/
 @Module({
   imports: [
     CoreModule,
+    AiProviderModule,
     HealthModule,
     InvestigationModule,
     RepositoryIntelligenceModule,

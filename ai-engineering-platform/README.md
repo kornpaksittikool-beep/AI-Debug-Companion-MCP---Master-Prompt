@@ -2,7 +2,7 @@
 
 AI Engineering Platform is a production-oriented MCP foundation for evidence-driven software engineering workflows.
 
-Phase 12 provides the Core MCP Framework, Investigation Engine, bounded Repository Intelligence, TypeScript/JavaScript symbol intelligence, read-only SQLite Database Intelligence, read-only Git Intelligence, Planning and Impact Engine, patch proposal workflow, rollback planning, allow-listed verification execution, versioned Project Memory, cache foundation, cache invalidation, read-only security audits, plugin marketplace readiness, semantic plugin compatibility resolution, and approved local plugin state loading. It does not include automatic patch application, dynamic remote plugin installation, external plugin code execution, distributed cache, vector memory, cloud sync, or remote Git hosting integration.
+Phase 13 provides the Core MCP Framework, Investigation Engine, bounded Repository Intelligence, TypeScript/JavaScript symbol intelligence, read-only SQLite Database Intelligence, read-only Git Intelligence, Planning and Impact Engine, patch proposal workflow, rollback planning, allow-listed verification execution, versioned Project Memory, cache foundation, cache invalidation, read-only security audits, plugin marketplace readiness, semantic plugin compatibility resolution, approved local plugin state loading, and provider-neutral AI routing contracts. It does not include automatic patch application, dynamic remote plugin installation, external plugin code execution, AI API execution, distributed cache, vector memory, cloud sync, or remote Git hosting integration.
 
 ## Requirements
 
@@ -84,6 +84,9 @@ The Phase 1 server uses stdio transport through the official Model Context Proto
 - Local plugin inventory stored under `.ai-engineering-platform/plugins`.
 - Approved local plugin enable, disable, and staged update state workflows.
 - Stored plugin lifecycle execution results with rollback and verification plans.
+- Provider-neutral AI provider profiles for OpenAI, Claude, Gemini, DeepSeek, Ollama, OpenRouter, and local LLMs.
+- AI request validation against provider and model metadata.
+- Deterministic AI routing plans without calling external AI APIs.
 - Jest unit and integration test baseline.
 
 ## Registered Tools
@@ -300,6 +303,22 @@ Stages a local plugin update in plugin state metadata after validation and compa
 
 Returns a stored plugin lifecycle execution result by ID.
 
+### `ai.providers`
+
+Lists provider-neutral AI provider profiles and model metadata.
+
+### `ai.provider_metadata`
+
+Returns metadata for one registered AI provider profile.
+
+### `ai.validate_request`
+
+Validates a normalized AI request against provider and model metadata without calling an AI API.
+
+### `ai.route_request`
+
+Creates a deterministic provider-neutral AI routing plan without calling an AI API.
+
 ## Architecture Boundary
 
 Core owns MCP transport integration, execution, logging, errors, security policy foundations, and registry behavior.
@@ -328,6 +347,8 @@ The current implementation intentionally excludes:
 - Dynamic remote plugin download or execution.
 - Dynamic import of external plugin code.
 - Package manager based plugin installation.
+- AI provider API calls.
+- Provider SDK coupling inside core.
 - Vector database memory.
 - Cloud memory synchronization.
 - AI provider adapters.
