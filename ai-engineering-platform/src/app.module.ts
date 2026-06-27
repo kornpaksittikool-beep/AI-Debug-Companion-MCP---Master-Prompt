@@ -11,6 +11,7 @@ import { PluginMarketplaceModule } from './modules/plugin-marketplace/plugin-mar
 import { PlanningImpactModule } from './modules/planning-impact/planning-impact.module.js';
 import { ProjectMemoryModule } from './modules/project-memory/project-memory.module.js';
 import { RepositoryIntelligenceModule } from './modules/repository-intelligence/repository-intelligence.module.js';
+import { TokenBudgetModule } from './modules/token-budget/token-budget.module.js';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { RepositoryIntelligenceModule } from './modules/repository-intelligence/
     ProjectMemoryModule,
     PerformanceSecurityModule,
     PluginMarketplaceModule,
+    TokenBudgetModule,
   ],
 })
 export class AppModule {}

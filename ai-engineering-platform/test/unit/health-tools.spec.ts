@@ -24,7 +24,7 @@ describe('Health tools', () => {
 
     expect(output.platform).toBeDefined();
     expect(output.platform).toMatchObject({
-      phase: 'phase-17-remote-plugin-marketplace-staging',
+      phase: 'phase-18-token-budget-context-compression',
     });
     expect(output.tools).toEqual([]);
   });

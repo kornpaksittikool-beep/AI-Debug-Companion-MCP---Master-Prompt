@@ -72,3 +72,6 @@
 | Import graph, call graph, persistent index, and cross-repository search | Phase 15 | Completed |
 | Approved patch application engine | Phase 16 | Completed |
 | Remote plugin marketplace staging | Phase 17 | Completed |
+| Token estimate tool | Phase 18 | Completed |
+| Context compression tool | Phase 18 | Completed |
+| Token-aware strategy recommendation tool | Phase 18 | Completed |

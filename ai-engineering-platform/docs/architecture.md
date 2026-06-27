@@ -127,26 +127,44 @@ ai-engineering-platform/
         services/
         dto/
         tools/
-      planning/
-        planning.module.ts
+      planning-impact/
+        planning-impact.module.ts
         interfaces/
         services/
         dto/
         tools/
-      patch/
-        patch.module.ts
+      patch-verification/
+        patch-verification.module.ts
         interfaces/
         services/
         dto/
         tools/
-      verification/
-        verification.module.ts
+      performance-security/
+        performance-security.module.ts
         interfaces/
         services/
         dto/
         tools/
       project-memory/
         project-memory.module.ts
+        interfaces/
+        services/
+        dto/
+        tools/
+      plugin-marketplace/
+        plugin-marketplace.module.ts
+        interfaces/
+        services/
+        dto/
+        tools/
+      ai-provider/
+        ai-provider.module.ts
+        interfaces/
+        services/
+        dto/
+        tools/
+      token-budget/
+        token-budget.module.ts
         interfaces/
         services/
         dto/

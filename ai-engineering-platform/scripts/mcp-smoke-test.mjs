@@ -102,6 +102,15 @@ try {
       checksum: sha256(artifactContent),
     },
   });
+  const tokenEstimate = await callTool(client, 'token_budget.estimate', {
+    budgetTokens: 20,
+    items: [{ id: 'readme', content: updated, priority: 'high' }],
+  });
+  const tokenStrategy = await callTool(client, 'token_budget.recommend_strategy', {
+    objective: 'Smoke verify token-aware flow',
+    currentTokens: tokenEstimate.estimatedTokens,
+    maxTokens: 20,
+  });
 
   const summary = {
     rootPath,
@@ -118,12 +127,14 @@ try {
     rollbackStatus: rollback.status,
     restored,
     artifactValid: artifact.valid,
+    tokenEstimate: tokenEstimate.estimatedTokens,
+    tokenStrategyStatus: tokenStrategy.status,
   };
 
   if (
     summary.toolCount < 70 ||
     summary.healthStatus !== 'ok' ||
-    summary.platformPhase !== 'phase-17-remote-plugin-marketplace-staging' ||
+    summary.platformPhase !== 'phase-18-token-budget-context-compression' ||
     !summary.importResolved ||
     summary.approvalStatus !== 'approved' ||
     summary.proposalStatus !== 'ready_for_review' ||
@@ -132,7 +143,9 @@ try {
     summary.updated !== '# Updated\n' ||
     summary.rollbackStatus !== 'rolled_back' ||
     summary.restored !== '# Original\n' ||
-    !summary.artifactValid
+    !summary.artifactValid ||
+    summary.tokenEstimate <= 0 ||
+    summary.tokenStrategyStatus !== 'within_budget'
   ) {
     throw new Error(`MCP smoke test failed: ${JSON.stringify(summary, null, 2)}`);
   }

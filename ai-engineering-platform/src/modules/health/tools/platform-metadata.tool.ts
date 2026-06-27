@@ -42,7 +42,7 @@ export const PLATFORM_METADATA_TOOL_DEFINITION: ToolDefinition = {
         platform: {
           name: 'ai-engineering-platform',
           version: '0.1.0',
-          phase: 'phase-17-remote-plugin-marketplace-staging',
+          phase: 'phase-18-token-budget-context-compression',
         },
         tools: [],
       },

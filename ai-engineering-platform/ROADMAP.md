@@ -67,6 +67,9 @@ The system must be developed iteratively. Each phase must produce usable, verifi
 | M15: Deep Repository Intelligence | Phase 15 | Import graph, call graph, persistent incremental index, and cross-repository search | Repository intelligence and cache foundation | High | High | Completed |
 | M16: Approved Patch Application | Phase 16 | Actual patch apply engine behind approval, rollback, and verification gates | Patch proposal workflow | Critical | High | Completed |
 | M17: Remote Plugin Marketplace | Phase 17 | Remote plugin discovery, checksum/signature verification, and sandboxed staging | Dynamic plugin loading | Medium | High | Completed |
+| M18: Token Budget and Context Compression | Phase 18 | Approximate context token estimator for candidate evidence and tool outputs | Repository intelligence and AI provider boundary | High | Medium | Completed |
+| M18: Token Budget and Context Compression | Phase 18 | Priority-aware deterministic context compression | Token estimator | High | Medium | Completed |
+| M18: Token Budget and Context Compression | Phase 18 | Token-aware MCP evidence gathering strategy recommendations | Token estimator and registered tool contracts | High | Medium | Completed |
 
 ## Phase Gate Rules
 
@@ -81,4 +84,4 @@ Each phase must pass the following checks before the next phase begins:
 
 ## Current Phase
 
-Phase 17 is completed. Future phases must be planned and approved before implementation.
+Phase 18 is completed. Future phases must be planned and approved before implementation.
