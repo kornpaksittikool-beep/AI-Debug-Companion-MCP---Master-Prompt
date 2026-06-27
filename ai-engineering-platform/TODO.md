@@ -1,0 +1,61 @@
+# Project TODO
+
+## Status Legend
+
+- Planned: not started.
+- In Progress: actively being worked on.
+- Completed: done, tested, documented, and accepted.
+
+## Phase 0: Foundation Documentation
+
+| TODO | Status | Acceptance Criteria |
+| --- | --- | --- |
+| Create roadmap | Completed | Roadmap includes milestone, phase, feature, dependency, priority, complexity, and status. |
+| Define exact platform folder structure | Completed | Architecture document contains the target repository tree. |
+| Create architecture overview | Completed | Architecture explains core, modules, plugins, request lifecycle, security, performance, and testing model. |
+| Create ADRs | Completed | ADRs explain decisions, benefits, drawbacks, and impact. |
+| Define MCP tool contract | Completed | Tool contract includes description, input schema, output schema, error schema, permission, timeout, and retry strategy. |
+| Define Phase 1 deliverables | Completed | Deliverables are observable and testable. |
+
+## Phase 1: Core MCP Framework
+
+| TODO | Status | Acceptance Criteria |
+| --- | --- | --- |
+| NestJS TypeScript scaffold | Completed | Project builds with strict TypeScript configuration. |
+| Core MCP server abstraction | Completed | MCP requests can be normalized and routed through a core boundary. |
+| Tool registry | Completed | Tools can register without core knowing tool internals. |
+| Plugin contract | Completed | Plugin manifests can declare tools, permissions, schemas, timeout, and retry policy. |
+| Health tool | Completed | Health tool returns platform status through registry. |
+| Platform metadata tool | Completed | Metadata tool returns version, enabled modules, and registered tools. |
+| Structured logging | Completed | Start, success, failed, execution time, and error detail are logged. |
+| Standard error envelope | Completed | Errors include message, reason, suggestion, code, and trace context. |
+| Test baseline | Completed | Unit and integration tests run with coverage reporting. |
+
+## Future Feature Backlog
+
+| TODO | Phase | Status |
+| --- | --- | --- |
+| Investigation session engine | Phase 2 | Completed |
+| Evidence registry | Phase 2 | Completed |
+| Problem classifier | Phase 2 | Completed |
+| Repository scanner | Phase 3 | Completed |
+| File search | Phase 3 | Completed |
+| File and module context reader | Phase 3 | Completed |
+| AST parser interface | Phase 3 | Completed |
+| Symbol search | Phase 3 | Planned |
+| Function-level smart context reader | Phase 3 | Planned |
+| Database schema reader | Phase 4 | Completed |
+| Database relation explorer | Phase 4 | Completed |
+| Read-only query preview | Phase 4 | Completed |
+| Git recent changes reader | Phase 5 | Planned |
+| Git blame reader | Phase 5 | Planned |
+| Planning engine | Phase 6 | Planned |
+| Impact engine | Phase 6 | Planned |
+| Patch proposal engine | Phase 7 | Planned |
+| Patch application engine | Phase 7 | Planned |
+| Verification engine | Phase 7 | Planned |
+| Project memory store | Phase 8 | Planned |
+| Memory refresh and export | Phase 8 | Planned |
+| Incremental scan optimization | Phase 9 | Planned |
+| Cache invalidation strategy | Phase 9 | Planned |
+| Plugin marketplace readiness | Phase 10 | Planned |
