@@ -57,8 +57,8 @@
 | Patch proposal engine | Phase 7 | Completed |
 | Patch application boundary | Phase 7 | Completed |
 | Verification engine | Phase 7 | Completed |
-| Project memory store | Phase 8 | Planned |
-| Memory refresh and export | Phase 8 | Planned |
+| Project memory store | Phase 8 | Completed |
+| Memory refresh and export | Phase 8 | Completed |
 | Incremental scan optimization | Phase 9 | Planned |
 | Cache invalidation strategy | Phase 9 | Planned |
 | Plugin marketplace readiness | Phase 10 | Planned |

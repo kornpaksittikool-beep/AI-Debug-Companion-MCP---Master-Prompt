@@ -6,6 +6,7 @@ import { HealthModule } from './modules/health/health.module.js';
 import { InvestigationModule } from './modules/investigation/investigation.module.js';
 import { PatchVerificationModule } from './modules/patch-verification/patch-verification.module.js';
 import { PlanningImpactModule } from './modules/planning-impact/planning-impact.module.js';
+import { ProjectMemoryModule } from './modules/project-memory/project-memory.module.js';
 import { RepositoryIntelligenceModule } from './modules/repository-intelligence/repository-intelligence.module.js';
 import { ExamplePluginModule } from './plugins/example/example-plugin.module.js';
 
@@ -19,6 +20,7 @@ import { ExamplePluginModule } from './plugins/example/example-plugin.module.js'
     GitIntelligenceModule,
     PlanningImpactModule,
     PatchVerificationModule,
+    ProjectMemoryModule,
     ExamplePluginModule,
   ],
 })

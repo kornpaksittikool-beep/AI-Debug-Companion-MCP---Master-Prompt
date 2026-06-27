@@ -2,7 +2,7 @@
 
 AI Engineering Platform is a production-oriented MCP foundation for evidence-driven software engineering workflows.
 
-Phase 7 provides the Core MCP Framework, Investigation Engine, bounded Repository Intelligence, TypeScript/JavaScript symbol intelligence, read-only SQLite Database Intelligence, read-only Git Intelligence, Planning and Impact Engine, patch proposal workflow, rollback planning, and allow-listed verification execution. It does not include automatic patch application, project memory, or remote Git hosting integration.
+Phase 8 provides the Core MCP Framework, Investigation Engine, bounded Repository Intelligence, TypeScript/JavaScript symbol intelligence, read-only SQLite Database Intelligence, read-only Git Intelligence, Planning and Impact Engine, patch proposal workflow, rollback planning, allow-listed verification execution, and versioned Project Memory. It does not include automatic patch application, vector memory, cloud sync, or remote Git hosting integration.
 
 ## Requirements
 
@@ -70,6 +70,8 @@ The Phase 1 server uses stdio transport through the official Model Context Proto
 - Reviewable patch proposal creation from approved plans.
 - Rollback plan generation for patch proposals.
 - Allow-listed verification command execution with stored results.
+- Versioned project memory records.
+- Project memory search, summary, refresh, and export workflows.
 - Jest unit and integration test baseline.
 
 ## Registered Tools
@@ -202,6 +204,26 @@ Runs an allow-listed verification command and records stdout, stderr, exit code,
 
 Returns a recorded verification result by ID.
 
+### `memory.record`
+
+Records a versioned project memory item in `.ai-engineering-platform/memory`.
+
+### `memory.search`
+
+Searches project memory by query, category, and tags.
+
+### `memory.summarize`
+
+Summarizes project memory counts and latest version.
+
+### `memory.refresh`
+
+Rebuilds a project memory snapshot from append-only records.
+
+### `memory.export`
+
+Exports project memory records and summary metadata.
+
 ## Architecture Boundary
 
 Core owns MCP transport integration, execution, logging, errors, security policy foundations, and registry behavior.
@@ -224,6 +246,7 @@ The current implementation intentionally excludes:
 - Database connector.
 - Automatic patch application.
 - Git commit or push automation.
-- Project memory.
+- Vector database memory.
+- Cloud memory synchronization.
 - AI provider adapters.
 - Plugin marketplace installation workflow.
