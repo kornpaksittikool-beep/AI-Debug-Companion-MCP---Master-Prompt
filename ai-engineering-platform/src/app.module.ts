@@ -4,6 +4,7 @@ import { DatabaseIntelligenceModule } from './modules/database-intelligence/data
 import { GitIntelligenceModule } from './modules/git-intelligence/git-intelligence.module.js';
 import { HealthModule } from './modules/health/health.module.js';
 import { InvestigationModule } from './modules/investigation/investigation.module.js';
+import { PlanningImpactModule } from './modules/planning-impact/planning-impact.module.js';
 import { RepositoryIntelligenceModule } from './modules/repository-intelligence/repository-intelligence.module.js';
 import { ExamplePluginModule } from './plugins/example/example-plugin.module.js';
 
@@ -15,6 +16,7 @@ import { ExamplePluginModule } from './plugins/example/example-plugin.module.js'
     RepositoryIntelligenceModule,
     DatabaseIntelligenceModule,
     GitIntelligenceModule,
+    PlanningImpactModule,
     ExamplePluginModule,
   ],
 })

@@ -45,9 +45,9 @@ The system must be developed iteratively. Each phase must produce usable, verifi
 | M5: Git Intelligence | Phase 5 | Recent change reader | Phase 1 | High | Medium | Completed |
 | M5: Git Intelligence | Phase 5 | Blame and commit lookup tools | Recent change reader | High | Medium | Completed |
 | M5: Git Intelligence | Phase 5 | Change impact hints from file history | Git readers | Medium | Medium | Completed |
-| M6: Planning and Impact | Phase 6 | Multi-level planning engine for quick fix, normal fix, refactor, and architecture change | Investigation engine | Critical | High | Planned |
-| M6: Planning and Impact | Phase 6 | Impact report generator for files, modules, APIs, database, cache, queue, workers, and regression risk | Repository and Git intelligence | Critical | High | Planned |
-| M6: Planning and Impact | Phase 6 | Approval gate workflow | Planning engine | Critical | Medium | Planned |
+| M6: Planning and Impact | Phase 6 | Multi-level planning engine for quick fix, normal fix, refactor, and architecture change | Investigation engine | Critical | High | Completed |
+| M6: Planning and Impact | Phase 6 | Impact report generator for files, modules, APIs, database, cache, queue, workers, and regression risk | Repository and Git intelligence | Critical | High | Completed |
+| M6: Planning and Impact | Phase 6 | Approval gate workflow | Planning engine | Critical | Medium | Completed |
 | M7: Patch and Verification | Phase 7 | Patch proposal and rollback strategy model | Planning engine | Critical | High | Planned |
 | M7: Patch and Verification | Phase 7 | Safe patch application with verification checkpoints | Patch proposal model | Critical | High | Planned |
 | M7: Patch and Verification | Phase 7 | Build, test, lint, and typecheck verification tools | Command allow list | Critical | High | Planned |
@@ -74,4 +74,4 @@ Each phase must pass the following checks before the next phase begins:
 
 ## Current Phase
 
-Phase 5.1 backlog cleanup is completed. Phase 6 is planned and must not start until its execution plan is approved.
+Phase 6 is completed. Phase 7 is planned and must not start until its execution plan is approved.

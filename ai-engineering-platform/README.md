@@ -2,7 +2,7 @@
 
 AI Engineering Platform is a production-oriented MCP foundation for evidence-driven software engineering workflows.
 
-Phase 5.1 provides the Core MCP Framework, Investigation Engine, bounded Repository Intelligence, TypeScript/JavaScript symbol intelligence, read-only SQLite Database Intelligence, and read-only Git Intelligence. It does not include planning engine, patch engine, verification engine, project memory, or remote Git hosting integration.
+Phase 6 provides the Core MCP Framework, Investigation Engine, bounded Repository Intelligence, TypeScript/JavaScript symbol intelligence, read-only SQLite Database Intelligence, read-only Git Intelligence, and a read-only Planning and Impact Engine. It does not include patch application, verification command execution, project memory, or remote Git hosting integration.
 
 ## Requirements
 
@@ -64,6 +64,9 @@ The Phase 1 server uses stdio transport through the official Model Context Proto
 - Read-only git blame metadata for tracked files.
 - Read-only git file history lookup.
 - Read-only git change impact hints from recent file history.
+- Evidence-backed engineering plan generation.
+- Read-only impact report generation.
+- Approval gate state management before patch execution.
 - Jest unit and integration test baseline.
 
 ## Registered Tools
@@ -160,6 +163,22 @@ Reads commit history for one file using read-only `git log -- <file>`.
 
 Summarizes file-level change frequency hints from recent read-only git history.
 
+### `planning.create_plan`
+
+Creates a read-only engineering plan with objective, scope, evidence, risk, rollback, and verification strategy.
+
+### `planning.impact_report`
+
+Generates a read-only impact report across files, modules, APIs, database, frontend, backend, cache, queue, workers, and events.
+
+### `planning.approval_gate`
+
+Updates approval state for a generated plan without applying patches.
+
+### `planning.summarize_plan`
+
+Returns a generated engineering plan by ID.
+
 ## Architecture Boundary
 
 Core owns MCP transport integration, execution, logging, errors, security policy foundations, and registry behavior.
@@ -181,7 +200,7 @@ The current implementation intentionally excludes:
 - Postgres/MySQL adapters.
 - Database connector.
 - Patch application.
-- Planning engine.
+- Verification command execution.
 - Project memory.
 - AI provider adapters.
 - Plugin marketplace installation workflow.

@@ -51,8 +51,9 @@
 | Git blame reader | Phase 5 | Completed |
 | Git file commit lookup | Phase 5 | Completed |
 | Git change impact hints | Phase 5 | Completed |
-| Planning engine | Phase 6 | Planned |
-| Impact engine | Phase 6 | Planned |
+| Planning engine | Phase 6 | Completed |
+| Impact engine | Phase 6 | Completed |
+| Approval gate workflow | Phase 6 | Completed |
 | Patch proposal engine | Phase 7 | Planned |
 | Patch application engine | Phase 7 | Planned |
 | Verification engine | Phase 7 | Planned |
