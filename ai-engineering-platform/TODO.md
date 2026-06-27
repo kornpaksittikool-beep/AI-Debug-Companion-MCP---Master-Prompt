@@ -70,5 +70,5 @@
 | AI provider adapter boundary | Phase 13 | Completed |
 | PostgreSQL and MySQL read-only adapter contracts and connection profile validation | Phase 14 | Completed |
 | Import graph, call graph, persistent index, and cross-repository search | Phase 15 | Completed |
-| Approved patch application engine | Phase 16 | Planned |
+| Approved patch application engine | Phase 16 | Completed |
 | Remote plugin marketplace staging | Phase 17 | Planned |

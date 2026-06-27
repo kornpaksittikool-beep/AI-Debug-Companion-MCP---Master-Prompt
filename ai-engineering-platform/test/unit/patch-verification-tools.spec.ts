@@ -2,11 +2,14 @@ import { CommandPolicyService } from '../../src/core/security/command-policy.ser
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
 import { PathPolicyService } from '../../src/core/security/path-policy.service.js';
+import { PatchApplyService } from '../../src/modules/patch-verification/services/patch-apply.service.js';
 import { PatchProposalStoreService } from '../../src/modules/patch-verification/services/patch-proposal-store.service.js';
 import { PatchProposalService } from '../../src/modules/patch-verification/services/patch-proposal.service.js';
 import { VerificationRunnerService } from '../../src/modules/patch-verification/services/verification-runner.service.js';
 import {
+  PatchApplyProposalTool,
   PatchCreateProposalTool,
+  PatchRollbackApplyTool,
   PatchRollbackPlanTool,
   PatchSummarizeProposalTool,
   VerificationRunCheckTool,
@@ -51,11 +54,23 @@ describe('Patch verification tools', () => {
       new CommandPolicyService(),
       new RepositorySafetyService(new PathPolicyService()),
     );
+    const apply = new PatchApplyService(
+      store,
+      new RepositorySafetyService(new PathPolicyService()),
+      verification,
+    );
 
     const proposal = await new PatchCreateProposalTool(proposalService).execute({
       planId: plan.id,
       rootPath: fixture.rootPath,
-      changes: [{ operation: 'update', filePath: 'README.md', summary: 'Update readme.' }],
+      changes: [
+        {
+          operation: 'update',
+          filePath: 'README.md',
+          summary: 'Update readme.',
+          proposedContent: '# Updated by tool\n',
+        },
+      ],
     });
     const proposalId = requireString(proposal.id);
 
@@ -64,6 +79,12 @@ describe('Patch verification tools', () => {
     });
     await expect(new PatchRollbackPlanTool(proposalService).execute({ proposalId })).resolves.toMatchObject({
       proposalId,
+    });
+    const applyResult = await new PatchApplyProposalTool(apply).execute({ proposalId });
+    const applyRunId = requireString(applyResult.id);
+    expect(applyResult.status).toBe('applied');
+    await expect(new PatchRollbackApplyTool(apply).execute({ applyRunId })).resolves.toMatchObject({
+      status: 'rolled_back',
     });
 
     const verificationResult = await new VerificationRunCheckTool(verification).execute({

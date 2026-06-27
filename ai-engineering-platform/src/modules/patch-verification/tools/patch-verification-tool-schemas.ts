@@ -33,6 +33,15 @@ const PATCH_VERIFICATION_PERMISSION: ToolPermission = {
   },
 };
 
+const PATCH_APPLY_PERMISSION: ToolPermission = {
+  ...PATCH_VERIFICATION_PERMISSION,
+  fileSystem: {
+    read: true,
+    write: true,
+    allowedRoots: ['proposal-rootPath'],
+  },
+};
+
 const patchChangeSchema: JsonSchemaObject = {
   type: 'object',
   required: ['operation', 'filePath', 'summary'],
@@ -114,6 +123,53 @@ export const PATCH_ROLLBACK_PLAN_TOOL_DEFINITION: ToolDefinition = {
   retryStrategy: NO_RETRY,
   sideEffects: 'read',
   examples: [{ input: { proposalId: 'patch_123' }, output: { steps: [] } }],
+};
+
+export const PATCH_APPLY_PROPOSAL_TOOL_DEFINITION: ToolDefinition = {
+  name: 'patch.apply_proposal',
+  version: '1.0.0',
+  description: 'Applies an approved patch proposal using deterministic whole-file operations with rollback snapshots.',
+  module: 'patch-verification',
+  inputSchema: {
+    type: 'object',
+    required: ['proposalId'],
+    additionalProperties: false,
+    properties: {
+      proposalId: { type: 'string' },
+      runVerification: { type: 'boolean' },
+      rollbackOnFailure: { type: 'boolean' },
+      verificationTimeoutMs: { type: 'number' },
+    },
+  },
+  outputSchema: resultObjectSchema,
+  errorSchema: STANDARD_ERROR_SCHEMA,
+  permissions: PATCH_APPLY_PERMISSION,
+  timeoutMs: 120000,
+  retryStrategy: NO_RETRY,
+  sideEffects: 'write',
+  examples: [{ input: { proposalId: 'patch_123', runVerification: true }, output: { status: 'applied' } }],
+};
+
+export const PATCH_ROLLBACK_APPLY_TOOL_DEFINITION: ToolDefinition = {
+  name: 'patch.rollback_apply',
+  version: '1.0.0',
+  description: 'Rolls back a patch apply run using captured pre-apply snapshots.',
+  module: 'patch-verification',
+  inputSchema: {
+    type: 'object',
+    required: ['applyRunId'],
+    additionalProperties: false,
+    properties: {
+      applyRunId: { type: 'string' },
+    },
+  },
+  outputSchema: resultObjectSchema,
+  errorSchema: STANDARD_ERROR_SCHEMA,
+  permissions: PATCH_APPLY_PERMISSION,
+  timeoutMs: 30000,
+  retryStrategy: NO_RETRY,
+  sideEffects: 'write',
+  examples: [{ input: { applyRunId: 'apply_123' }, output: { status: 'rolled_back' } }],
 };
 
 export const VERIFICATION_RUN_CHECK_TOOL_DEFINITION: ToolDefinition = {

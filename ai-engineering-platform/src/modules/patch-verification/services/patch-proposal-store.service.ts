@@ -1,11 +1,18 @@
 import { Injectable } from '@nestjs/common';
 import { PlatformError } from '../../../core/errors/platform-error.js';
-import type { PatchProposal, VerificationResult } from '../interfaces/patch-verification.interface.js';
+import type {
+  PatchApplyRun,
+  PatchApplySnapshot,
+  PatchProposal,
+  VerificationResult,
+} from '../interfaces/patch-verification.interface.js';
 
 @Injectable()
 export class PatchProposalStoreService {
   private readonly proposals = new Map<string, PatchProposal>();
   private readonly verificationResults = new Map<string, VerificationResult>();
+  private readonly applyRuns = new Map<string, PatchApplyRun>();
+  private readonly snapshots = new Map<string, readonly PatchApplySnapshot[]>();
 
   saveProposal(proposal: PatchProposal): PatchProposal {
     this.proposals.set(proposal.id, proposal);
@@ -43,5 +50,32 @@ export class PatchProposalStoreService {
     }
 
     return result;
+  }
+
+  saveApplyRun(run: PatchApplyRun): PatchApplyRun {
+    this.applyRuns.set(run.id, run);
+    return run;
+  }
+
+  getApplyRun(applyRunId: string): PatchApplyRun {
+    const run = this.applyRuns.get(applyRunId);
+    if (!run) {
+      throw new PlatformError({
+        code: 'PATCH_APPLY_RUN_NOT_FOUND',
+        message: `Patch apply run "${applyRunId}" was not found.`,
+        reason: 'The patch apply store does not contain the requested ID.',
+        suggestion: 'Apply a patch proposal first or provide a valid apply run ID.',
+      });
+    }
+
+    return run;
+  }
+
+  saveSnapshots(applyRunId: string, snapshots: readonly PatchApplySnapshot[]): void {
+    this.snapshots.set(applyRunId, snapshots);
+  }
+
+  getSnapshots(applyRunId: string): readonly PatchApplySnapshot[] {
+    return this.snapshots.get(applyRunId) ?? [];
   }
 }

@@ -2,7 +2,7 @@
 
 AI Engineering Platform is a production-oriented MCP foundation for evidence-driven software engineering workflows.
 
-Phase 15 provides the Core MCP Framework, Investigation Engine, bounded Repository Intelligence, TypeScript/JavaScript symbol intelligence, bounded import and call graphs, persistent repository graph indexing, cross-repository search, read-only SQLite Database Intelligence, PostgreSQL/MySQL connection profile validation, read-only Git Intelligence, Planning and Impact Engine, patch proposal workflow, rollback planning, allow-listed verification execution, versioned Project Memory, cache foundation, cache invalidation, read-only security audits, plugin marketplace readiness, semantic plugin compatibility resolution, approved local plugin state loading, and provider-neutral AI routing contracts. It does not include automatic patch application, dynamic remote plugin installation, external plugin code execution, external database network execution, AI API execution, distributed cache, vector memory, cloud sync, or remote Git hosting integration.
+Phase 16 provides the Core MCP Framework, Investigation Engine, bounded Repository Intelligence, TypeScript/JavaScript symbol intelligence, bounded import and call graphs, persistent repository graph indexing, cross-repository search, read-only SQLite Database Intelligence, PostgreSQL/MySQL connection profile validation, read-only Git Intelligence, Planning and Impact Engine, patch proposal workflow, deterministic approved patch application, rollback execution, allow-listed verification execution, versioned Project Memory, cache foundation, cache invalidation, read-only security audits, plugin marketplace readiness, semantic plugin compatibility resolution, approved local plugin state loading, and provider-neutral AI routing contracts. It does not include automatic unapproved patch application, dynamic remote plugin installation, external plugin code execution, external database network execution, AI API execution, distributed cache, vector memory, cloud sync, or remote Git hosting integration.
 
 ## Requirements
 
@@ -77,6 +77,8 @@ The Phase 1 server uses stdio transport through the official Model Context Proto
 - Approval gate state management before patch execution.
 - Reviewable patch proposal creation from approved plans.
 - Rollback plan generation for patch proposals.
+- Approved deterministic whole-file patch application for create, update, and delete operations.
+- Pre-apply file snapshots and rollback execution for applied patch runs.
 - Allow-listed verification command execution with stored results.
 - Versioned project memory records.
 - Project memory search, summary, refresh, and export workflows.
@@ -247,6 +249,14 @@ Returns a patch proposal by ID.
 
 Returns the rollback plan for a patch proposal.
 
+### `patch.apply_proposal`
+
+Applies an approved patch proposal using deterministic whole-file operations with rollback snapshots.
+
+### `patch.rollback_apply`
+
+Rolls back a patch apply run using captured pre-apply snapshots.
+
 ### `verification.run_check`
 
 Runs an allow-listed verification command and records stdout, stderr, exit code, duration, and status.
@@ -375,7 +385,9 @@ The current implementation intentionally excludes:
 - External PostgreSQL/MySQL network execution.
 - External database drivers and connection pooling.
 - Production database secret management.
-- Automatic patch application.
+- Automatic unapproved patch application.
+- Partial diff merge patching.
+- AST-driven refactor patch application.
 - Git commit or push automation.
 - Distributed cache.
 - Distributed repository index.

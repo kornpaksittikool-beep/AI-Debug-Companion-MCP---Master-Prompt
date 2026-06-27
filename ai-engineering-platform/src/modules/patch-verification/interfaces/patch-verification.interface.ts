@@ -76,3 +76,44 @@ export interface VerificationResult {
 export interface SummarizeVerificationResultInput {
   readonly resultId: string;
 }
+
+export type PatchApplyStatus = 'applied' | 'failed' | 'verification_failed' | 'rolled_back';
+
+export interface PatchApplyArtifact {
+  readonly filePath: string;
+  readonly operation: PatchOperation;
+  readonly originalExisted: boolean;
+  readonly contentCaptured: boolean;
+}
+
+export interface PatchApplySnapshot {
+  readonly applyRunId: string;
+  readonly filePath: string;
+  readonly operation: PatchOperation;
+  readonly absolutePath: string;
+  readonly originalExisted: boolean;
+  readonly originalContent?: string;
+}
+
+export interface PatchApplyRun {
+  readonly id: string;
+  readonly proposalId: string;
+  readonly rootPath: string;
+  readonly status: PatchApplyStatus;
+  readonly artifacts: readonly PatchApplyArtifact[];
+  readonly verificationResults: readonly VerificationResult[];
+  readonly errorMessage?: string;
+  readonly createdAt: string;
+  readonly completedAt?: string;
+}
+
+export interface ApplyPatchProposalInput {
+  readonly proposalId: string;
+  readonly runVerification?: boolean;
+  readonly rollbackOnFailure?: boolean;
+  readonly verificationTimeoutMs?: number;
+}
+
+export interface RollbackPatchApplyInput {
+  readonly applyRunId: string;
+}

@@ -45,6 +45,8 @@ describe('PatchVerificationModule integration', () => {
         'patch.create_proposal',
         'patch.summarize_proposal',
         'patch.rollback_plan',
+        'patch.apply_proposal',
+        'patch.rollback_apply',
         'verification.run_check',
         'verification.summarize_result',
       ]),
@@ -86,7 +88,14 @@ describe('PatchVerificationModule integration', () => {
       input: {
         planId,
         rootPath,
-        changes: [{ operation: 'update', filePath: 'README.md', summary: 'Clarify documentation wording.' }],
+        changes: [
+          {
+            operation: 'update',
+            filePath: 'README.md',
+            summary: 'Clarify documentation wording.',
+            proposedContent: '# Patch fixture updated\n',
+          },
+        ],
       },
       correlationId: 'corr_patch_proposal',
     });
@@ -95,6 +104,30 @@ describe('PatchVerificationModule integration', () => {
     if (proposal.ok) {
       expect(proposal.output.status).toBe('ready_for_review');
     }
+
+    if (!proposal.ok) {
+      throw new Error('Expected patch.create_proposal to succeed.');
+    }
+    const proposalId = requireString(proposal.output.id);
+    const apply = await execution.execute({
+      toolName: 'patch.apply_proposal',
+      input: { proposalId },
+      correlationId: 'corr_patch_apply',
+    });
+    expect(apply.ok).toBe(true);
+    if (!apply.ok) {
+      throw new Error('Expected patch.apply_proposal to succeed.');
+    }
+    expect(apply.output.status).toBe('applied');
+    await expect(fs.readFile(path.join(rootPath, 'README.md'), 'utf8')).resolves.toBe('# Patch fixture updated\n');
+
+    const rollback = await execution.execute({
+      toolName: 'patch.rollback_apply',
+      input: { applyRunId: requireString(apply.output.id) },
+      correlationId: 'corr_patch_apply_rollback',
+    });
+    expect(rollback.ok).toBe(true);
+    await expect(fs.readFile(path.join(rootPath, 'README.md'), 'utf8')).resolves.toBe('# Patch fixture\n');
 
     await moduleRef.close();
   });

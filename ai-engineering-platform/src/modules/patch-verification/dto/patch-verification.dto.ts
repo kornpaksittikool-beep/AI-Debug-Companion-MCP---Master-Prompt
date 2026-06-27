@@ -1,5 +1,7 @@
 import type {
+  ApplyPatchProposalInput,
   CreatePatchProposalInput,
+  RollbackPatchApplyInput,
   RollbackPlanInput,
   SummarizePatchProposalInput,
   SummarizeVerificationResultInput,
@@ -15,3 +17,7 @@ export type RollbackPlanInputDto = RollbackPlanInput;
 export type VerificationRunInputDto = VerificationRunInput;
 
 export type SummarizeVerificationResultInputDto = SummarizeVerificationResultInput;
+
+export type ApplyPatchProposalInputDto = ApplyPatchProposalInput;
+
+export type RollbackPatchApplyInputDto = RollbackPatchApplyInput;
