@@ -54,9 +54,9 @@ The system must be developed iteratively. Each phase must produce usable, verifi
 | M8: Project Memory | Phase 8 | Versioned project memory store | Investigation and repository intelligence | High | High | Completed |
 | M8: Project Memory | Phase 8 | Architecture, business flow, naming convention, and known issue memory records | Memory store | High | Medium | Completed |
 | M8: Project Memory | Phase 8 | Memory refresh, rebuild, and export workflows | Memory store | Medium | Medium | Completed |
-| M9: Performance and Security | Phase 9 | Incremental scanning optimization | Repository intelligence | High | High | Planned |
-| M9: Performance and Security | Phase 9 | Cache invalidation strategy | Repository intelligence | High | High | Planned |
-| M9: Performance and Security | Phase 9 | Hardened path, command, prompt, and plugin security controls | All prior phases | Critical | High | Planned |
+| M9: Performance and Security | Phase 9 | Incremental scanning optimization | Repository intelligence | High | High | Completed |
+| M9: Performance and Security | Phase 9 | Cache invalidation strategy | Repository intelligence | High | High | Completed |
+| M9: Performance and Security | Phase 9 | Hardened path, command, prompt, and plugin security controls | All prior phases | Critical | High | Completed |
 | M10: Plugin Marketplace Readiness | Phase 10 | Plugin installation, removal, update, and compatibility metadata | Tool registry | High | High | Planned |
 | M10: Plugin Marketplace Readiness | Phase 10 | Language plugin SDK | Repository intelligence | Medium | High | Planned |
 | M10: Plugin Marketplace Readiness | Phase 10 | External tool plugin SDK | Tool registry | Medium | High | Planned |
@@ -74,4 +74,4 @@ Each phase must pass the following checks before the next phase begins:
 
 ## Current Phase
 
-Phase 8 is completed. Phase 9 is planned and must not start until its execution plan is approved.
+Phase 9 is completed. Phase 10 is planned and must not start until its execution plan is approved.

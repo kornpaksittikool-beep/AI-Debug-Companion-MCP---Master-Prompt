@@ -2,7 +2,7 @@
 
 AI Engineering Platform is a production-oriented MCP foundation for evidence-driven software engineering workflows.
 
-Phase 8 provides the Core MCP Framework, Investigation Engine, bounded Repository Intelligence, TypeScript/JavaScript symbol intelligence, read-only SQLite Database Intelligence, read-only Git Intelligence, Planning and Impact Engine, patch proposal workflow, rollback planning, allow-listed verification execution, and versioned Project Memory. It does not include automatic patch application, vector memory, cloud sync, or remote Git hosting integration.
+Phase 9 provides the Core MCP Framework, Investigation Engine, bounded Repository Intelligence, TypeScript/JavaScript symbol intelligence, read-only SQLite Database Intelligence, read-only Git Intelligence, Planning and Impact Engine, patch proposal workflow, rollback planning, allow-listed verification execution, versioned Project Memory, cache foundation, cache invalidation, and read-only security audits. It does not include automatic patch application, distributed cache, vector memory, cloud sync, or remote Git hosting integration.
 
 ## Requirements
 
@@ -72,6 +72,10 @@ The Phase 1 server uses stdio transport through the official Model Context Proto
 - Allow-listed verification command execution with stored results.
 - Versioned project memory records.
 - Project memory search, summary, refresh, and export workflows.
+- In-memory cache foundation for bounded scan workflows.
+- Cache summary and invalidation workflows.
+- Read-only project security audit for common prompt-injection and secret-marker risks.
+- Tool permission audit against registered tool contracts.
 - Jest unit and integration test baseline.
 
 ## Registered Tools
@@ -224,6 +228,22 @@ Rebuilds a project memory snapshot from append-only records.
 
 Exports project memory records and summary metadata.
 
+### `performance.cache_summary`
+
+Returns cache entry counts by namespace with total entry count.
+
+### `performance.invalidate_cache`
+
+Invalidates cache entries by namespace and optional key.
+
+### `security.audit_project`
+
+Runs a bounded read-only project audit for prompt-injection markers and common secret markers.
+
+### `security.audit_tool_permissions`
+
+Audits registered tool permissions and reports broad write, command, network, and git risks.
+
 ## Architecture Boundary
 
 Core owns MCP transport integration, execution, logging, errors, security policy foundations, and registry behavior.
@@ -246,6 +266,9 @@ The current implementation intentionally excludes:
 - Database connector.
 - Automatic patch application.
 - Git commit or push automation.
+- Distributed cache.
+- Full persistent incremental index.
+- Automatic security auto-fix.
 - Vector database memory.
 - Cloud memory synchronization.
 - AI provider adapters.
