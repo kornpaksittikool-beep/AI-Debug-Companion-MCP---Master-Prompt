@@ -2,7 +2,7 @@
 
 AI Engineering Platform is a production-oriented MCP foundation for evidence-driven software engineering workflows.
 
-Phase 9 provides the Core MCP Framework, Investigation Engine, bounded Repository Intelligence, TypeScript/JavaScript symbol intelligence, read-only SQLite Database Intelligence, read-only Git Intelligence, Planning and Impact Engine, patch proposal workflow, rollback planning, allow-listed verification execution, versioned Project Memory, cache foundation, cache invalidation, and read-only security audits. It does not include automatic patch application, distributed cache, vector memory, cloud sync, or remote Git hosting integration.
+Phase 10 provides the Core MCP Framework, Investigation Engine, bounded Repository Intelligence, TypeScript/JavaScript symbol intelligence, read-only SQLite Database Intelligence, read-only Git Intelligence, Planning and Impact Engine, patch proposal workflow, rollback planning, allow-listed verification execution, versioned Project Memory, cache foundation, cache invalidation, read-only security audits, and plugin marketplace readiness. It does not include automatic patch application, dynamic remote plugin installation, distributed cache, vector memory, cloud sync, or remote Git hosting integration.
 
 ## Requirements
 
@@ -76,6 +76,10 @@ The Phase 1 server uses stdio transport through the official Model Context Proto
 - Cache summary and invalidation workflows.
 - Read-only project security audit for common prompt-injection and secret-marker risks.
 - Tool permission audit against registered tool contracts.
+- Plugin marketplace catalog metadata.
+- Plugin manifest validation with compatibility metadata.
+- Reviewable plugin install, remove, and update plans.
+- Language plugin SDK and external tool plugin SDK contracts.
 - Jest unit and integration test baseline.
 
 ## Registered Tools
@@ -244,6 +248,30 @@ Runs a bounded read-only project audit for prompt-injection markers and common s
 
 Audits registered tool permissions and reports broad write, command, network, and git risks.
 
+### `plugin.catalog`
+
+Returns marketplace-ready metadata for bundled and known plugins.
+
+### `plugin.validate_manifest`
+
+Validates plugin manifest metadata, compatibility, tool schemas, permissions, timeout, and retry strategy.
+
+### `plugin.install_plan`
+
+Creates a reviewable plugin installation plan without installing or executing plugin code.
+
+### `plugin.remove_plan`
+
+Creates a reviewable plugin removal plan without disabling plugin code.
+
+### `plugin.update_plan`
+
+Creates a reviewable plugin update plan without replacing plugin code.
+
+### `plugin.sdk_metadata`
+
+Returns language plugin and external tool plugin SDK metadata.
+
 ## Architecture Boundary
 
 Core owns MCP transport integration, execution, logging, errors, security policy foundations, and registry behavior.
@@ -269,7 +297,7 @@ The current implementation intentionally excludes:
 - Distributed cache.
 - Full persistent incremental index.
 - Automatic security auto-fix.
+- Dynamic remote plugin download or execution.
 - Vector database memory.
 - Cloud memory synchronization.
 - AI provider adapters.
-- Plugin marketplace installation workflow.

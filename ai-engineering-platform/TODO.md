@@ -62,4 +62,6 @@
 | Incremental scan optimization | Phase 9 | Completed |
 | Cache invalidation strategy | Phase 9 | Completed |
 | Security audit workflows | Phase 9 | Completed |
-| Plugin marketplace readiness | Phase 10 | Planned |
+| Plugin marketplace readiness | Phase 10 | Completed |
+| Language plugin SDK contract | Phase 10 | Completed |
+| External tool plugin SDK contract | Phase 10 | Completed |

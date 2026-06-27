@@ -69,6 +69,11 @@ export class ExamplePluginService implements PlatformPlugin {
       name: 'example-plugin',
       version: '1.0.0',
       description: 'Example plugin used to validate registry-based plugin registration.',
+      compatibility: {
+        platformVersionRange: '>=0.1.0 <1.0.0',
+        nodeVersionRange: '>=22 <25',
+        runtime: 'node',
+      },
       tools: [EXAMPLE_PLUGIN_TOOL_DEFINITION],
     };
   }

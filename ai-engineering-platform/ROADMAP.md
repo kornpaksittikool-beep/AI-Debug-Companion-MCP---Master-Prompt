@@ -57,9 +57,9 @@ The system must be developed iteratively. Each phase must produce usable, verifi
 | M9: Performance and Security | Phase 9 | Incremental scanning optimization | Repository intelligence | High | High | Completed |
 | M9: Performance and Security | Phase 9 | Cache invalidation strategy | Repository intelligence | High | High | Completed |
 | M9: Performance and Security | Phase 9 | Hardened path, command, prompt, and plugin security controls | All prior phases | Critical | High | Completed |
-| M10: Plugin Marketplace Readiness | Phase 10 | Plugin installation, removal, update, and compatibility metadata | Tool registry | High | High | Planned |
-| M10: Plugin Marketplace Readiness | Phase 10 | Language plugin SDK | Repository intelligence | Medium | High | Planned |
-| M10: Plugin Marketplace Readiness | Phase 10 | External tool plugin SDK | Tool registry | Medium | High | Planned |
+| M10: Plugin Marketplace Readiness | Phase 10 | Plugin installation, removal, update, and compatibility metadata | Tool registry | High | High | Completed |
+| M10: Plugin Marketplace Readiness | Phase 10 | Language plugin SDK | Repository intelligence | Medium | High | Completed |
+| M10: Plugin Marketplace Readiness | Phase 10 | External tool plugin SDK | Tool registry | Medium | High | Completed |
 
 ## Phase Gate Rules
 
@@ -74,4 +74,4 @@ Each phase must pass the following checks before the next phase begins:
 
 ## Current Phase
 
-Phase 9 is completed. Phase 10 is planned and must not start until its execution plan is approved.
+Phase 10 is completed. Any additional phase must first be added to this roadmap and approved with an execution plan.
