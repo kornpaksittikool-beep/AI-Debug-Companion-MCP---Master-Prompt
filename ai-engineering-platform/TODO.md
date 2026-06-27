@@ -54,9 +54,9 @@
 | Planning engine | Phase 6 | Completed |
 | Impact engine | Phase 6 | Completed |
 | Approval gate workflow | Phase 6 | Completed |
-| Patch proposal engine | Phase 7 | Planned |
-| Patch application engine | Phase 7 | Planned |
-| Verification engine | Phase 7 | Planned |
+| Patch proposal engine | Phase 7 | Completed |
+| Patch application boundary | Phase 7 | Completed |
+| Verification engine | Phase 7 | Completed |
 | Project memory store | Phase 8 | Planned |
 | Memory refresh and export | Phase 8 | Planned |
 | Incremental scan optimization | Phase 9 | Planned |

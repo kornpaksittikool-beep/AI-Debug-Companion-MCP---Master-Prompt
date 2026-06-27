@@ -2,7 +2,7 @@
 
 AI Engineering Platform is a production-oriented MCP foundation for evidence-driven software engineering workflows.
 
-Phase 6 provides the Core MCP Framework, Investigation Engine, bounded Repository Intelligence, TypeScript/JavaScript symbol intelligence, read-only SQLite Database Intelligence, read-only Git Intelligence, and a read-only Planning and Impact Engine. It does not include patch application, verification command execution, project memory, or remote Git hosting integration.
+Phase 7 provides the Core MCP Framework, Investigation Engine, bounded Repository Intelligence, TypeScript/JavaScript symbol intelligence, read-only SQLite Database Intelligence, read-only Git Intelligence, Planning and Impact Engine, patch proposal workflow, rollback planning, and allow-listed verification execution. It does not include automatic patch application, project memory, or remote Git hosting integration.
 
 ## Requirements
 
@@ -67,6 +67,9 @@ The Phase 1 server uses stdio transport through the official Model Context Proto
 - Evidence-backed engineering plan generation.
 - Read-only impact report generation.
 - Approval gate state management before patch execution.
+- Reviewable patch proposal creation from approved plans.
+- Rollback plan generation for patch proposals.
+- Allow-listed verification command execution with stored results.
 - Jest unit and integration test baseline.
 
 ## Registered Tools
@@ -179,6 +182,26 @@ Updates approval state for a generated plan without applying patches.
 
 Returns a generated engineering plan by ID.
 
+### `patch.create_proposal`
+
+Creates a reviewable patch proposal from an approved plan without modifying files.
+
+### `patch.summarize_proposal`
+
+Returns a patch proposal by ID.
+
+### `patch.rollback_plan`
+
+Returns the rollback plan for a patch proposal.
+
+### `verification.run_check`
+
+Runs an allow-listed verification command and records stdout, stderr, exit code, duration, and status.
+
+### `verification.summarize_result`
+
+Returns a recorded verification result by ID.
+
 ## Architecture Boundary
 
 Core owns MCP transport integration, execution, logging, errors, security policy foundations, and registry behavior.
@@ -199,8 +222,8 @@ The current implementation intentionally excludes:
 - Production database secret management.
 - Postgres/MySQL adapters.
 - Database connector.
-- Patch application.
-- Verification command execution.
+- Automatic patch application.
+- Git commit or push automation.
 - Project memory.
 - AI provider adapters.
 - Plugin marketplace installation workflow.

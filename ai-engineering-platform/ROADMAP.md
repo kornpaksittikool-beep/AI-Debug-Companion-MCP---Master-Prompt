@@ -48,9 +48,9 @@ The system must be developed iteratively. Each phase must produce usable, verifi
 | M6: Planning and Impact | Phase 6 | Multi-level planning engine for quick fix, normal fix, refactor, and architecture change | Investigation engine | Critical | High | Completed |
 | M6: Planning and Impact | Phase 6 | Impact report generator for files, modules, APIs, database, cache, queue, workers, and regression risk | Repository and Git intelligence | Critical | High | Completed |
 | M6: Planning and Impact | Phase 6 | Approval gate workflow | Planning engine | Critical | Medium | Completed |
-| M7: Patch and Verification | Phase 7 | Patch proposal and rollback strategy model | Planning engine | Critical | High | Planned |
-| M7: Patch and Verification | Phase 7 | Safe patch application with verification checkpoints | Patch proposal model | Critical | High | Planned |
-| M7: Patch and Verification | Phase 7 | Build, test, lint, and typecheck verification tools | Command allow list | Critical | High | Planned |
+| M7: Patch and Verification | Phase 7 | Patch proposal and rollback strategy model | Planning engine | Critical | High | Completed |
+| M7: Patch and Verification | Phase 7 | Safe patch application boundary with verification checkpoints | Patch proposal model | Critical | High | Completed |
+| M7: Patch and Verification | Phase 7 | Build, test, lint, and coverage verification tools | Command allow list | Critical | High | Completed |
 | M8: Project Memory | Phase 8 | Versioned project memory store | Investigation and repository intelligence | High | High | Planned |
 | M8: Project Memory | Phase 8 | Architecture, business flow, naming convention, and known issue memory records | Memory store | High | Medium | Planned |
 | M8: Project Memory | Phase 8 | Memory refresh, rebuild, and export workflows | Memory store | Medium | Medium | Planned |
@@ -74,4 +74,4 @@ Each phase must pass the following checks before the next phase begins:
 
 ## Current Phase
 
-Phase 6 is completed. Phase 7 is planned and must not start until its execution plan is approved.
+Phase 7 is completed. Phase 8 is planned and must not start until its execution plan is approved.
