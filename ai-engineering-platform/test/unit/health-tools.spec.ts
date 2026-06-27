@@ -23,6 +23,9 @@ describe('Health tools', () => {
     const output = await tool.execute();
 
     expect(output.platform).toBeDefined();
+    expect(output.platform).toMatchObject({
+      phase: 'phase-17-remote-plugin-marketplace-staging',
+    });
     expect(output.tools).toEqual([]);
   });
 });
