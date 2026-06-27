@@ -5,9 +5,11 @@ import { NO_PERMISSION } from '../../src/core/security/permission.interface.js';
 import {
   PluginCatalogTool,
   PluginInstallPlanTool,
+  PluginResolveCompatibilityTool,
   PluginSdkMetadataTool,
   PluginValidateManifestTool,
 } from '../../src/modules/plugin-marketplace/tools/plugin-marketplace.tools.js';
+import { PluginCompatibilityService } from '../../src/modules/plugin-marketplace/services/plugin-compatibility.service.js';
 import { PluginManifestValidatorService } from '../../src/modules/plugin-marketplace/services/plugin-manifest-validator.service.js';
 import { PluginMarketplaceService } from '../../src/modules/plugin-marketplace/services/plugin-marketplace.service.js';
 import { PluginSdkMetadataService } from '../../src/modules/plugin-marketplace/services/plugin-sdk-metadata.service.js';
@@ -43,9 +45,11 @@ const manifest: PluginManifest = {
 const manifestInput = { manifest } as unknown as JsonSchemaObject;
 
 function createMarketplace(): PluginMarketplaceService {
+  const compatibility = new PluginCompatibilityService();
   return new PluginMarketplaceService(
     new ExamplePluginService(new ExampleEchoTool()),
-    new PluginManifestValidatorService(),
+    new PluginManifestValidatorService(compatibility),
+    compatibility,
   );
 }
 
@@ -58,6 +62,9 @@ describe('Plugin marketplace tools', () => {
     });
     await expect(new PluginValidateManifestTool(service).execute(manifestInput)).resolves.toMatchObject({
       valid: true,
+    });
+    await expect(new PluginResolveCompatibilityTool(service).execute(manifestInput)).resolves.toMatchObject({
+      compatible: true,
     });
   });
 

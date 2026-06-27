@@ -65,3 +65,10 @@
 | Plugin marketplace readiness | Phase 10 | Completed |
 | Language plugin SDK contract | Phase 10 | Completed |
 | External tool plugin SDK contract | Phase 10 | Completed |
+| Semantic plugin compatibility resolver | Phase 11 | Completed |
+| Dynamic plugin loading | Phase 12 | Planned |
+| AI provider adapter boundary | Phase 13 | Planned |
+| PostgreSQL and MySQL read-only adapters | Phase 14 | Planned |
+| Import graph, call graph, persistent index, and cross-repository search | Phase 15 | Planned |
+| Approved patch application engine | Phase 16 | Planned |
+| Remote plugin marketplace staging | Phase 17 | Planned |

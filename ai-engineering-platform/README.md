@@ -2,7 +2,7 @@
 
 AI Engineering Platform is a production-oriented MCP foundation for evidence-driven software engineering workflows.
 
-Phase 10 provides the Core MCP Framework, Investigation Engine, bounded Repository Intelligence, TypeScript/JavaScript symbol intelligence, read-only SQLite Database Intelligence, read-only Git Intelligence, Planning and Impact Engine, patch proposal workflow, rollback planning, allow-listed verification execution, versioned Project Memory, cache foundation, cache invalidation, read-only security audits, and plugin marketplace readiness. It does not include automatic patch application, dynamic remote plugin installation, distributed cache, vector memory, cloud sync, or remote Git hosting integration.
+Phase 11 provides the Core MCP Framework, Investigation Engine, bounded Repository Intelligence, TypeScript/JavaScript symbol intelligence, read-only SQLite Database Intelligence, read-only Git Intelligence, Planning and Impact Engine, patch proposal workflow, rollback planning, allow-listed verification execution, versioned Project Memory, cache foundation, cache invalidation, read-only security audits, plugin marketplace readiness, and semantic plugin compatibility resolution. It does not include automatic patch application, dynamic remote plugin installation, distributed cache, vector memory, cloud sync, or remote Git hosting integration.
 
 ## Requirements
 
@@ -80,6 +80,7 @@ The Phase 1 server uses stdio transport through the official Model Context Proto
 - Plugin manifest validation with compatibility metadata.
 - Reviewable plugin install, remove, and update plans.
 - Language plugin SDK and external tool plugin SDK contracts.
+- Semantic compatibility checks for plugin platform, Node.js, and runtime requirements.
 - Jest unit and integration test baseline.
 
 ## Registered Tools
@@ -255,6 +256,10 @@ Returns marketplace-ready metadata for bundled and known plugins.
 ### `plugin.validate_manifest`
 
 Validates plugin manifest metadata, compatibility, tool schemas, permissions, timeout, and retry strategy.
+
+### `plugin.resolve_compatibility`
+
+Resolves plugin platform, Node.js, and runtime compatibility from manifest metadata.
 
 ### `plugin.install_plan`
 

@@ -3,6 +3,7 @@ import type { ToolDefinition } from '../../src/core/registry/interfaces/tool-def
 import { NO_PERMISSION } from '../../src/core/security/permission.interface.js';
 import { ExampleEchoTool, ExamplePluginService } from '../../src/plugins/example/example-plugin.service.js';
 import type { PluginManifest } from '../../src/plugins/plugin-api/plugin-manifest.interface.js';
+import { PluginCompatibilityService } from '../../src/modules/plugin-marketplace/services/plugin-compatibility.service.js';
 import { PluginManifestValidatorService } from '../../src/modules/plugin-marketplace/services/plugin-manifest-validator.service.js';
 import { PluginMarketplaceService } from '../../src/modules/plugin-marketplace/services/plugin-marketplace.service.js';
 import { PluginSdkMetadataService } from '../../src/modules/plugin-marketplace/services/plugin-sdk-metadata.service.js';
@@ -46,22 +47,24 @@ function createManifest(overrides: ManifestOverrides = {}): PluginManifest {
 }
 
 function createMarketplace(): PluginMarketplaceService {
+  const compatibility = new PluginCompatibilityService();
   return new PluginMarketplaceService(
     new ExamplePluginService(new ExampleEchoTool()),
-    new PluginManifestValidatorService(),
+    new PluginManifestValidatorService(compatibility),
+    compatibility,
   );
 }
 
 describe('PluginManifestValidatorService', () => {
   it('validates complete marketplace manifests', () => {
-    const result = new PluginManifestValidatorService().validate(createManifest());
+    const result = new PluginManifestValidatorService(new PluginCompatibilityService()).validate(createManifest());
 
     expect(result.valid).toBe(true);
     expect(result.issues).toHaveLength(0);
   });
 
   it('returns actionable issues for incomplete manifests', () => {
-    const result = new PluginManifestValidatorService().validate(
+    const result = new PluginManifestValidatorService(new PluginCompatibilityService()).validate(
       createManifest({
         name: '',
         omitCompatibility: true,
@@ -79,6 +82,30 @@ describe('PluginManifestValidatorService', () => {
     expect(result.issues.map((issue) => issue.field)).toEqual(
       expect.arrayContaining(['name', 'compatibility', 'tools.0.name', 'tools.0.timeoutMs']),
     );
+  });
+});
+
+describe('PluginCompatibilityService', () => {
+  it('resolves compatible and incompatible version ranges', () => {
+    const service = new PluginCompatibilityService();
+
+    expect(service.resolve({ manifest: createManifest(), platformVersion: '0.1.0', nodeVersion: '22.1.0' })).toMatchObject({
+      compatible: true,
+    });
+    expect(
+      service.resolve({
+        manifest: createManifest({
+          compatibility: {
+            platformVersionRange: '>=1.0.0 <2.0.0',
+            nodeVersionRange: '>=22 <25',
+            runtime: 'node',
+          },
+        }),
+        platformVersion: '0.1.0',
+      }),
+    ).toMatchObject({
+      compatible: false,
+    });
   });
 });
 

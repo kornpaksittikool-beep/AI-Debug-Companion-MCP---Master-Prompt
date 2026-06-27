@@ -15,6 +15,7 @@ describe('PluginMarketplaceModule integration', () => {
       expect.arrayContaining([
         'plugin.catalog',
         'plugin.validate_manifest',
+        'plugin.resolve_compatibility',
         'plugin.install_plan',
         'plugin.remove_plan',
         'plugin.update_plan',

@@ -9,6 +9,7 @@ export interface PluginCatalogEntry {
   readonly description: string;
   readonly source: 'bundled' | 'local' | 'registry';
   readonly compatibilityStatus: 'compatible' | 'unknown' | 'incompatible';
+  readonly compatibility?: PluginCompatibilityResult;
   readonly toolCount: number;
 }
 
@@ -29,6 +30,26 @@ export interface PluginManifestValidationIssue {
 export interface PluginManifestValidationResult {
   readonly valid: boolean;
   readonly issues: readonly PluginManifestValidationIssue[];
+  readonly compatibility?: PluginCompatibilityResult;
+}
+
+export interface PluginCompatibilityInput {
+  readonly manifest: PluginManifest;
+  readonly platformVersion?: string;
+  readonly nodeVersion?: string;
+}
+
+export interface PluginCompatibilityCheck {
+  readonly target: 'platform' | 'node' | 'runtime';
+  readonly required: string;
+  readonly actual: string;
+  readonly compatible: boolean;
+  readonly reason: string;
+}
+
+export interface PluginCompatibilityResult {
+  readonly compatible: boolean;
+  readonly checks: readonly PluginCompatibilityCheck[];
 }
 
 export interface PluginLifecyclePlanInput {

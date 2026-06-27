@@ -97,6 +97,30 @@ export const PLUGIN_VALIDATE_MANIFEST_TOOL_DEFINITION: ToolDefinition = {
   examples: [{ input: { manifest: { name: 'example', version: '1.0.0', description: 'Example.', tools: [] } }, output: { valid: false } }],
 };
 
+export const PLUGIN_RESOLVE_COMPATIBILITY_TOOL_DEFINITION: ToolDefinition = {
+  name: 'plugin.resolve_compatibility',
+  version: '1.0.0',
+  description: 'Resolves plugin platform, Node.js, and runtime compatibility from manifest metadata.',
+  module: 'plugin-marketplace',
+  inputSchema: {
+    type: 'object',
+    required: ['manifest'],
+    additionalProperties: false,
+    properties: {
+      manifest: manifestSchema,
+      platformVersion: { type: 'string' },
+      nodeVersion: { type: 'string' },
+    },
+  },
+  outputSchema: resultObjectSchema,
+  errorSchema: STANDARD_ERROR_SCHEMA,
+  permissions: PLUGIN_MARKETPLACE_PERMISSION,
+  timeoutMs: 3000,
+  retryStrategy: NO_RETRY,
+  sideEffects: 'read',
+  examples: [{ input: { manifest: { name: 'example', version: '1.0.0', description: 'Example.', tools: [] } }, output: { compatible: false } }],
+};
+
 export const PLUGIN_INSTALL_PLAN_TOOL_DEFINITION: ToolDefinition = {
   name: 'plugin.install_plan',
   version: '1.0.0',

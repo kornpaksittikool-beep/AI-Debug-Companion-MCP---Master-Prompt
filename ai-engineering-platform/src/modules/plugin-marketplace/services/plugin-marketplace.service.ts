@@ -10,12 +10,14 @@ import type {
   PluginManifestValidationResult,
 } from '../interfaces/plugin-marketplace.interface.js';
 import { PluginManifestValidatorService } from './plugin-manifest-validator.service.js';
+import { PluginCompatibilityService } from './plugin-compatibility.service.js';
 
 @Injectable()
 export class PluginMarketplaceService {
   constructor(
     private readonly examplePlugin: ExamplePluginService,
     private readonly validator: PluginManifestValidatorService,
+    private readonly compatibility: PluginCompatibilityService,
   ) {}
 
   catalog(): PluginCatalogResult {
@@ -27,6 +29,10 @@ export class PluginMarketplaceService {
 
   validateManifest(manifest: PluginManifest): PluginManifestValidationResult {
     return this.validator.validate(manifest);
+  }
+
+  resolveCompatibility(input: { readonly manifest: PluginManifest; readonly platformVersion?: string; readonly nodeVersion?: string }) {
+    return this.compatibility.resolve(input);
   }
 
   createInstallPlan(input: PluginLifecyclePlanInput): PluginLifecyclePlan {
@@ -77,6 +83,7 @@ export class PluginMarketplaceService {
       description: manifest.description,
       source,
       compatibilityStatus: validation.valid ? 'compatible' : 'unknown',
+      ...(validation.compatibility ? { compatibility: validation.compatibility } : {}),
       toolCount: manifest.tools.length,
     };
   }

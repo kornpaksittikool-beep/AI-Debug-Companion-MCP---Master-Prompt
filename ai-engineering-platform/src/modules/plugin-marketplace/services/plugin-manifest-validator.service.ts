@@ -5,11 +5,15 @@ import type {
   PluginManifestValidationIssue,
   PluginManifestValidationResult,
 } from '../interfaces/plugin-marketplace.interface.js';
+import { PluginCompatibilityService } from './plugin-compatibility.service.js';
 
 @Injectable()
 export class PluginManifestValidatorService {
+  constructor(private readonly compatibility: PluginCompatibilityService) {}
+
   validate(manifest: PluginManifest): PluginManifestValidationResult {
     const issues: PluginManifestValidationIssue[] = [];
+    const compatibility = this.compatibility.resolveManifest(manifest);
 
     this.requireText(manifest.name, 'name', issues);
     this.requireText(manifest.version, 'version', issues);
@@ -23,6 +27,15 @@ export class PluginManifestValidatorService {
       });
     } else {
       this.requireText(manifest.compatibility.platformVersionRange, 'compatibility.platformVersionRange', issues);
+      if (!compatibility.compatible) {
+        for (const check of compatibility.checks.filter((item) => !item.compatible)) {
+          issues.push({
+            field: `compatibility.${check.target}`,
+            message: check.reason,
+            suggestion: 'Update the plugin compatibility metadata or run the plugin on a compatible platform runtime.',
+          });
+        }
+      }
       if (!['node', 'python', 'external'].includes(manifest.compatibility.runtime)) {
         issues.push({
           field: 'compatibility.runtime',
@@ -38,6 +51,7 @@ export class PluginManifestValidatorService {
     return {
       valid: issues.length === 0,
       issues,
+      compatibility,
     };
   }
 
