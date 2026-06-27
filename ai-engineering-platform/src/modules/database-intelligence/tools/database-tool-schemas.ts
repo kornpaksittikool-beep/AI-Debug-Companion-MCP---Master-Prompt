@@ -29,18 +29,24 @@ const DATABASE_READ_PERMISSION: ToolPermission = {
 
 const connectionSchema: JsonSchemaObject = {
   type: 'object',
-  required: ['dialect', 'databasePath', 'rootPath'],
+  required: ['dialect'],
   additionalProperties: false,
   properties: {
-    dialect: { type: 'string', enum: ['sqlite'] },
+    dialect: { type: 'string', enum: ['sqlite', 'postgres', 'mysql'] },
     databasePath: { type: 'string' },
     rootPath: { type: 'string' },
+    host: { type: 'string' },
+    port: { type: 'number' },
+    database: { type: 'string' },
+    username: { type: 'string' },
+    schema: { type: 'string' },
+    sslMode: { type: 'string', enum: ['disable', 'prefer', 'require'] },
   },
 };
 
 const connectionInputSchema: JsonSchemaObject = {
   type: 'object',
-  required: ['dialect', 'databasePath', 'rootPath'],
+  required: ['dialect'],
   additionalProperties: false,
   properties: connectionSchema.properties as JsonSchemaObject,
 };
@@ -69,6 +75,40 @@ export const DATABASE_SCHEMA_TOOL_DEFINITION: ToolDefinition = {
       output: { tables: [] },
     },
   ],
+};
+
+export const DATABASE_SUPPORTED_DIALECTS_TOOL_DEFINITION: ToolDefinition = {
+  name: 'database.supported_dialects',
+  version: '1.0.0',
+  description: 'Returns supported database dialect metadata and execution status.',
+  module: 'database-intelligence',
+  inputSchema: {
+    type: 'object',
+    additionalProperties: false,
+    properties: {},
+  },
+  outputSchema: resultObjectSchema,
+  errorSchema: STANDARD_ERROR_SCHEMA,
+  permissions: DATABASE_READ_PERMISSION,
+  timeoutMs: 3000,
+  retryStrategy: NO_RETRY,
+  sideEffects: 'read',
+  examples: [{ input: {}, output: { dialects: [] } }],
+};
+
+export const DATABASE_CONNECTION_PROFILE_TOOL_DEFINITION: ToolDefinition = {
+  name: 'database.connection_profile',
+  version: '1.0.0',
+  description: 'Validates a database connection profile without executing external database calls.',
+  module: 'database-intelligence',
+  inputSchema: connectionInputSchema,
+  outputSchema: resultObjectSchema,
+  errorSchema: STANDARD_ERROR_SCHEMA,
+  permissions: DATABASE_READ_PERMISSION,
+  timeoutMs: 3000,
+  retryStrategy: NO_RETRY,
+  sideEffects: 'read',
+  examples: [{ input: { dialect: 'postgres', host: 'localhost', port: 5432, database: 'app', username: 'readonly' }, output: { valid: true } }],
 };
 
 export const DATABASE_RELATIONS_TOOL_DEFINITION: ToolDefinition = {

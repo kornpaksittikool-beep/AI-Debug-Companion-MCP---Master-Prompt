@@ -4,14 +4,25 @@ import type {
   DatabaseAdapter,
   DatabaseDialect,
 } from '../interfaces/database-intelligence.interface.js';
+import { MysqlDatabaseAdapter } from './mysql-database.adapter.js';
+import { PostgresDatabaseAdapter } from './postgres-database.adapter.js';
 import { SqliteDatabaseAdapter } from './sqlite-database.adapter.js';
 
 @Injectable()
 export class DatabaseAdapterRegistryService {
   private readonly adapters: ReadonlyMap<DatabaseDialect, DatabaseAdapter>;
 
-  constructor(sqliteAdapter: SqliteDatabaseAdapter) {
-    this.adapters = new Map([[sqliteAdapter.dialect, sqliteAdapter]]);
+  constructor(
+    sqliteAdapter: SqliteDatabaseAdapter,
+    postgresAdapter: PostgresDatabaseAdapter,
+    mysqlAdapter: MysqlDatabaseAdapter,
+  ) {
+    const adapters: readonly (readonly [DatabaseDialect, DatabaseAdapter])[] = [
+      [sqliteAdapter.dialect, sqliteAdapter],
+      [postgresAdapter.dialect, postgresAdapter],
+      [mysqlAdapter.dialect, mysqlAdapter],
+    ];
+    this.adapters = new Map(adapters);
   }
 
   get(dialect: DatabaseDialect): DatabaseAdapter {

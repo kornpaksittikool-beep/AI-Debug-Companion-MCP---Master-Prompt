@@ -19,6 +19,27 @@ export class DatabaseSchemaTool implements ToolHandler {
 }
 
 @Injectable()
+export class DatabaseSupportedDialectsTool implements ToolHandler {
+  constructor(private readonly service: DatabaseIntelligenceService) {}
+
+  execute(input: JsonSchemaObject): Promise<JsonSchemaObject> {
+    void input;
+    return Promise.resolve(this.service.supportedDialects() as unknown as JsonSchemaObject);
+  }
+}
+
+@Injectable()
+export class DatabaseConnectionProfileTool implements ToolHandler {
+  constructor(private readonly service: DatabaseIntelligenceService) {}
+
+  execute(input: JsonSchemaObject): Promise<JsonSchemaObject> {
+    return Promise.resolve(
+      this.service.connectionProfile(input as unknown as DatabaseConnectionInputDto) as unknown as JsonSchemaObject,
+    );
+  }
+}
+
+@Injectable()
 export class DatabaseRelationsTool implements ToolHandler {
   constructor(private readonly service: DatabaseIntelligenceService) {}
 

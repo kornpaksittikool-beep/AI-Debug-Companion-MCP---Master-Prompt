@@ -6,6 +6,8 @@ import { promisify } from 'node:util';
 import { DatabaseAdapterRegistryService } from '../../src/modules/database-intelligence/services/database-adapter-registry.service.js';
 import { DatabaseConnectionPolicyService } from '../../src/modules/database-intelligence/services/database-connection-policy.service.js';
 import { DatabaseIntelligenceService } from '../../src/modules/database-intelligence/services/database-intelligence.service.js';
+import { MysqlDatabaseAdapter } from '../../src/modules/database-intelligence/services/mysql-database.adapter.js';
+import { PostgresDatabaseAdapter } from '../../src/modules/database-intelligence/services/postgres-database.adapter.js';
 import { DatabaseReadonlyPolicyService } from '../../src/modules/database-intelligence/services/database-readonly-policy.service.js';
 import { SqliteDatabaseAdapter } from '../../src/modules/database-intelligence/services/sqlite-database.adapter.js';
 import { GitCommandRunnerService } from '../../src/modules/git-intelligence/services/git-command-runner.service.js';
@@ -61,7 +63,10 @@ export async function createPlanningFixture(): Promise<PlanningFixtureServices> 
   const databaseConnectionPolicy = new DatabaseConnectionPolicyService(safety);
   const databaseReadonlyPolicy = new DatabaseReadonlyPolicyService();
   const databaseAdapter = new SqliteDatabaseAdapter(databaseConnectionPolicy, databaseReadonlyPolicy);
-  const database = new DatabaseIntelligenceService(new DatabaseAdapterRegistryService(databaseAdapter));
+  const database = new DatabaseIntelligenceService(
+    new DatabaseAdapterRegistryService(databaseAdapter, new PostgresDatabaseAdapter(), new MysqlDatabaseAdapter()),
+    databaseConnectionPolicy,
+  );
   const git = new GitIntelligenceService(new GitSafetyService(safety), new GitCommandRunnerService());
   const investigation = new InvestigationService(
     new InvestigationSessionStore(),

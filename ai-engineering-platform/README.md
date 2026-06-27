@@ -2,7 +2,7 @@
 
 AI Engineering Platform is a production-oriented MCP foundation for evidence-driven software engineering workflows.
 
-Phase 13 provides the Core MCP Framework, Investigation Engine, bounded Repository Intelligence, TypeScript/JavaScript symbol intelligence, read-only SQLite Database Intelligence, read-only Git Intelligence, Planning and Impact Engine, patch proposal workflow, rollback planning, allow-listed verification execution, versioned Project Memory, cache foundation, cache invalidation, read-only security audits, plugin marketplace readiness, semantic plugin compatibility resolution, approved local plugin state loading, and provider-neutral AI routing contracts. It does not include automatic patch application, dynamic remote plugin installation, external plugin code execution, AI API execution, distributed cache, vector memory, cloud sync, or remote Git hosting integration.
+Phase 14 provides the Core MCP Framework, Investigation Engine, bounded Repository Intelligence, TypeScript/JavaScript symbol intelligence, read-only SQLite Database Intelligence, PostgreSQL/MySQL connection profile validation, read-only Git Intelligence, Planning and Impact Engine, patch proposal workflow, rollback planning, allow-listed verification execution, versioned Project Memory, cache foundation, cache invalidation, read-only security audits, plugin marketplace readiness, semantic plugin compatibility resolution, approved local plugin state loading, and provider-neutral AI routing contracts. It does not include automatic patch application, dynamic remote plugin installation, external plugin code execution, external database network execution, AI API execution, distributed cache, vector memory, cloud sync, or remote Git hosting integration.
 
 ## Requirements
 
@@ -60,6 +60,9 @@ The Phase 1 server uses stdio transport through the official Model Context Proto
 - Read-only SQLite schema discovery.
 - Read-only SQLite foreign-key relation discovery.
 - Read-only SQLite query preview with row limits.
+- Supported database dialect metadata for SQLite, PostgreSQL, and MySQL.
+- PostgreSQL and MySQL connection profile validation without accepting passwords in MCP input.
+- PostgreSQL and MySQL adapter contracts that fail closed until external read execution is explicitly enabled in a future phase.
 - Read-only git recent change discovery.
 - Read-only git blame metadata for tracked files.
 - Read-only git file history lookup.
@@ -166,6 +169,14 @@ Reads SQLite foreign-key relations through a read-only connection.
 ### `database.query_preview`
 
 Runs read-only SQLite query previews with explicit row limits.
+
+### `database.supported_dialects`
+
+Lists supported database dialect metadata, execution status, and connection requirements.
+
+### `database.connection_profile`
+
+Validates a database connection profile without opening a network connection or accepting secrets.
 
 ### `git.recent_changes`
 
@@ -336,9 +347,9 @@ The current implementation intentionally excludes:
 - Git writes, branches, merges, commits, resets, and pushes.
 - Remote Git hosting integration.
 - Database writes.
+- External PostgreSQL/MySQL network execution.
+- External database drivers and connection pooling.
 - Production database secret management.
-- Postgres/MySQL adapters.
-- Database connector.
 - Automatic patch application.
 - Git commit or push automation.
 - Distributed cache.

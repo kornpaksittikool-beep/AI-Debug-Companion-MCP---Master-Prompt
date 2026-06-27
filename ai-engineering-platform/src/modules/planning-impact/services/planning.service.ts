@@ -140,7 +140,9 @@ export class PlanningService {
       const schema = this.database.readSchema(input.databaseConnection);
       evidence.push({
         sourceType: 'database',
-        source: input.databaseConnection.databasePath,
+        source: input.databaseConnection.dialect === 'sqlite'
+          ? input.databaseConnection.databasePath
+          : `${input.databaseConnection.dialect}:${input.databaseConnection.host}/${input.databaseConnection.database}`,
         summary: `${schema.tables.length} database table(s) discovered.`,
       });
     }

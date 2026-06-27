@@ -1,12 +1,25 @@
 import type { JsonSchemaObject, JsonSchemaValue } from '../../../core/registry/interfaces/json-schema.interface.js';
 
-export type DatabaseDialect = 'sqlite';
+export type DatabaseDialect = 'sqlite' | 'postgres' | 'mysql';
 
-export interface DatabaseConnectionConfig {
-  readonly dialect: DatabaseDialect;
+export interface SqliteConnectionConfig {
+  readonly dialect: 'sqlite';
   readonly databasePath: string;
   readonly rootPath: string;
 }
+
+export interface ExternalDatabaseConnectionConfig {
+  readonly dialect: 'postgres' | 'mysql';
+  readonly host: string;
+  readonly port: number;
+  readonly database: string;
+  readonly username: string;
+  readonly schema?: string;
+  readonly sslMode?: 'disable' | 'prefer' | 'require';
+  readonly password?: never;
+}
+
+export type DatabaseConnectionConfig = SqliteConnectionConfig | ExternalDatabaseConnectionConfig;
 
 export interface DatabaseColumn {
   readonly tableName: string;
@@ -54,6 +67,31 @@ export interface QueryPreviewResult {
   readonly rows: readonly JsonSchemaObject[];
   readonly rowCount: number;
   readonly truncated: boolean;
+}
+
+export interface SupportedDialectMetadata {
+  readonly dialect: DatabaseDialect;
+  readonly executable: boolean;
+  readonly connectionKind: 'file' | 'external';
+  readonly readOnly: boolean;
+  readonly notes: string;
+}
+
+export interface SupportedDialectsResult {
+  readonly dialects: readonly SupportedDialectMetadata[];
+}
+
+export interface ConnectionProfileIssue {
+  readonly field: string;
+  readonly message: string;
+  readonly suggestion: string;
+}
+
+export interface ConnectionProfileResult {
+  readonly dialect: DatabaseDialect;
+  readonly valid: boolean;
+  readonly executable: boolean;
+  readonly issues: readonly ConnectionProfileIssue[];
 }
 
 export interface DatabaseAdapter {

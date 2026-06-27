@@ -6,12 +6,16 @@ import { PathPolicyService } from '../../src/core/security/path-policy.service.j
 import { DatabaseAdapterRegistryService } from '../../src/modules/database-intelligence/services/database-adapter-registry.service.js';
 import { DatabaseConnectionPolicyService } from '../../src/modules/database-intelligence/services/database-connection-policy.service.js';
 import { DatabaseIntelligenceService } from '../../src/modules/database-intelligence/services/database-intelligence.service.js';
+import { MysqlDatabaseAdapter } from '../../src/modules/database-intelligence/services/mysql-database.adapter.js';
+import { PostgresDatabaseAdapter } from '../../src/modules/database-intelligence/services/postgres-database.adapter.js';
 import { DatabaseReadonlyPolicyService } from '../../src/modules/database-intelligence/services/database-readonly-policy.service.js';
 import { SqliteDatabaseAdapter } from '../../src/modules/database-intelligence/services/sqlite-database.adapter.js';
 import {
   DatabaseQueryPreviewTool,
+  DatabaseConnectionProfileTool,
   DatabaseRelationsTool,
   DatabaseSchemaTool,
+  DatabaseSupportedDialectsTool,
 } from '../../src/modules/database-intelligence/tools/database.tools.js';
 import { RepositorySafetyService } from '../../src/modules/repository-intelligence/services/repository-safety.service.js';
 
@@ -32,7 +36,10 @@ function createService(): DatabaseIntelligenceService {
   const connectionPolicy = new DatabaseConnectionPolicyService(safety);
   const readonlyPolicy = new DatabaseReadonlyPolicyService();
   const adapter = new SqliteDatabaseAdapter(connectionPolicy, readonlyPolicy);
-  return new DatabaseIntelligenceService(new DatabaseAdapterRegistryService(adapter));
+  return new DatabaseIntelligenceService(
+    new DatabaseAdapterRegistryService(adapter, new PostgresDatabaseAdapter(), new MysqlDatabaseAdapter()),
+    connectionPolicy,
+  );
 }
 
 describe('Database tools', () => {
@@ -53,6 +60,21 @@ describe('Database tools', () => {
       }),
     ).resolves.toMatchObject({
       rowCount: 1,
+    });
+    await expect(new DatabaseSupportedDialectsTool(service).execute({})).resolves.toMatchObject({
+      dialects: expect.any(Array) as unknown,
+    });
+    await expect(
+      new DatabaseConnectionProfileTool(service).execute({
+        dialect: 'postgres',
+        host: 'localhost',
+        port: 5432,
+        database: 'app',
+        username: 'readonly',
+      }),
+    ).resolves.toMatchObject({
+      valid: true,
+      executable: false,
     });
   });
 });

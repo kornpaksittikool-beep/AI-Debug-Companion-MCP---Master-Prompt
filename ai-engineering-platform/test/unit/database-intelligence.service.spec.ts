@@ -7,6 +7,8 @@ import { RepositorySafetyService } from '../../src/modules/repository-intelligen
 import { DatabaseAdapterRegistryService } from '../../src/modules/database-intelligence/services/database-adapter-registry.service.js';
 import { DatabaseConnectionPolicyService } from '../../src/modules/database-intelligence/services/database-connection-policy.service.js';
 import { DatabaseIntelligenceService } from '../../src/modules/database-intelligence/services/database-intelligence.service.js';
+import { MysqlDatabaseAdapter } from '../../src/modules/database-intelligence/services/mysql-database.adapter.js';
+import { PostgresDatabaseAdapter } from '../../src/modules/database-intelligence/services/postgres-database.adapter.js';
 import { DatabaseReadonlyPolicyService } from '../../src/modules/database-intelligence/services/database-readonly-policy.service.js';
 import { SqliteDatabaseAdapter } from '../../src/modules/database-intelligence/services/sqlite-database.adapter.js';
 import type { DatabaseConnectionConfig } from '../../src/modules/database-intelligence/interfaces/database-intelligence.interface.js';
@@ -46,7 +48,10 @@ function createService(): DatabaseIntelligenceService {
   const connectionPolicy = new DatabaseConnectionPolicyService(safety);
   const readonlyPolicy = new DatabaseReadonlyPolicyService();
   const adapter = new SqliteDatabaseAdapter(connectionPolicy, readonlyPolicy);
-  return new DatabaseIntelligenceService(new DatabaseAdapterRegistryService(adapter));
+  return new DatabaseIntelligenceService(
+    new DatabaseAdapterRegistryService(adapter, new PostgresDatabaseAdapter(), new MysqlDatabaseAdapter()),
+    connectionPolicy,
+  );
 }
 
 describe('DatabaseIntelligenceService', () => {
@@ -101,5 +106,43 @@ describe('DatabaseIntelligenceService', () => {
         query: "DELETE FROM customers WHERE name = 'Acme'",
       }),
     ).toThrow();
+  });
+
+  it('reports supported dialect metadata and validates external profiles', () => {
+    const service = createService();
+
+    expect(service.supportedDialects().dialects.map((dialect) => dialect.dialect)).toEqual([
+      'sqlite',
+      'postgres',
+      'mysql',
+    ]);
+    expect(
+      service.connectionProfile({
+        dialect: 'postgres',
+        host: 'localhost',
+        port: 5432,
+        database: 'app',
+        username: 'readonly',
+        sslMode: 'prefer',
+      }),
+    ).toMatchObject({
+      dialect: 'postgres',
+      valid: true,
+      executable: false,
+    });
+  });
+
+  it('rejects external database execution until a driver phase is approved', () => {
+    const service = createService();
+
+    expect(() =>
+      service.readSchema({
+        dialect: 'mysql',
+        host: 'localhost',
+        port: 3306,
+        database: 'app',
+        username: 'readonly',
+      }),
+    ).toThrow('Read execution for "mysql" is not enabled in Phase 14.');
   });
 });

@@ -28,7 +28,13 @@ describe('DatabaseIntelligenceModule integration', () => {
     const toolNames = registry.list().map((tool) => tool.name);
 
     expect(toolNames).toEqual(
-      expect.arrayContaining(['database.schema', 'database.relations', 'database.query_preview']),
+      expect.arrayContaining([
+        'database.supported_dialects',
+        'database.connection_profile',
+        'database.schema',
+        'database.relations',
+        'database.query_preview',
+      ]),
     );
 
     await moduleRef.close();
@@ -53,6 +59,35 @@ describe('DatabaseIntelligenceModule integration', () => {
     expect(result.ok).toBe(true);
     if (result.ok) {
       expect(result.output.rowCount).toBe(1);
+    }
+
+    await moduleRef.close();
+  });
+
+  it('executes connection profile through core execution', async () => {
+    const moduleRef = await Test.createTestingModule({ imports: [AppModule] }).compile();
+    await moduleRef.init();
+
+    const execution = moduleRef.get(McpExecutionService);
+    const result = await execution.execute({
+      toolName: 'database.connection_profile',
+      input: {
+        dialect: 'postgres',
+        host: 'localhost',
+        port: 5432,
+        database: 'app',
+        username: 'readonly',
+      },
+      correlationId: 'corr_db_profile',
+    });
+
+    expect(result.ok).toBe(true);
+    if (result.ok) {
+      expect(result.output).toMatchObject({
+        dialect: 'postgres',
+        valid: true,
+        executable: false,
+      });
     }
 
     await moduleRef.close();

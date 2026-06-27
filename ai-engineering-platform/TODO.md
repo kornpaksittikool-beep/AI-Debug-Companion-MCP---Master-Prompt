@@ -68,7 +68,7 @@
 | Semantic plugin compatibility resolver | Phase 11 | Completed |
 | Dynamic plugin loading | Phase 12 | Completed |
 | AI provider adapter boundary | Phase 13 | Completed |
-| PostgreSQL and MySQL read-only adapters | Phase 14 | Planned |
+| PostgreSQL and MySQL read-only adapter contracts and connection profile validation | Phase 14 | Completed |
 | Import graph, call graph, persistent index, and cross-repository search | Phase 15 | Planned |
 | Approved patch application engine | Phase 16 | Planned |
 | Remote plugin marketplace staging | Phase 17 | Planned |

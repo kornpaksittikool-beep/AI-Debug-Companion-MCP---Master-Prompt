@@ -103,7 +103,9 @@ export class ImpactService {
       });
       evidence.push({
         sourceType: 'database',
-        source: input.databaseConnection.databasePath,
+        source: input.databaseConnection.dialect === 'sqlite'
+          ? input.databaseConnection.databasePath
+          : `${input.databaseConnection.dialect}:${input.databaseConnection.host}/${input.databaseConnection.database}`,
         summary: `${schema.tables.length} table(s), ${relations.relations.length} relation(s).`,
       });
     }

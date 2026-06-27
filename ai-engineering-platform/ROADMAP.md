@@ -63,7 +63,7 @@ The system must be developed iteratively. Each phase must produce usable, verifi
 | M11: Compatibility Resolution | Phase 11 | Semantic plugin compatibility resolver for platform, Node.js, and runtime metadata | Plugin marketplace readiness | High | Medium | Completed |
 | M12: Dynamic Plugin Loading | Phase 12 | Approved local plugin enable, disable, and update execution workflow | Compatibility resolution | High | High | Completed |
 | M13: AI Provider Boundary | Phase 13 | Provider-neutral AI adapter contracts for OpenAI, Claude, Gemini, Ollama, OpenRouter, and local LLMs | Core MCP framework | High | High | Completed |
-| M14: Database Expansion | Phase 14 | PostgreSQL and MySQL read-only adapters | Database intelligence | Medium | High | Planned |
+| M14: Database Expansion | Phase 14 | PostgreSQL and MySQL read-only adapter contracts and connection profile validation | Database intelligence | Medium | High | Completed |
 | M15: Deep Repository Intelligence | Phase 15 | Import graph, call graph, persistent incremental index, and cross-repository search | Repository intelligence and cache foundation | High | High | Planned |
 | M16: Approved Patch Application | Phase 16 | Actual patch apply engine behind approval, rollback, and verification gates | Patch proposal workflow | Critical | High | Planned |
 | M17: Remote Plugin Marketplace | Phase 17 | Remote plugin discovery, checksum/signature verification, and sandboxed staging | Dynamic plugin loading | Medium | High | Planned |
@@ -81,4 +81,4 @@ Each phase must pass the following checks before the next phase begins:
 
 ## Current Phase
 
-Phase 13 is completed. Phase 14 is planned and must not start until its execution plan is approved.
+Phase 14 is completed. Phase 15 is planned and must not start until its execution plan is approved.
