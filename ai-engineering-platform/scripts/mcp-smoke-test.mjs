@@ -111,6 +111,27 @@ try {
     currentTokens: tokenEstimate.estimatedTokens,
     maxTokens: 20,
   });
+  const integrationReadiness = await callTool(client, 'integration.readiness', {
+    configuredServerName: 'ai_engineering_platform',
+    expectedTools: ['platform.health', 'token_budget.estimate'],
+    availableTools: tools.tools.map((tool) => tool.name),
+    agentsInstructionLoaded: true,
+  });
+  const integrationSession = await callTool(client, 'integration.start_session', {
+    client: 'codex',
+    workspaceRoot: rootPath,
+    sessionId: 'smoke-session',
+  });
+  await callTool(client, 'integration.record_tool_usage', {
+    sessionId: integrationSession.id,
+    toolName: 'token_budget.estimate',
+    status: 'success',
+    estimatedInputTokens: 5,
+    estimatedOutputTokens: tokenEstimate.estimatedTokens,
+  });
+  const integrationSummary = await callTool(client, 'integration.telemetry_summary', {
+    sessionId: integrationSession.id,
+  });
 
   const summary = {
     rootPath,
@@ -129,12 +150,14 @@ try {
     artifactValid: artifact.valid,
     tokenEstimate: tokenEstimate.estimatedTokens,
     tokenStrategyStatus: tokenStrategy.status,
+    integrationReady: integrationReadiness.ready,
+    integrationToolCalls: integrationSummary.toolCalls,
   };
 
   if (
     summary.toolCount < 70 ||
     summary.healthStatus !== 'ok' ||
-    summary.platformPhase !== 'phase-18-token-budget-context-compression' ||
+    summary.platformPhase !== 'phase-19-codex-integration-telemetry' ||
     !summary.importResolved ||
     summary.approvalStatus !== 'approved' ||
     summary.proposalStatus !== 'ready_for_review' ||
@@ -145,7 +168,9 @@ try {
     summary.restored !== '# Original\n' ||
     !summary.artifactValid ||
     summary.tokenEstimate <= 0 ||
-    summary.tokenStrategyStatus !== 'within_budget'
+    summary.tokenStrategyStatus !== 'within_budget' ||
+    !summary.integrationReady ||
+    summary.integrationToolCalls !== 1
   ) {
     throw new Error(`MCP smoke test failed: ${JSON.stringify(summary, null, 2)}`);
   }

@@ -169,6 +169,12 @@ ai-engineering-platform/
         services/
         dto/
         tools/
+      integration-telemetry/
+        integration-telemetry.module.ts
+        interfaces/
+        services/
+        dto/
+        tools/
     plugins/
       plugin-api/
         plugin.interface.ts

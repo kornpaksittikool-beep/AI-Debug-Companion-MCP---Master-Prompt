@@ -2,7 +2,7 @@
 
 AI Engineering Platform is a production-oriented MCP foundation for evidence-driven software engineering workflows.
 
-Phase 18 provides the Core MCP Framework, Investigation Engine, bounded Repository Intelligence, TypeScript/JavaScript symbol intelligence, bounded import and call graphs, persistent repository graph indexing, cross-repository search, read-only SQLite Database Intelligence, PostgreSQL/MySQL connection profile validation, read-only Git Intelligence, Planning and Impact Engine, patch proposal workflow, deterministic approved patch application, rollback execution, allow-listed verification execution, versioned Project Memory, cache foundation, cache invalidation, read-only security audits, plugin marketplace readiness, semantic plugin compatibility resolution, approved local plugin state loading, remote plugin staging metadata, provider-neutral AI routing contracts, and token-aware context budgeting tools. It does not include automatic unapproved patch application, dynamic remote plugin installation, external plugin code execution, external database network execution, AI API execution, exact provider tokenizer integration, distributed cache, vector memory, cloud sync, or remote Git hosting integration.
+Phase 19 provides the Core MCP Framework, Investigation Engine, bounded Repository Intelligence, TypeScript/JavaScript symbol intelligence, bounded import and call graphs, persistent repository graph indexing, cross-repository search, read-only SQLite Database Intelligence, PostgreSQL/MySQL connection profile validation, read-only Git Intelligence, Planning and Impact Engine, patch proposal workflow, deterministic approved patch application, rollback execution, allow-listed verification execution, versioned Project Memory, cache foundation, cache invalidation, read-only security audits, plugin marketplace readiness, semantic plugin compatibility resolution, approved local plugin state loading, remote plugin staging metadata, provider-neutral AI routing contracts, token-aware context budgeting tools, and client integration telemetry. It does not include automatic unapproved patch application, dynamic remote plugin installation, external plugin code execution, external database network execution, AI API execution, exact provider tokenizer integration, distributed telemetry storage, distributed cache, vector memory, cloud sync, or remote Git hosting integration.
 
 ## Requirements
 
@@ -103,6 +103,9 @@ The Phase 1 server uses stdio transport through the official Model Context Proto
 - Approximate token estimation for candidate context.
 - Deterministic context compression with priority-aware retention.
 - Token-aware MCP evidence gathering strategy recommendations.
+- Codex and generic MCP client readiness checks from provided evidence.
+- In-memory integration session and tool usage telemetry.
+- Estimated manual-read token avoidance summaries.
 - Jest unit and integration test baseline.
 
 ## Registered Tools
@@ -399,6 +402,22 @@ Compresses candidate context items to fit an approximate token budget while pres
 
 Recommends a token-aware MCP evidence gathering flow for a repository task.
 
+### `integration.start_session`
+
+Starts an in-memory integration telemetry session for Codex or another MCP client.
+
+### `integration.record_tool_usage`
+
+Records one MCP tool usage event for adoption and token-saving telemetry.
+
+### `integration.readiness`
+
+Checks Codex MCP integration readiness from provided server, tool, and instruction evidence.
+
+### `integration.telemetry_summary`
+
+Summarizes recorded MCP usage telemetry and estimated manual-read tokens avoided.
+
 ## Architecture Boundary
 
 Core owns MCP transport integration, execution, logging, errors, security policy foundations, and registry behavior.
@@ -432,6 +451,7 @@ The current implementation intentionally excludes:
 - Package manager based plugin installation.
 - AI provider API calls.
 - Exact model-specific tokenizer execution.
+- Durable telemetry persistence.
 - Provider SDK coupling inside core.
 - Vector database memory.
 - Cloud memory synchronization.

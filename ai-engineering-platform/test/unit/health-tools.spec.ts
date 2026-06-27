@@ -24,7 +24,7 @@ describe('Health tools', () => {
 
     expect(output.platform).toBeDefined();
     expect(output.platform).toMatchObject({
-      phase: 'phase-18-token-budget-context-compression',
+      phase: 'phase-19-codex-integration-telemetry',
     });
     expect(output.tools).toEqual([]);
   });

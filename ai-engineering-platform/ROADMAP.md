@@ -70,6 +70,9 @@ The system must be developed iteratively. Each phase must produce usable, verifi
 | M18: Token Budget and Context Compression | Phase 18 | Approximate context token estimator for candidate evidence and tool outputs | Repository intelligence and AI provider boundary | High | Medium | Completed |
 | M18: Token Budget and Context Compression | Phase 18 | Priority-aware deterministic context compression | Token estimator | High | Medium | Completed |
 | M18: Token Budget and Context Compression | Phase 18 | Token-aware MCP evidence gathering strategy recommendations | Token estimator and registered tool contracts | High | Medium | Completed |
+| M19: Codex Integration Telemetry | Phase 19 | MCP client readiness checks for configured server, expected tools, and project instructions | Phase 18 and Codex MCP config | High | Medium | Completed |
+| M19: Codex Integration Telemetry | Phase 19 | In-memory integration session and tool usage telemetry | Readiness checks | High | Medium | Completed |
+| M19: Codex Integration Telemetry | Phase 19 | Estimated manual-read token avoidance summary | Token budget tools | High | Medium | Completed |
 
 ## Phase Gate Rules
 
@@ -84,4 +87,4 @@ Each phase must pass the following checks before the next phase begins:
 
 ## Current Phase
 
-Phase 18 is completed. Future phases must be planned and approved before implementation.
+Phase 19 is completed. Future phases must be planned and approved before implementation.

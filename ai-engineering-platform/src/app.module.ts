@@ -4,6 +4,7 @@ import { AiProviderModule } from './modules/ai-provider/ai-provider.module.js';
 import { DatabaseIntelligenceModule } from './modules/database-intelligence/database-intelligence.module.js';
 import { GitIntelligenceModule } from './modules/git-intelligence/git-intelligence.module.js';
 import { HealthModule } from './modules/health/health.module.js';
+import { IntegrationTelemetryModule } from './modules/integration-telemetry/integration-telemetry.module.js';
 import { InvestigationModule } from './modules/investigation/investigation.module.js';
 import { PatchVerificationModule } from './modules/patch-verification/patch-verification.module.js';
 import { PerformanceSecurityModule } from './modules/performance-security/performance-security.module.js';
@@ -18,6 +19,7 @@ import { TokenBudgetModule } from './modules/token-budget/token-budget.module.js
     CoreModule,
     AiProviderModule,
     HealthModule,
+    IntegrationTelemetryModule,
     InvestigationModule,
     RepositoryIntelligenceModule,
     DatabaseIntelligenceModule,

@@ -75,3 +75,6 @@
 | Token estimate tool | Phase 18 | Completed |
 | Context compression tool | Phase 18 | Completed |
 | Token-aware strategy recommendation tool | Phase 18 | Completed |
+| Codex MCP readiness check | Phase 19 | Completed |
+| Integration session telemetry | Phase 19 | Completed |
+| MCP usage and token-saving summary | Phase 19 | Completed |
