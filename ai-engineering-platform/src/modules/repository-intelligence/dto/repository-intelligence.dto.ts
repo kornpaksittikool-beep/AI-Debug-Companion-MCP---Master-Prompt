@@ -41,3 +41,26 @@ export interface RepositoryReadSymbolContextInputDto extends RepositoryScanInput
   readonly kind?: 'class' | 'function' | 'method' | 'interface' | 'type' | 'enum' | 'variable';
   readonly maxBytes?: number;
 }
+
+export interface RepositoryImportGraphInputDto extends RepositoryScanInputDto {
+  readonly includeExternal?: boolean;
+}
+
+export interface RepositoryCallGraphInputDto extends RepositoryScanInputDto {
+  readonly query?: string;
+}
+
+export interface RepositoryIndexStatusInputDto extends RepositoryScanInputDto {
+  readonly rebuildIfMissing?: boolean;
+}
+
+export interface RepositoryRebuildIndexInputDto extends RepositoryScanInputDto {
+  readonly force?: boolean;
+}
+
+export interface RepositoryCrossRepoSearchInputDto {
+  readonly repositories: readonly RepositoryScanInputDto[];
+  readonly query: string;
+  readonly extension?: string;
+  readonly maxMatchesPerRepository?: number;
+}

@@ -135,3 +135,116 @@ export interface LanguageParser<TSymbol = RepositorySymbol> {
   supportsFile(filePath: string): boolean;
   parseSymbols(content: string, filePath: string): readonly TSymbol[];
 }
+
+export type ImportKind = 'static' | 're_export' | 'dynamic';
+
+export interface RepositoryImportEdge {
+  readonly sourceFile: string;
+  readonly sourceRelativePath: string;
+  readonly specifier: string;
+  readonly kind: ImportKind;
+  readonly resolvedFile?: string;
+  readonly resolvedRelativePath?: string;
+  readonly unresolved: boolean;
+  readonly line: number;
+}
+
+export interface ImportGraphOptions extends RepositoryScanOptions {
+  readonly includeExternal?: boolean;
+}
+
+export interface ImportGraphResult {
+  readonly rootPath: string;
+  readonly edges: readonly RepositoryImportEdge[];
+  readonly fileCount: number;
+  readonly unresolvedCount: number;
+  readonly truncated: boolean;
+}
+
+export interface RepositoryCallEdge {
+  readonly sourceFile: string;
+  readonly sourceRelativePath: string;
+  readonly callerName: string;
+  readonly calleeName: string;
+  readonly line: number;
+}
+
+export interface CallGraphOptions extends RepositoryScanOptions {
+  readonly query?: string;
+}
+
+export interface CallGraphResult {
+  readonly rootPath: string;
+  readonly edges: readonly RepositoryCallEdge[];
+  readonly fileCount: number;
+  readonly truncated: boolean;
+}
+
+export interface RepositoryIndexFileEntry {
+  readonly relativePath: string;
+  readonly sizeBytes: number;
+  readonly modifiedAt: string;
+  readonly indexedAt: string;
+}
+
+export interface RepositoryIndexSnapshot {
+  readonly rootPath: string;
+  readonly generatedAt: string;
+  readonly files: readonly RepositoryIndexFileEntry[];
+  readonly importEdges: readonly RepositoryImportEdge[];
+  readonly callEdges: readonly RepositoryCallEdge[];
+  readonly truncated: boolean;
+}
+
+export interface RepositoryIndexStatusOptions extends RepositoryScanOptions {
+  readonly rebuildIfMissing?: boolean;
+}
+
+export interface RepositoryRebuildIndexOptions extends RepositoryScanOptions {
+  readonly force?: boolean;
+}
+
+export interface RepositoryIndexStatusResult {
+  readonly rootPath: string;
+  readonly indexExists: boolean;
+  readonly indexedFiles: number;
+  readonly currentFiles: number;
+  readonly changedFiles: readonly string[];
+  readonly missingFiles: readonly string[];
+  readonly deletedFiles: readonly string[];
+  readonly generatedAt?: string;
+  readonly stale: boolean;
+}
+
+export interface RepositoryRebuildIndexResult {
+  readonly rootPath: string;
+  readonly indexedFiles: number;
+  readonly importEdges: number;
+  readonly callEdges: number;
+  readonly changedFiles: readonly string[];
+  readonly reusedFiles: number;
+  readonly generatedAt: string;
+  readonly indexPath: string;
+}
+
+export interface CrossRepositorySearchOptions {
+  readonly repositories: readonly RepositoryScanOptions[];
+  readonly query: string;
+  readonly extension?: string;
+  readonly maxMatchesPerRepository?: number;
+}
+
+export interface CrossRepositorySearchMatch {
+  readonly rootPath: string;
+  readonly relativePath: string;
+  readonly extension: string;
+  readonly sizeBytes: number;
+  readonly modifiedAt: string;
+  readonly textPreview?: string;
+}
+
+export interface CrossRepositorySearchResult {
+  readonly repositories: number;
+  readonly matches: readonly CrossRepositorySearchMatch[];
+  readonly truncated: boolean;
+}

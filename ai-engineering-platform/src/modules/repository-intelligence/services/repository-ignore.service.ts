@@ -9,6 +9,7 @@ const DEFAULT_IGNORES = [
   '.turbo',
   '.nx',
   '.cache',
+  '.ai-engineering-platform',
   '.pnpm-store',
   'tmp',
 ] as const;

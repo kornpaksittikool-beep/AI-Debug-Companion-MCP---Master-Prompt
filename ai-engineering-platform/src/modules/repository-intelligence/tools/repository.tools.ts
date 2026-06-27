@@ -3,14 +3,22 @@ import type { JsonSchemaObject } from '../../../core/registry/interfaces/json-sc
 import type { ToolHandler } from '../../../core/registry/interfaces/tool-handler.interface.js';
 import type {
   RepositoryOverviewInputDto,
+  RepositoryCallGraphInputDto,
+  RepositoryCrossRepoSearchInputDto,
+  RepositoryImportGraphInputDto,
+  RepositoryIndexStatusInputDto,
   RepositoryReadFileContextInputDto,
   RepositoryReadModuleContextInputDto,
   RepositoryReadSymbolContextInputDto,
+  RepositoryRebuildIndexInputDto,
   RepositoryScanInputDto,
   RepositorySearchFilesInputDto,
   RepositorySearchSymbolsInputDto,
 } from '../dto/repository-intelligence.dto.js';
+import { RepositoryGraphService } from '../services/repository-graph.service.js';
+import { RepositoryIndexStoreService } from '../services/repository-index-store.service.js';
 import { RepositoryIntelligenceService } from '../services/repository-intelligence.service.js';
+import { RepositoryMultiRootService } from '../services/repository-multi-root.service.js';
 import { RepositorySymbolService } from '../services/repository-symbol.service.js';
 
 @Injectable()
@@ -86,6 +94,61 @@ export class RepositoryReadSymbolContextTool implements ToolHandler {
   execute(input: JsonSchemaObject): Promise<JsonSchemaObject> {
     return this.service
       .readSymbolContext(input as unknown as RepositoryReadSymbolContextInputDto)
+      .then((result) => result as unknown as JsonSchemaObject);
+  }
+}
+
+@Injectable()
+export class RepositoryImportGraphTool implements ToolHandler {
+  constructor(private readonly service: RepositoryGraphService) {}
+
+  execute(input: JsonSchemaObject): Promise<JsonSchemaObject> {
+    return this.service
+      .importGraph(input as unknown as RepositoryImportGraphInputDto)
+      .then((result) => result as unknown as JsonSchemaObject);
+  }
+}
+
+@Injectable()
+export class RepositoryCallGraphTool implements ToolHandler {
+  constructor(private readonly service: RepositoryGraphService) {}
+
+  execute(input: JsonSchemaObject): Promise<JsonSchemaObject> {
+    return this.service
+      .callGraph(input as unknown as RepositoryCallGraphInputDto)
+      .then((result) => result as unknown as JsonSchemaObject);
+  }
+}
+
+@Injectable()
+export class RepositoryIndexStatusTool implements ToolHandler {
+  constructor(private readonly service: RepositoryIndexStoreService) {}
+
+  execute(input: JsonSchemaObject): Promise<JsonSchemaObject> {
+    return this.service
+      .status(input as unknown as RepositoryIndexStatusInputDto)
+      .then((result) => result as unknown as JsonSchemaObject);
+  }
+}
+
+@Injectable()
+export class RepositoryRebuildIndexTool implements ToolHandler {
+  constructor(private readonly service: RepositoryIndexStoreService) {}
+
+  execute(input: JsonSchemaObject): Promise<JsonSchemaObject> {
+    return this.service
+      .rebuild(input as unknown as RepositoryRebuildIndexInputDto)
+      .then((result) => result as unknown as JsonSchemaObject);
+  }
+}
+
+@Injectable()
+export class RepositoryCrossRepoSearchTool implements ToolHandler {
+  constructor(private readonly service: RepositoryMultiRootService) {}
+
+  execute(input: JsonSchemaObject): Promise<JsonSchemaObject> {
+    return this.service
+      .crossRepositorySearch(input as unknown as RepositoryCrossRepoSearchInputDto)
       .then((result) => result as unknown as JsonSchemaObject);
   }
 }

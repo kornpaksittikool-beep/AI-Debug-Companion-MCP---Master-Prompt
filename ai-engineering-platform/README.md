@@ -2,7 +2,7 @@
 
 AI Engineering Platform is a production-oriented MCP foundation for evidence-driven software engineering workflows.
 
-Phase 14 provides the Core MCP Framework, Investigation Engine, bounded Repository Intelligence, TypeScript/JavaScript symbol intelligence, read-only SQLite Database Intelligence, PostgreSQL/MySQL connection profile validation, read-only Git Intelligence, Planning and Impact Engine, patch proposal workflow, rollback planning, allow-listed verification execution, versioned Project Memory, cache foundation, cache invalidation, read-only security audits, plugin marketplace readiness, semantic plugin compatibility resolution, approved local plugin state loading, and provider-neutral AI routing contracts. It does not include automatic patch application, dynamic remote plugin installation, external plugin code execution, external database network execution, AI API execution, distributed cache, vector memory, cloud sync, or remote Git hosting integration.
+Phase 15 provides the Core MCP Framework, Investigation Engine, bounded Repository Intelligence, TypeScript/JavaScript symbol intelligence, bounded import and call graphs, persistent repository graph indexing, cross-repository search, read-only SQLite Database Intelligence, PostgreSQL/MySQL connection profile validation, read-only Git Intelligence, Planning and Impact Engine, patch proposal workflow, rollback planning, allow-listed verification execution, versioned Project Memory, cache foundation, cache invalidation, read-only security audits, plugin marketplace readiness, semantic plugin compatibility resolution, approved local plugin state loading, and provider-neutral AI routing contracts. It does not include automatic patch application, dynamic remote plugin installation, external plugin code execution, external database network execution, AI API execution, distributed cache, vector memory, cloud sync, or remote Git hosting integration.
 
 ## Requirements
 
@@ -57,6 +57,11 @@ The Phase 1 server uses stdio transport through the official Model Context Proto
 - Bounded module context reads.
 - TypeScript and JavaScript AST-backed symbol search.
 - Bounded symbol context reads for classes, functions, methods, interfaces, types, enums, and variables.
+- Bounded TypeScript and JavaScript import graph generation with relative import resolution.
+- Bounded best-effort TypeScript and JavaScript call graph generation.
+- Persistent repository graph index metadata under `.ai-engineering-platform/repository-index`.
+- Repository index freshness checks based on file size and modified time.
+- Cross-repository bounded file search for multi-repository workflows.
 - Read-only SQLite schema discovery.
 - Read-only SQLite foreign-key relation discovery.
 - Read-only SQLite query preview with row limits.
@@ -157,6 +162,26 @@ Searches bounded TypeScript and JavaScript symbols using an AST-backed parser.
 ### `repository.read_symbol_context`
 
 Reads bounded source context for a specific TypeScript or JavaScript symbol.
+
+### `repository.import_graph`
+
+Builds a bounded TypeScript and JavaScript import graph with relative import resolution.
+
+### `repository.call_graph`
+
+Builds a bounded best-effort TypeScript and JavaScript call graph.
+
+### `repository.index_status`
+
+Returns persistent repository index freshness and changed-file metadata.
+
+### `repository.rebuild_index`
+
+Rebuilds the persistent repository graph index under `.ai-engineering-platform`.
+
+### `repository.cross_repo_search`
+
+Searches multiple bounded repository roots and returns normalized matches.
 
 ### `database.schema`
 
@@ -342,8 +367,8 @@ The current implementation intentionally excludes:
 
 - Cross-language AST parsers beyond TypeScript and JavaScript.
 - Persistent or incremental symbol index.
-- Full call graph.
-- Full import graph.
+- Semantic compiler-backed call graph.
+- Full tsconfig path alias and package export resolution.
 - Git writes, branches, merges, commits, resets, and pushes.
 - Remote Git hosting integration.
 - Database writes.
@@ -353,7 +378,7 @@ The current implementation intentionally excludes:
 - Automatic patch application.
 - Git commit or push automation.
 - Distributed cache.
-- Full persistent incremental index.
+- Distributed repository index.
 - Automatic security auto-fix.
 - Dynamic remote plugin download or execution.
 - Dynamic import of external plugin code.

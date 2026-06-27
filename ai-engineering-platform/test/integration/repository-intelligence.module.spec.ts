@@ -9,7 +9,11 @@ import { ToolRegistryService } from '../../src/core/registry/services/tool-regis
 async function createFixture(): Promise<string> {
   const root = await fs.mkdtemp(path.join(os.tmpdir(), 'repo-module-'));
   await fs.writeFile(path.join(root, 'README.md'), '# Demo\n');
-  await fs.writeFile(path.join(root, 'service.ts'), 'export class Service {}\n');
+  await fs.writeFile(path.join(root, 'helper.ts'), 'export function helper(): string { return "ok"; }\n');
+  await fs.writeFile(
+    path.join(root, 'service.ts'),
+    'import { helper } from "./helper";\nexport class Service { run(): string { return helper(); } }\n',
+  );
   return root;
 }
 
@@ -30,6 +34,11 @@ describe('RepositoryIntelligenceModule integration', () => {
         'repository.read_module_context',
         'repository.search_symbols',
         'repository.read_symbol_context',
+        'repository.import_graph',
+        'repository.call_graph',
+        'repository.index_status',
+        'repository.rebuild_index',
+        'repository.cross_repo_search',
       ]),
     );
 
@@ -50,7 +59,7 @@ describe('RepositoryIntelligenceModule integration', () => {
 
     expect(result.ok).toBe(true);
     if (result.ok) {
-      expect(result.output.fileCount).toBe(2);
+      expect(result.output.fileCount).toBe(3);
     }
 
     await moduleRef.close();
@@ -71,6 +80,33 @@ describe('RepositoryIntelligenceModule integration', () => {
     expect(result.ok).toBe(true);
     if (result.ok) {
       expect(result.output.symbols).toHaveLength(1);
+    }
+
+    await moduleRef.close();
+  });
+
+  it('executes import graph through core execution', async () => {
+    const rootPath = await createFixture();
+    const moduleRef = await Test.createTestingModule({ imports: [AppModule] }).compile();
+    await moduleRef.init();
+
+    const execution = moduleRef.get(McpExecutionService);
+    const result = await execution.execute({
+      toolName: 'repository.import_graph',
+      input: { rootPath },
+      correlationId: 'corr_import_graph',
+    });
+
+    expect(result.ok).toBe(true);
+    if (result.ok) {
+      expect(result.output.edges).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            specifier: './helper',
+            resolvedRelativePath: 'helper.ts',
+          }),
+        ]),
+      );
     }
 
     await moduleRef.close();

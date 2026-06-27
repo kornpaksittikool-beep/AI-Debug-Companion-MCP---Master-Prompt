@@ -207,3 +207,127 @@ export const REPOSITORY_READ_SYMBOL_CONTEXT_TOOL_DEFINITION: ToolDefinition = {
     },
   ],
 };
+
+export const REPOSITORY_IMPORT_GRAPH_TOOL_DEFINITION: ToolDefinition = {
+  name: 'repository.import_graph',
+  version: '1.0.0',
+  description: 'Builds a bounded TypeScript and JavaScript import graph with relative import resolution.',
+  module: 'repository-intelligence',
+  inputSchema: {
+    ...boundedScanSchema,
+    properties: {
+      ...(boundedScanSchema.properties as JsonSchemaObject),
+      includeExternal: { type: 'boolean' },
+    },
+  },
+  outputSchema: resultObjectSchema,
+  errorSchema: STANDARD_ERROR_SCHEMA,
+  permissions: REPOSITORY_READ_PERMISSION,
+  timeoutMs: 7000,
+  retryStrategy: NO_RETRY,
+  sideEffects: 'read',
+  examples: [{ input: { rootPath: '/repo', maxFiles: 100 }, output: { edges: [] } }],
+};
+
+export const REPOSITORY_CALL_GRAPH_TOOL_DEFINITION: ToolDefinition = {
+  name: 'repository.call_graph',
+  version: '1.0.0',
+  description: 'Builds a bounded best-effort TypeScript and JavaScript call graph.',
+  module: 'repository-intelligence',
+  inputSchema: {
+    ...boundedScanSchema,
+    properties: {
+      ...(boundedScanSchema.properties as JsonSchemaObject),
+      query: { type: 'string' },
+    },
+  },
+  outputSchema: resultObjectSchema,
+  errorSchema: STANDARD_ERROR_SCHEMA,
+  permissions: REPOSITORY_READ_PERMISSION,
+  timeoutMs: 7000,
+  retryStrategy: NO_RETRY,
+  sideEffects: 'read',
+  examples: [{ input: { rootPath: '/repo', query: 'save' }, output: { edges: [] } }],
+};
+
+export const REPOSITORY_INDEX_STATUS_TOOL_DEFINITION: ToolDefinition = {
+  name: 'repository.index_status',
+  version: '1.0.0',
+  description: 'Returns persistent repository index freshness and changed-file metadata.',
+  module: 'repository-intelligence',
+  inputSchema: {
+    ...boundedScanSchema,
+    properties: {
+      ...(boundedScanSchema.properties as JsonSchemaObject),
+      rebuildIfMissing: { type: 'boolean' },
+    },
+  },
+  outputSchema: resultObjectSchema,
+  errorSchema: STANDARD_ERROR_SCHEMA,
+  permissions: {
+    ...REPOSITORY_READ_PERMISSION,
+    fileSystem: {
+      ...REPOSITORY_READ_PERMISSION.fileSystem,
+      write: true,
+    },
+  },
+  timeoutMs: 7000,
+  retryStrategy: NO_RETRY,
+  sideEffects: 'write',
+  examples: [{ input: { rootPath: '/repo' }, output: { stale: true } }],
+};
+
+export const REPOSITORY_REBUILD_INDEX_TOOL_DEFINITION: ToolDefinition = {
+  name: 'repository.rebuild_index',
+  version: '1.0.0',
+  description: 'Rebuilds the persistent repository graph index under .ai-engineering-platform.',
+  module: 'repository-intelligence',
+  inputSchema: {
+    ...boundedScanSchema,
+    properties: {
+      ...(boundedScanSchema.properties as JsonSchemaObject),
+      force: { type: 'boolean' },
+    },
+  },
+  outputSchema: resultObjectSchema,
+  errorSchema: STANDARD_ERROR_SCHEMA,
+  permissions: {
+    ...REPOSITORY_READ_PERMISSION,
+    fileSystem: {
+      ...REPOSITORY_READ_PERMISSION.fileSystem,
+      write: true,
+    },
+  },
+  timeoutMs: 10000,
+  retryStrategy: NO_RETRY,
+  sideEffects: 'write',
+  examples: [{ input: { rootPath: '/repo', force: true }, output: { indexedFiles: 10 } }],
+};
+
+export const REPOSITORY_CROSS_REPO_SEARCH_TOOL_DEFINITION: ToolDefinition = {
+  name: 'repository.cross_repo_search',
+  version: '1.0.0',
+  description: 'Searches multiple bounded repository roots and returns normalized matches.',
+  module: 'repository-intelligence',
+  inputSchema: {
+    type: 'object',
+    required: ['repositories', 'query'],
+    additionalProperties: false,
+    properties: {
+      repositories: {
+        type: 'array',
+        items: boundedScanSchema,
+      },
+      query: { type: 'string' },
+      extension: { type: 'string' },
+      maxMatchesPerRepository: { type: 'number' },
+    },
+  },
+  outputSchema: resultObjectSchema,
+  errorSchema: STANDARD_ERROR_SCHEMA,
+  permissions: REPOSITORY_READ_PERMISSION,
+  timeoutMs: 10000,
+  retryStrategy: NO_RETRY,
+  sideEffects: 'read',
+  examples: [{ input: { repositories: [{ rootPath: '/repo-a' }], query: 'Service' }, output: { matches: [] } }],
+};
