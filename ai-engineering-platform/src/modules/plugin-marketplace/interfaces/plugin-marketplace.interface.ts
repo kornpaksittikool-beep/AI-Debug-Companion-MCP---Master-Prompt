@@ -137,3 +137,93 @@ export interface PluginLifecycleExecutionResult {
   readonly verificationPlan: readonly string[];
   readonly createdAt: string;
 }
+
+export type RemotePluginSourceType = 'https_archive' | 'github_release' | 'git_repository';
+export type RemotePluginChecksumAlgorithm = 'sha256';
+
+export interface RemotePluginSignatureMetadata {
+  readonly algorithm: string;
+  readonly keyId: string;
+  readonly signature: string;
+}
+
+export interface RemotePluginSource {
+  readonly type: RemotePluginSourceType;
+  readonly url: string;
+  readonly checksumAlgorithm: RemotePluginChecksumAlgorithm;
+  readonly checksum: string;
+  readonly signature?: RemotePluginSignatureMetadata;
+}
+
+export interface RemotePluginArtifactVerificationInput {
+  readonly source: RemotePluginSource;
+  readonly artifactContent: string;
+}
+
+export interface RemotePluginArtifactVerificationResult {
+  readonly valid: boolean;
+  readonly sourceType: RemotePluginSourceType;
+  readonly sourceUrl: string;
+  readonly checksumAlgorithm: RemotePluginChecksumAlgorithm;
+  readonly expectedChecksum: string;
+  readonly actualChecksum: string;
+  readonly signatureVerified: boolean;
+  readonly issues: readonly PluginManifestValidationIssue[];
+}
+
+export interface RemotePluginStagePlanInput {
+  readonly manifest: PluginManifest;
+  readonly source: RemotePluginSource;
+  readonly reason?: string;
+}
+
+export interface RemotePluginStagePlan {
+  readonly planId: string;
+  readonly pluginName: string;
+  readonly version: string;
+  readonly status: 'requires_approval';
+  readonly risk: PluginLifecycleRisk;
+  readonly source: RemotePluginSource;
+  readonly validation: PluginManifestValidationResult;
+  readonly artifactRequirements: readonly string[];
+  readonly steps: readonly string[];
+  readonly rollbackPlan: readonly string[];
+  readonly verificationPlan: readonly string[];
+}
+
+export interface RemotePluginStageInput {
+  readonly rootPath: string;
+  readonly manifest: PluginManifest;
+  readonly source: RemotePluginSource;
+  readonly artifactContent: string;
+  readonly stageReason?: string;
+}
+
+export interface RemotePluginStagedRecord {
+  readonly stagingId: string;
+  readonly pluginName: string;
+  readonly version: string;
+  readonly manifest: PluginManifest;
+  readonly source: RemotePluginSource;
+  readonly verification: RemotePluginArtifactVerificationResult;
+  readonly state: 'staged_remote';
+  readonly stagedAt: string;
+  readonly rollbackPlan: readonly string[];
+  readonly verificationPlan: readonly string[];
+}
+
+export interface RemotePluginStageResult {
+  readonly status: 'completed' | 'rejected';
+  readonly reason: string;
+  readonly record?: RemotePluginStagedRecord;
+  readonly verification: RemotePluginArtifactVerificationResult;
+}
+
+export interface RemotePluginStagedInventoryInput {
+  readonly rootPath: string;
+}
+
+export interface RemotePluginStagedInventoryResult {
+  readonly rootPath: string;
+  readonly stagedPlugins: readonly RemotePluginStagedRecord[];
+}

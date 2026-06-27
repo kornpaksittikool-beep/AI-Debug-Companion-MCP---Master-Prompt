@@ -3,6 +3,7 @@ import type { JsonSchemaObject } from '../../src/core/registry/interfaces/json-s
 import type { ToolDefinition } from '../../src/core/registry/interfaces/tool-definition.interface.js';
 import { NO_PERMISSION } from '../../src/core/security/permission.interface.js';
 import { PathPolicyService } from '../../src/core/security/path-policy.service.js';
+import { createHash } from 'node:crypto';
 import * as fs from 'node:fs/promises';
 import * as os from 'node:os';
 import * as path from 'node:path';
@@ -13,15 +14,21 @@ import {
   PluginInstallPlanTool,
   PluginInventoryTool,
   PluginLifecycleResultTool,
+  PluginRemoteStagePlanTool,
   PluginResolveCompatibilityTool,
   PluginSdkMetadataTool,
+  PluginStageRemoteTool,
   PluginStageUpdateTool,
+  PluginStagedInventoryTool,
   PluginValidateManifestTool,
+  PluginVerifyArtifactTool,
 } from '../../src/modules/plugin-marketplace/tools/plugin-marketplace.tools.js';
 import { PluginCompatibilityService } from '../../src/modules/plugin-marketplace/services/plugin-compatibility.service.js';
 import { PluginLifecycleExecutorService } from '../../src/modules/plugin-marketplace/services/plugin-lifecycle-executor.service.js';
 import { PluginManifestValidatorService } from '../../src/modules/plugin-marketplace/services/plugin-manifest-validator.service.js';
 import { PluginMarketplaceService } from '../../src/modules/plugin-marketplace/services/plugin-marketplace.service.js';
+import { PluginRemoteArtifactVerifierService } from '../../src/modules/plugin-marketplace/services/plugin-remote-artifact-verifier.service.js';
+import { PluginRemoteStagingService } from '../../src/modules/plugin-marketplace/services/plugin-remote-staging.service.js';
 import { PluginSdkMetadataService } from '../../src/modules/plugin-marketplace/services/plugin-sdk-metadata.service.js';
 import { PluginStateStoreService } from '../../src/modules/plugin-marketplace/services/plugin-state-store.service.js';
 import { ExampleEchoTool, ExamplePluginService } from '../../src/plugins/example/example-plugin.service.js';
@@ -55,6 +62,10 @@ const manifest: PluginManifest = {
 
 const manifestInput = { manifest } as unknown as JsonSchemaObject;
 
+function sha256(content: string): string {
+  return createHash('sha256').update(content, 'utf8').digest('hex');
+}
+
 function createMarketplace(): PluginMarketplaceService {
   const compatibility = new PluginCompatibilityService();
   return new PluginMarketplaceService(
@@ -74,6 +85,16 @@ describe('Plugin marketplace tools', () => {
     return new PluginLifecycleExecutorService(
       new PluginStateStoreService(new PathPolicyService()),
       new PluginManifestValidatorService(compatibility),
+    );
+  }
+
+  function createRemoteStaging(): PluginRemoteStagingService {
+    const compatibility = new PluginCompatibilityService();
+    return new PluginRemoteStagingService(
+      new PathPolicyService(),
+      new PluginManifestValidatorService(compatibility),
+      compatibility,
+      new PluginRemoteArtifactVerifierService(),
     );
   }
 
@@ -129,5 +150,41 @@ describe('Plugin marketplace tools', () => {
     };
     expect(staged.status).toBe('completed');
     expect(staged.nextState?.state).toBe('staged_update');
+  });
+
+  it('executes remote plugin staging handlers', async () => {
+    const rootPath = await createRoot();
+    const content = 'remote artifact bytes';
+    const source = {
+      type: 'https_archive',
+      url: 'https://example.com/plugin.tgz',
+      checksumAlgorithm: 'sha256',
+      checksum: sha256(content),
+    };
+    const remoteStaging = createRemoteStaging();
+    const verifier = new PluginRemoteArtifactVerifierService();
+
+    const stagePlan = await new PluginRemoteStagePlanTool(remoteStaging).execute({
+      manifest,
+      source,
+    } as unknown as JsonSchemaObject);
+    expect(stagePlan.status).toBe('requires_approval');
+    expect((stagePlan.validation as { readonly valid: boolean }).valid).toBe(true);
+    await expect(new PluginVerifyArtifactTool(verifier).execute({ source, artifactContent: content })).resolves.toMatchObject({
+      valid: true,
+    });
+    await expect(
+      new PluginStageRemoteTool(remoteStaging).execute({
+        rootPath,
+        manifest,
+        source,
+        artifactContent: content,
+      } as unknown as JsonSchemaObject),
+    ).resolves.toMatchObject({
+      status: 'completed',
+    });
+    await expect(new PluginStagedInventoryTool(remoteStaging).execute({ rootPath })).resolves.toMatchObject({
+      stagedPlugins: [expect.objectContaining({ pluginName: 'fixture-plugin' })],
+    });
   });
 });

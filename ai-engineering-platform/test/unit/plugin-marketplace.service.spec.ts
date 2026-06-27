@@ -2,6 +2,7 @@ import { NO_RETRY } from '../../src/core/registry/interfaces/retry-strategy.inte
 import type { ToolDefinition } from '../../src/core/registry/interfaces/tool-definition.interface.js';
 import { NO_PERMISSION } from '../../src/core/security/permission.interface.js';
 import { PathPolicyService } from '../../src/core/security/path-policy.service.js';
+import { createHash } from 'node:crypto';
 import * as fs from 'node:fs/promises';
 import * as os from 'node:os';
 import * as path from 'node:path';
@@ -11,6 +12,8 @@ import { PluginCompatibilityService } from '../../src/modules/plugin-marketplace
 import { PluginLifecycleExecutorService } from '../../src/modules/plugin-marketplace/services/plugin-lifecycle-executor.service.js';
 import { PluginManifestValidatorService } from '../../src/modules/plugin-marketplace/services/plugin-manifest-validator.service.js';
 import { PluginMarketplaceService } from '../../src/modules/plugin-marketplace/services/plugin-marketplace.service.js';
+import { PluginRemoteArtifactVerifierService } from '../../src/modules/plugin-marketplace/services/plugin-remote-artifact-verifier.service.js';
+import { PluginRemoteStagingService } from '../../src/modules/plugin-marketplace/services/plugin-remote-staging.service.js';
 import { PluginSdkMetadataService } from '../../src/modules/plugin-marketplace/services/plugin-sdk-metadata.service.js';
 import { PluginStateStoreService } from '../../src/modules/plugin-marketplace/services/plugin-state-store.service.js';
 
@@ -58,6 +61,20 @@ function createMarketplace(): PluginMarketplaceService {
     new ExamplePluginService(new ExampleEchoTool()),
     new PluginManifestValidatorService(compatibility),
     compatibility,
+  );
+}
+
+function sha256(content: string): string {
+  return createHash('sha256').update(content, 'utf8').digest('hex');
+}
+
+function createRemoteStaging(): PluginRemoteStagingService {
+  const compatibility = new PluginCompatibilityService();
+  return new PluginRemoteStagingService(
+    new PathPolicyService(),
+    new PluginManifestValidatorService(compatibility),
+    compatibility,
+    new PluginRemoteArtifactVerifierService(),
   );
 }
 
@@ -234,5 +251,106 @@ describe('PluginLifecycleExecutorService', () => {
     });
     expect(staged.status).toBe('completed');
     expect(staged.nextState?.state).toBe('staged_update');
+  });
+});
+
+describe('PluginRemoteArtifactVerifierService', () => {
+  it('verifies SHA-256 artifact checksums', () => {
+    const content = 'remote artifact bytes';
+    const result = new PluginRemoteArtifactVerifierService().verify({
+      artifactContent: content,
+      source: {
+        type: 'https_archive',
+        url: 'https://example.com/plugin.tgz',
+        checksumAlgorithm: 'sha256',
+        checksum: sha256(content),
+      },
+    });
+
+    expect(result.valid).toBe(true);
+    expect(result.actualChecksum).toBe(result.expectedChecksum);
+  });
+
+  it('rejects checksum mismatches and non-HTTPS sources', () => {
+    const result = new PluginRemoteArtifactVerifierService().verify({
+      artifactContent: 'actual',
+      source: {
+        type: 'https_archive',
+        url: 'http://example.com/plugin.tgz',
+        checksumAlgorithm: 'sha256',
+        checksum: sha256('expected'),
+      },
+    });
+
+    expect(result.valid).toBe(false);
+    expect(result.issues.map((issue) => issue.field)).toEqual(
+      expect.arrayContaining(['source.url', 'source.checksum']),
+    );
+  });
+});
+
+describe('PluginRemoteStagingService', () => {
+  it('creates reviewable remote staging plans', () => {
+    const content = 'remote artifact bytes';
+    const service = createRemoteStaging();
+
+    const plan = service.createStagePlan({
+      manifest: createManifest(),
+      source: {
+        type: 'github_release',
+        url: 'https://github.com/example/plugin/releases/download/v1/plugin.tgz',
+        checksumAlgorithm: 'sha256',
+        checksum: sha256(content),
+      },
+    });
+
+    expect(plan.status).toBe('requires_approval');
+    expect(plan.validation.valid).toBe(true);
+    expect(plan.steps).toEqual(expect.arrayContaining([expect.stringContaining('Write remote staging metadata')]));
+  });
+
+  it('stages verified remote plugin metadata without executing code', async () => {
+    const rootPath = await fs.mkdtemp(path.join(os.tmpdir(), 'remote-plugin-stage-'));
+    const content = 'remote artifact bytes';
+    const service = createRemoteStaging();
+
+    const result = await service.stageRemote({
+      rootPath,
+      manifest: createManifest(),
+      source: {
+        type: 'https_archive',
+        url: 'https://example.com/plugin.tgz',
+        checksumAlgorithm: 'sha256',
+        checksum: sha256(content),
+      },
+      artifactContent: content,
+    });
+
+    expect(result.status).toBe('completed');
+    expect(result.record?.state).toBe('staged_remote');
+    const inventory = await service.stagedInventory({ rootPath });
+    expect(inventory.stagedPlugins).toHaveLength(1);
+    expect(inventory.stagedPlugins[0]?.pluginName).toBe('fixture-plugin');
+  });
+
+  it('rejects remote staging when checksum verification fails', async () => {
+    const rootPath = await fs.mkdtemp(path.join(os.tmpdir(), 'remote-plugin-stage-reject-'));
+    const service = createRemoteStaging();
+
+    const result = await service.stageRemote({
+      rootPath,
+      manifest: createManifest(),
+      source: {
+        type: 'https_archive',
+        url: 'https://example.com/plugin.tgz',
+        checksumAlgorithm: 'sha256',
+        checksum: sha256('expected'),
+      },
+      artifactContent: 'actual',
+    });
+
+    expect(result.status).toBe('rejected');
+    const inventory = await service.stagedInventory({ rootPath });
+    expect(inventory.stagedPlugins).toHaveLength(0);
   });
 });

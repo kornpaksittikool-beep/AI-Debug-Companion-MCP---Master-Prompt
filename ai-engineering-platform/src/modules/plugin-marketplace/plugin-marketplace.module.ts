@@ -6,6 +6,8 @@ import { PluginManifestValidatorService } from './services/plugin-manifest-valid
 import { PluginCompatibilityService } from './services/plugin-compatibility.service.js';
 import { PluginLifecycleExecutorService } from './services/plugin-lifecycle-executor.service.js';
 import { PluginMarketplaceService } from './services/plugin-marketplace.service.js';
+import { PluginRemoteArtifactVerifierService } from './services/plugin-remote-artifact-verifier.service.js';
+import { PluginRemoteStagingService } from './services/plugin-remote-staging.service.js';
 import { PluginSdkMetadataService } from './services/plugin-sdk-metadata.service.js';
 import { PluginStateStoreService } from './services/plugin-state-store.service.js';
 import {
@@ -16,11 +18,15 @@ import {
   PLUGIN_INVENTORY_TOOL_DEFINITION,
   PLUGIN_LIFECYCLE_RESULT_TOOL_DEFINITION,
   PLUGIN_REMOVE_PLAN_TOOL_DEFINITION,
+  PLUGIN_REMOTE_STAGE_PLAN_TOOL_DEFINITION,
   PLUGIN_RESOLVE_COMPATIBILITY_TOOL_DEFINITION,
   PLUGIN_SDK_METADATA_TOOL_DEFINITION,
+  PLUGIN_STAGE_REMOTE_TOOL_DEFINITION,
   PLUGIN_STAGE_UPDATE_TOOL_DEFINITION,
+  PLUGIN_STAGED_INVENTORY_TOOL_DEFINITION,
   PLUGIN_UPDATE_PLAN_TOOL_DEFINITION,
   PLUGIN_VALIDATE_MANIFEST_TOOL_DEFINITION,
+  PLUGIN_VERIFY_ARTIFACT_TOOL_DEFINITION,
 } from './tools/plugin-marketplace-tool-schemas.js';
 import {
   PluginCatalogTool,
@@ -30,11 +36,15 @@ import {
   PluginInventoryTool,
   PluginLifecycleResultTool,
   PluginRemovePlanTool,
+  PluginRemoteStagePlanTool,
   PluginResolveCompatibilityTool,
   PluginSdkMetadataTool,
+  PluginStageRemoteTool,
   PluginStageUpdateTool,
+  PluginStagedInventoryTool,
   PluginUpdatePlanTool,
   PluginValidateManifestTool,
+  PluginVerifyArtifactTool,
 } from './tools/plugin-marketplace.tools.js';
 
 @Module({
@@ -46,6 +56,8 @@ import {
     PluginSdkMetadataService,
     PluginStateStoreService,
     PluginLifecycleExecutorService,
+    PluginRemoteArtifactVerifierService,
+    PluginRemoteStagingService,
     PluginCatalogTool,
     PluginValidateManifestTool,
     PluginResolveCompatibilityTool,
@@ -58,6 +70,10 @@ import {
     PluginDisableTool,
     PluginStageUpdateTool,
     PluginLifecycleResultTool,
+    PluginRemoteStagePlanTool,
+    PluginVerifyArtifactTool,
+    PluginStageRemoteTool,
+    PluginStagedInventoryTool,
   ],
   exports: [
     PluginManifestValidatorService,
@@ -66,6 +82,8 @@ import {
     PluginSdkMetadataService,
     PluginStateStoreService,
     PluginLifecycleExecutorService,
+    PluginRemoteArtifactVerifierService,
+    PluginRemoteStagingService,
   ],
 })
 export class PluginMarketplaceModule implements OnModuleInit {
@@ -83,6 +101,10 @@ export class PluginMarketplaceModule implements OnModuleInit {
     private readonly disableTool: PluginDisableTool,
     private readonly stageUpdateTool: PluginStageUpdateTool,
     private readonly lifecycleResultTool: PluginLifecycleResultTool,
+    private readonly remoteStagePlanTool: PluginRemoteStagePlanTool,
+    private readonly verifyArtifactTool: PluginVerifyArtifactTool,
+    private readonly stageRemoteTool: PluginStageRemoteTool,
+    private readonly stagedInventoryTool: PluginStagedInventoryTool,
   ) {}
 
   onModuleInit(): void {
@@ -98,5 +120,9 @@ export class PluginMarketplaceModule implements OnModuleInit {
     this.registry.register(PLUGIN_DISABLE_TOOL_DEFINITION, this.disableTool);
     this.registry.register(PLUGIN_STAGE_UPDATE_TOOL_DEFINITION, this.stageUpdateTool);
     this.registry.register(PLUGIN_LIFECYCLE_RESULT_TOOL_DEFINITION, this.lifecycleResultTool);
+    this.registry.register(PLUGIN_REMOTE_STAGE_PLAN_TOOL_DEFINITION, this.remoteStagePlanTool);
+    this.registry.register(PLUGIN_VERIFY_ARTIFACT_TOOL_DEFINITION, this.verifyArtifactTool);
+    this.registry.register(PLUGIN_STAGE_REMOTE_TOOL_DEFINITION, this.stageRemoteTool);
+    this.registry.register(PLUGIN_STAGED_INVENTORY_TOOL_DEFINITION, this.stagedInventoryTool);
   }
 }

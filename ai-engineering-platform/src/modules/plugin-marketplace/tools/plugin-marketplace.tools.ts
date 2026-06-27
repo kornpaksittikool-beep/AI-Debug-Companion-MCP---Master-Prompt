@@ -9,9 +9,15 @@ import type {
   PluginLifecycleResultInputDto,
   PluginLifecyclePlanInputDto,
   PluginManifestValidationInputDto,
+  RemotePluginArtifactVerificationInputDto,
+  RemotePluginStagedInventoryInputDto,
+  RemotePluginStageInputDto,
+  RemotePluginStagePlanInputDto,
 } from '../dto/plugin-marketplace.dto.js';
 import { PluginLifecycleExecutorService } from '../services/plugin-lifecycle-executor.service.js';
 import { PluginMarketplaceService } from '../services/plugin-marketplace.service.js';
+import { PluginRemoteArtifactVerifierService } from '../services/plugin-remote-artifact-verifier.service.js';
+import { PluginRemoteStagingService } from '../services/plugin-remote-staging.service.js';
 import { PluginSdkMetadataService } from '../services/plugin-sdk-metadata.service.js';
 
 @Injectable()
@@ -139,6 +145,50 @@ export class PluginLifecycleResultTool implements ToolHandler {
   execute(input: JsonSchemaObject): Promise<JsonSchemaObject> {
     return this.service
       .lifecycleResult(input as unknown as PluginLifecycleResultInputDto)
+      .then((result) => result as unknown as JsonSchemaObject);
+  }
+}
+
+@Injectable()
+export class PluginRemoteStagePlanTool implements ToolHandler {
+  constructor(private readonly service: PluginRemoteStagingService) {}
+
+  execute(input: JsonSchemaObject): Promise<JsonSchemaObject> {
+    return Promise.resolve(
+      this.service.createStagePlan(input as unknown as RemotePluginStagePlanInputDto) as unknown as JsonSchemaObject,
+    );
+  }
+}
+
+@Injectable()
+export class PluginVerifyArtifactTool implements ToolHandler {
+  constructor(private readonly service: PluginRemoteArtifactVerifierService) {}
+
+  execute(input: JsonSchemaObject): Promise<JsonSchemaObject> {
+    return Promise.resolve(
+      this.service.verify(input as unknown as RemotePluginArtifactVerificationInputDto) as unknown as JsonSchemaObject,
+    );
+  }
+}
+
+@Injectable()
+export class PluginStageRemoteTool implements ToolHandler {
+  constructor(private readonly service: PluginRemoteStagingService) {}
+
+  execute(input: JsonSchemaObject): Promise<JsonSchemaObject> {
+    return this.service
+      .stageRemote(input as unknown as RemotePluginStageInputDto)
+      .then((result) => result as unknown as JsonSchemaObject);
+  }
+}
+
+@Injectable()
+export class PluginStagedInventoryTool implements ToolHandler {
+  constructor(private readonly service: PluginRemoteStagingService) {}
+
+  execute(input: JsonSchemaObject): Promise<JsonSchemaObject> {
+    return this.service
+      .stagedInventory(input as unknown as RemotePluginStagedInventoryInputDto)
       .then((result) => result as unknown as JsonSchemaObject);
   }
 }

@@ -2,7 +2,7 @@
 
 AI Engineering Platform is a production-oriented MCP foundation for evidence-driven software engineering workflows.
 
-Phase 16 provides the Core MCP Framework, Investigation Engine, bounded Repository Intelligence, TypeScript/JavaScript symbol intelligence, bounded import and call graphs, persistent repository graph indexing, cross-repository search, read-only SQLite Database Intelligence, PostgreSQL/MySQL connection profile validation, read-only Git Intelligence, Planning and Impact Engine, patch proposal workflow, deterministic approved patch application, rollback execution, allow-listed verification execution, versioned Project Memory, cache foundation, cache invalidation, read-only security audits, plugin marketplace readiness, semantic plugin compatibility resolution, approved local plugin state loading, and provider-neutral AI routing contracts. It does not include automatic unapproved patch application, dynamic remote plugin installation, external plugin code execution, external database network execution, AI API execution, distributed cache, vector memory, cloud sync, or remote Git hosting integration.
+Phase 17 provides the Core MCP Framework, Investigation Engine, bounded Repository Intelligence, TypeScript/JavaScript symbol intelligence, bounded import and call graphs, persistent repository graph indexing, cross-repository search, read-only SQLite Database Intelligence, PostgreSQL/MySQL connection profile validation, read-only Git Intelligence, Planning and Impact Engine, patch proposal workflow, deterministic approved patch application, rollback execution, allow-listed verification execution, versioned Project Memory, cache foundation, cache invalidation, read-only security audits, plugin marketplace readiness, semantic plugin compatibility resolution, approved local plugin state loading, remote plugin staging metadata, and provider-neutral AI routing contracts. It does not include automatic unapproved patch application, dynamic remote plugin installation, external plugin code execution, external database network execution, AI API execution, distributed cache, vector memory, cloud sync, or remote Git hosting integration.
 
 ## Requirements
 
@@ -93,6 +93,9 @@ The Phase 1 server uses stdio transport through the official Model Context Proto
 - Semantic compatibility checks for plugin platform, Node.js, and runtime requirements.
 - Local plugin inventory stored under `.ai-engineering-platform/plugins`.
 - Approved local plugin enable, disable, and staged update state workflows.
+- Remote plugin staging plans for HTTPS archives, GitHub releases, and Git repository sources.
+- SHA-256 remote plugin artifact verification without network access.
+- Remote plugin staged metadata inventory under `.ai-engineering-platform/plugins/remote-staging`.
 - Stored plugin lifecycle execution results with rollback and verification plans.
 - Provider-neutral AI provider profiles for OpenAI, Claude, Gemini, DeepSeek, Ollama, OpenRouter, and local LLMs.
 - AI request validation against provider and model metadata.
@@ -349,6 +352,22 @@ Stages a local plugin update in plugin state metadata after validation and compa
 
 Returns a stored plugin lifecycle execution result by ID.
 
+### `plugin.remote_stage_plan`
+
+Creates a reviewable remote plugin staging plan without downloading, installing, or executing plugin code.
+
+### `plugin.verify_artifact`
+
+Verifies remote plugin artifact content against declared source checksum metadata without network access.
+
+### `plugin.stage_remote`
+
+Stages verified remote plugin metadata under `.ai-engineering-platform` without executing plugin code.
+
+### `plugin.staged_inventory`
+
+Returns remote plugin staging metadata inventory.
+
 ### `ai.providers`
 
 Lists provider-neutral AI provider profiles and model metadata.
@@ -392,7 +411,8 @@ The current implementation intentionally excludes:
 - Distributed cache.
 - Distributed repository index.
 - Automatic security auto-fix.
-- Dynamic remote plugin download or execution.
+- Dynamic remote plugin download, installation, or execution.
+- Remote plugin dependency installation.
 - Dynamic import of external plugin code.
 - Package manager based plugin installation.
 - AI provider API calls.

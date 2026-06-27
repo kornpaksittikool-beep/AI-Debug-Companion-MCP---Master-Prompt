@@ -27,6 +27,18 @@ const PLUGIN_MARKETPLACE_PERMISSION: ToolPermission = {
   },
 };
 
+const PLUGIN_REMOTE_STAGING_PERMISSION: ToolPermission = {
+  ...PLUGIN_MARKETPLACE_PERMISSION,
+  fileSystem: {
+    read: true,
+    write: true,
+    allowedRoots: ['provided-rootPath'],
+  },
+  network: {
+    enabled: false,
+  },
+};
+
 const resultObjectSchema: JsonSchemaObject = {
   type: 'object',
   additionalProperties: true,
@@ -66,6 +78,27 @@ const lifecycleExecutionInputSchema: JsonSchemaObject = {
     targetVersion: { type: 'string' },
     reason: { type: 'string' },
     acknowledgeBroadPermissions: { type: 'boolean' },
+  },
+};
+
+const remoteSourceSchema: JsonSchemaObject = {
+  type: 'object',
+  required: ['type', 'url', 'checksumAlgorithm', 'checksum'],
+  additionalProperties: false,
+  properties: {
+    type: { type: 'string', enum: ['https_archive', 'github_release', 'git_repository'] },
+    url: { type: 'string' },
+    checksumAlgorithm: { type: 'string', enum: ['sha256'] },
+    checksum: { type: 'string' },
+    signature: {
+      type: 'object',
+      additionalProperties: false,
+      properties: {
+        algorithm: { type: 'string' },
+        keyId: { type: 'string' },
+        signature: { type: 'string' },
+      },
+    },
   },
 };
 
@@ -295,4 +328,99 @@ export const PLUGIN_LIFECYCLE_RESULT_TOOL_DEFINITION: ToolDefinition = {
   retryStrategy: NO_RETRY,
   sideEffects: 'read',
   examples: [{ input: { rootPath: '/repo', lifecycleId: 'plugin_lifecycle_enable_123' }, output: { status: 'completed' } }],
+};
+
+export const PLUGIN_REMOTE_STAGE_PLAN_TOOL_DEFINITION: ToolDefinition = {
+  name: 'plugin.remote_stage_plan',
+  version: '1.0.0',
+  description: 'Creates a reviewable remote plugin staging plan without downloading, installing, or executing plugin code.',
+  module: 'plugin-marketplace',
+  inputSchema: {
+    type: 'object',
+    required: ['manifest', 'source'],
+    additionalProperties: false,
+    properties: {
+      manifest: manifestSchema,
+      source: remoteSourceSchema,
+      reason: { type: 'string' },
+    },
+  },
+  outputSchema: resultObjectSchema,
+  errorSchema: STANDARD_ERROR_SCHEMA,
+  permissions: PLUGIN_MARKETPLACE_PERMISSION,
+  timeoutMs: 3000,
+  retryStrategy: NO_RETRY,
+  sideEffects: 'read',
+  examples: [{ input: { manifest: { name: 'remote', version: '1.0.0', description: 'Remote.', tools: [] }, source: { type: 'https_archive', url: 'https://example.com/plugin.tgz', checksumAlgorithm: 'sha256', checksum: '0'.repeat(64) } }, output: { status: 'requires_approval' } }],
+};
+
+export const PLUGIN_VERIFY_ARTIFACT_TOOL_DEFINITION: ToolDefinition = {
+  name: 'plugin.verify_artifact',
+  version: '1.0.0',
+  description: 'Verifies remote plugin artifact content against declared source checksum metadata without network access.',
+  module: 'plugin-marketplace',
+  inputSchema: {
+    type: 'object',
+    required: ['source', 'artifactContent'],
+    additionalProperties: false,
+    properties: {
+      source: remoteSourceSchema,
+      artifactContent: { type: 'string' },
+    },
+  },
+  outputSchema: resultObjectSchema,
+  errorSchema: STANDARD_ERROR_SCHEMA,
+  permissions: PLUGIN_MARKETPLACE_PERMISSION,
+  timeoutMs: 3000,
+  retryStrategy: NO_RETRY,
+  sideEffects: 'read',
+  examples: [{ input: { source: { type: 'https_archive', url: 'https://example.com/plugin.tgz', checksumAlgorithm: 'sha256', checksum: '0'.repeat(64) }, artifactContent: 'archive bytes' }, output: { valid: false } }],
+};
+
+export const PLUGIN_STAGE_REMOTE_TOOL_DEFINITION: ToolDefinition = {
+  name: 'plugin.stage_remote',
+  version: '1.0.0',
+  description: 'Stages verified remote plugin metadata under .ai-engineering-platform without executing plugin code.',
+  module: 'plugin-marketplace',
+  inputSchema: {
+    type: 'object',
+    required: ['rootPath', 'manifest', 'source', 'artifactContent'],
+    additionalProperties: false,
+    properties: {
+      rootPath: { type: 'string' },
+      manifest: manifestSchema,
+      source: remoteSourceSchema,
+      artifactContent: { type: 'string' },
+      stageReason: { type: 'string' },
+    },
+  },
+  outputSchema: resultObjectSchema,
+  errorSchema: STANDARD_ERROR_SCHEMA,
+  permissions: PLUGIN_REMOTE_STAGING_PERMISSION,
+  timeoutMs: 5000,
+  retryStrategy: NO_RETRY,
+  sideEffects: 'write',
+  examples: [{ input: { rootPath: '/repo', manifest: { name: 'remote', version: '1.0.0', description: 'Remote.', tools: [] }, source: { type: 'https_archive', url: 'https://example.com/plugin.tgz', checksumAlgorithm: 'sha256', checksum: '0'.repeat(64) }, artifactContent: 'archive bytes' }, output: { status: 'rejected' } }],
+};
+
+export const PLUGIN_STAGED_INVENTORY_TOOL_DEFINITION: ToolDefinition = {
+  name: 'plugin.staged_inventory',
+  version: '1.0.0',
+  description: 'Returns remote plugin staging metadata inventory.',
+  module: 'plugin-marketplace',
+  inputSchema: {
+    type: 'object',
+    required: ['rootPath'],
+    additionalProperties: false,
+    properties: {
+      rootPath: { type: 'string' },
+    },
+  },
+  outputSchema: resultObjectSchema,
+  errorSchema: STANDARD_ERROR_SCHEMA,
+  permissions: PLUGIN_REMOTE_STAGING_PERMISSION,
+  timeoutMs: 3000,
+  retryStrategy: NO_RETRY,
+  sideEffects: 'read',
+  examples: [{ input: { rootPath: '/repo' }, output: { stagedPlugins: [] } }],
 };
