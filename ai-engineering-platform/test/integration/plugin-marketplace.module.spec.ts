@@ -20,6 +20,11 @@ describe('PluginMarketplaceModule integration', () => {
         'plugin.remove_plan',
         'plugin.update_plan',
         'plugin.sdk_metadata',
+        'plugin.inventory',
+        'plugin.enable',
+        'plugin.disable',
+        'plugin.stage_update',
+        'plugin.lifecycle_result',
         'example.echo',
       ]),
     );

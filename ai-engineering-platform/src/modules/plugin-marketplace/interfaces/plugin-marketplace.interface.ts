@@ -84,3 +84,56 @@ export interface PluginSdkMetadata {
     readonly securityRequirements: readonly string[];
   };
 }
+
+export type PluginRuntimeState = 'enabled' | 'disabled' | 'staged_update';
+
+export interface PluginStateRecord {
+  readonly name: string;
+  readonly version: string;
+  readonly state: PluginRuntimeState;
+  readonly manifest: PluginManifest;
+  readonly updatedAt: string;
+}
+
+export interface PluginLifecycleExecutionInput {
+  readonly rootPath: string;
+  readonly manifest: PluginManifest;
+  readonly targetVersion?: string;
+  readonly reason?: string;
+  readonly acknowledgeBroadPermissions?: boolean;
+}
+
+export interface PluginDisableInput {
+  readonly rootPath: string;
+  readonly pluginName: string;
+  readonly reason?: string;
+}
+
+export interface PluginInventoryInput {
+  readonly rootPath: string;
+}
+
+export interface PluginLifecycleResultInput {
+  readonly rootPath: string;
+  readonly lifecycleId: string;
+}
+
+export interface PluginInventoryResult {
+  readonly rootPath: string;
+  readonly plugins: readonly PluginStateRecord[];
+  readonly lifecycleResults: readonly PluginLifecycleExecutionResult[];
+}
+
+export interface PluginLifecycleExecutionResult {
+  readonly lifecycleId: string;
+  readonly action: 'enable' | 'disable' | 'stage_update';
+  readonly pluginName: string;
+  readonly status: 'completed' | 'rejected';
+  readonly reason: string;
+  readonly previousState?: PluginStateRecord;
+  readonly nextState?: PluginStateRecord;
+  readonly validation?: PluginManifestValidationResult;
+  readonly rollbackPlan: readonly string[];
+  readonly verificationPlan: readonly string[];
+  readonly createdAt: string;
+}

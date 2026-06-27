@@ -2,7 +2,7 @@
 
 AI Engineering Platform is a production-oriented MCP foundation for evidence-driven software engineering workflows.
 
-Phase 11 provides the Core MCP Framework, Investigation Engine, bounded Repository Intelligence, TypeScript/JavaScript symbol intelligence, read-only SQLite Database Intelligence, read-only Git Intelligence, Planning and Impact Engine, patch proposal workflow, rollback planning, allow-listed verification execution, versioned Project Memory, cache foundation, cache invalidation, read-only security audits, plugin marketplace readiness, and semantic plugin compatibility resolution. It does not include automatic patch application, dynamic remote plugin installation, distributed cache, vector memory, cloud sync, or remote Git hosting integration.
+Phase 12 provides the Core MCP Framework, Investigation Engine, bounded Repository Intelligence, TypeScript/JavaScript symbol intelligence, read-only SQLite Database Intelligence, read-only Git Intelligence, Planning and Impact Engine, patch proposal workflow, rollback planning, allow-listed verification execution, versioned Project Memory, cache foundation, cache invalidation, read-only security audits, plugin marketplace readiness, semantic plugin compatibility resolution, and approved local plugin state loading. It does not include automatic patch application, dynamic remote plugin installation, external plugin code execution, distributed cache, vector memory, cloud sync, or remote Git hosting integration.
 
 ## Requirements
 
@@ -81,6 +81,9 @@ The Phase 1 server uses stdio transport through the official Model Context Proto
 - Reviewable plugin install, remove, and update plans.
 - Language plugin SDK and external tool plugin SDK contracts.
 - Semantic compatibility checks for plugin platform, Node.js, and runtime requirements.
+- Local plugin inventory stored under `.ai-engineering-platform/plugins`.
+- Approved local plugin enable, disable, and staged update state workflows.
+- Stored plugin lifecycle execution results with rollback and verification plans.
 - Jest unit and integration test baseline.
 
 ## Registered Tools
@@ -277,6 +280,26 @@ Creates a reviewable plugin update plan without replacing plugin code.
 
 Returns language plugin and external tool plugin SDK metadata.
 
+### `plugin.inventory`
+
+Returns local plugin state inventory and lifecycle execution history.
+
+### `plugin.enable`
+
+Enables a local plugin manifest in plugin state metadata after validation and compatibility checks.
+
+### `plugin.disable`
+
+Disables a local plugin in plugin state metadata without deleting plugin files.
+
+### `plugin.stage_update`
+
+Stages a local plugin update in plugin state metadata after validation and compatibility checks.
+
+### `plugin.lifecycle_result`
+
+Returns a stored plugin lifecycle execution result by ID.
+
 ## Architecture Boundary
 
 Core owns MCP transport integration, execution, logging, errors, security policy foundations, and registry behavior.
@@ -303,6 +326,8 @@ The current implementation intentionally excludes:
 - Full persistent incremental index.
 - Automatic security auto-fix.
 - Dynamic remote plugin download or execution.
+- Dynamic import of external plugin code.
+- Package manager based plugin installation.
 - Vector database memory.
 - Cloud memory synchronization.
 - AI provider adapters.

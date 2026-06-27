@@ -56,6 +56,19 @@ const lifecycleInputSchema: JsonSchemaObject = {
   },
 };
 
+const lifecycleExecutionInputSchema: JsonSchemaObject = {
+  type: 'object',
+  required: ['rootPath', 'manifest'],
+  additionalProperties: false,
+  properties: {
+    rootPath: { type: 'string' },
+    manifest: manifestSchema,
+    targetVersion: { type: 'string' },
+    reason: { type: 'string' },
+    acknowledgeBroadPermissions: { type: 'boolean' },
+  },
+};
+
 export const PLUGIN_CATALOG_TOOL_DEFINITION: ToolDefinition = {
   name: 'plugin.catalog',
   version: '1.0.0',
@@ -183,4 +196,103 @@ export const PLUGIN_SDK_METADATA_TOOL_DEFINITION: ToolDefinition = {
   retryStrategy: NO_RETRY,
   sideEffects: 'read',
   examples: [{ input: {}, output: { languagePluginSdk: { version: '1.0.0' } } }],
+};
+
+export const PLUGIN_INVENTORY_TOOL_DEFINITION: ToolDefinition = {
+  name: 'plugin.inventory',
+  version: '1.0.0',
+  description: 'Returns local plugin state inventory and lifecycle execution history.',
+  module: 'plugin-marketplace',
+  inputSchema: {
+    type: 'object',
+    required: ['rootPath'],
+    additionalProperties: false,
+    properties: {
+      rootPath: { type: 'string' },
+    },
+  },
+  outputSchema: resultObjectSchema,
+  errorSchema: STANDARD_ERROR_SCHEMA,
+  permissions: PLUGIN_MARKETPLACE_PERMISSION,
+  timeoutMs: 3000,
+  retryStrategy: NO_RETRY,
+  sideEffects: 'read',
+  examples: [{ input: { rootPath: '/repo' }, output: { plugins: [] } }],
+};
+
+export const PLUGIN_ENABLE_TOOL_DEFINITION: ToolDefinition = {
+  name: 'plugin.enable',
+  version: '1.0.0',
+  description: 'Enables a local plugin manifest in plugin state metadata after validation and compatibility checks.',
+  module: 'plugin-marketplace',
+  inputSchema: lifecycleExecutionInputSchema,
+  outputSchema: resultObjectSchema,
+  errorSchema: STANDARD_ERROR_SCHEMA,
+  permissions: PLUGIN_MARKETPLACE_PERMISSION,
+  timeoutMs: 5000,
+  retryStrategy: NO_RETRY,
+  sideEffects: 'write',
+  examples: [{ input: { rootPath: '/repo', manifest: { name: 'example', version: '1.0.0', description: 'Example.', tools: [] } }, output: { status: 'completed' } }],
+};
+
+export const PLUGIN_DISABLE_TOOL_DEFINITION: ToolDefinition = {
+  name: 'plugin.disable',
+  version: '1.0.0',
+  description: 'Disables a local plugin in plugin state metadata without deleting plugin files.',
+  module: 'plugin-marketplace',
+  inputSchema: {
+    type: 'object',
+    required: ['rootPath', 'pluginName'],
+    additionalProperties: false,
+    properties: {
+      rootPath: { type: 'string' },
+      pluginName: { type: 'string' },
+      reason: { type: 'string' },
+    },
+  },
+  outputSchema: resultObjectSchema,
+  errorSchema: STANDARD_ERROR_SCHEMA,
+  permissions: PLUGIN_MARKETPLACE_PERMISSION,
+  timeoutMs: 5000,
+  retryStrategy: NO_RETRY,
+  sideEffects: 'write',
+  examples: [{ input: { rootPath: '/repo', pluginName: 'example' }, output: { status: 'completed' } }],
+};
+
+export const PLUGIN_STAGE_UPDATE_TOOL_DEFINITION: ToolDefinition = {
+  name: 'plugin.stage_update',
+  version: '1.0.0',
+  description: 'Stages a local plugin update in plugin state metadata after validation and compatibility checks.',
+  module: 'plugin-marketplace',
+  inputSchema: lifecycleExecutionInputSchema,
+  outputSchema: resultObjectSchema,
+  errorSchema: STANDARD_ERROR_SCHEMA,
+  permissions: PLUGIN_MARKETPLACE_PERMISSION,
+  timeoutMs: 5000,
+  retryStrategy: NO_RETRY,
+  sideEffects: 'write',
+  examples: [{ input: { rootPath: '/repo', manifest: { name: 'example', version: '1.1.0', description: 'Example.', tools: [] } }, output: { status: 'completed' } }],
+};
+
+export const PLUGIN_LIFECYCLE_RESULT_TOOL_DEFINITION: ToolDefinition = {
+  name: 'plugin.lifecycle_result',
+  version: '1.0.0',
+  description: 'Returns a stored plugin lifecycle execution result by ID.',
+  module: 'plugin-marketplace',
+  inputSchema: {
+    type: 'object',
+    required: ['rootPath', 'lifecycleId'],
+    additionalProperties: false,
+    properties: {
+      rootPath: { type: 'string' },
+      lifecycleId: { type: 'string' },
+    },
+  },
+  outputSchema: resultObjectSchema,
+  errorSchema: STANDARD_ERROR_SCHEMA,
+  permissions: PLUGIN_MARKETPLACE_PERMISSION,
+  timeoutMs: 3000,
+  retryStrategy: NO_RETRY,
+  sideEffects: 'read',
+  examples: [{ input: { rootPath: '/repo', lifecycleId: 'plugin_lifecycle_enable_123' }, output: { status: 'completed' } }],
 };

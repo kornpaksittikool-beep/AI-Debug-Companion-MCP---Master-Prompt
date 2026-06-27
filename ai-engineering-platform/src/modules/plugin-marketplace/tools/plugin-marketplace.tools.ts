@@ -3,9 +3,14 @@ import type { JsonSchemaObject } from '../../../core/registry/interfaces/json-sc
 import type { ToolHandler } from '../../../core/registry/interfaces/tool-handler.interface.js';
 import type {
   PluginCompatibilityInputDto,
+  PluginDisableInputDto,
+  PluginInventoryInputDto,
+  PluginLifecycleExecutionInputDto,
+  PluginLifecycleResultInputDto,
   PluginLifecyclePlanInputDto,
   PluginManifestValidationInputDto,
 } from '../dto/plugin-marketplace.dto.js';
+import { PluginLifecycleExecutorService } from '../services/plugin-lifecycle-executor.service.js';
 import { PluginMarketplaceService } from '../services/plugin-marketplace.service.js';
 import { PluginSdkMetadataService } from '../services/plugin-sdk-metadata.service.js';
 
@@ -80,5 +85,60 @@ export class PluginSdkMetadataTool implements ToolHandler {
   execute(input: JsonSchemaObject): Promise<JsonSchemaObject> {
     void input;
     return Promise.resolve(this.service.metadata() as unknown as JsonSchemaObject);
+  }
+}
+
+@Injectable()
+export class PluginInventoryTool implements ToolHandler {
+  constructor(private readonly service: PluginLifecycleExecutorService) {}
+
+  execute(input: JsonSchemaObject): Promise<JsonSchemaObject> {
+    return this.service
+      .inventory(input as unknown as PluginInventoryInputDto)
+      .then((result) => result as unknown as JsonSchemaObject);
+  }
+}
+
+@Injectable()
+export class PluginEnableTool implements ToolHandler {
+  constructor(private readonly service: PluginLifecycleExecutorService) {}
+
+  execute(input: JsonSchemaObject): Promise<JsonSchemaObject> {
+    return this.service
+      .enable(input as unknown as PluginLifecycleExecutionInputDto)
+      .then((result) => result as unknown as JsonSchemaObject);
+  }
+}
+
+@Injectable()
+export class PluginDisableTool implements ToolHandler {
+  constructor(private readonly service: PluginLifecycleExecutorService) {}
+
+  execute(input: JsonSchemaObject): Promise<JsonSchemaObject> {
+    return this.service
+      .disable(input as unknown as PluginDisableInputDto)
+      .then((result) => result as unknown as JsonSchemaObject);
+  }
+}
+
+@Injectable()
+export class PluginStageUpdateTool implements ToolHandler {
+  constructor(private readonly service: PluginLifecycleExecutorService) {}
+
+  execute(input: JsonSchemaObject): Promise<JsonSchemaObject> {
+    return this.service
+      .stageUpdate(input as unknown as PluginLifecycleExecutionInputDto)
+      .then((result) => result as unknown as JsonSchemaObject);
+  }
+}
+
+@Injectable()
+export class PluginLifecycleResultTool implements ToolHandler {
+  constructor(private readonly service: PluginLifecycleExecutorService) {}
+
+  execute(input: JsonSchemaObject): Promise<JsonSchemaObject> {
+    return this.service
+      .lifecycleResult(input as unknown as PluginLifecycleResultInputDto)
+      .then((result) => result as unknown as JsonSchemaObject);
   }
 }

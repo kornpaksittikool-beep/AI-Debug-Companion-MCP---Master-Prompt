@@ -4,23 +4,35 @@ import { ToolRegistryService } from '../../core/registry/services/tool-registry.
 import { ExamplePluginModule } from '../../plugins/example/example-plugin.module.js';
 import { PluginManifestValidatorService } from './services/plugin-manifest-validator.service.js';
 import { PluginCompatibilityService } from './services/plugin-compatibility.service.js';
+import { PluginLifecycleExecutorService } from './services/plugin-lifecycle-executor.service.js';
 import { PluginMarketplaceService } from './services/plugin-marketplace.service.js';
 import { PluginSdkMetadataService } from './services/plugin-sdk-metadata.service.js';
+import { PluginStateStoreService } from './services/plugin-state-store.service.js';
 import {
   PLUGIN_CATALOG_TOOL_DEFINITION,
+  PLUGIN_DISABLE_TOOL_DEFINITION,
+  PLUGIN_ENABLE_TOOL_DEFINITION,
   PLUGIN_INSTALL_PLAN_TOOL_DEFINITION,
+  PLUGIN_INVENTORY_TOOL_DEFINITION,
+  PLUGIN_LIFECYCLE_RESULT_TOOL_DEFINITION,
   PLUGIN_REMOVE_PLAN_TOOL_DEFINITION,
   PLUGIN_RESOLVE_COMPATIBILITY_TOOL_DEFINITION,
   PLUGIN_SDK_METADATA_TOOL_DEFINITION,
+  PLUGIN_STAGE_UPDATE_TOOL_DEFINITION,
   PLUGIN_UPDATE_PLAN_TOOL_DEFINITION,
   PLUGIN_VALIDATE_MANIFEST_TOOL_DEFINITION,
 } from './tools/plugin-marketplace-tool-schemas.js';
 import {
   PluginCatalogTool,
+  PluginDisableTool,
+  PluginEnableTool,
   PluginInstallPlanTool,
+  PluginInventoryTool,
+  PluginLifecycleResultTool,
   PluginRemovePlanTool,
   PluginResolveCompatibilityTool,
   PluginSdkMetadataTool,
+  PluginStageUpdateTool,
   PluginUpdatePlanTool,
   PluginValidateManifestTool,
 } from './tools/plugin-marketplace.tools.js';
@@ -32,6 +44,8 @@ import {
     PluginCompatibilityService,
     PluginMarketplaceService,
     PluginSdkMetadataService,
+    PluginStateStoreService,
+    PluginLifecycleExecutorService,
     PluginCatalogTool,
     PluginValidateManifestTool,
     PluginResolveCompatibilityTool,
@@ -39,8 +53,20 @@ import {
     PluginRemovePlanTool,
     PluginUpdatePlanTool,
     PluginSdkMetadataTool,
+    PluginInventoryTool,
+    PluginEnableTool,
+    PluginDisableTool,
+    PluginStageUpdateTool,
+    PluginLifecycleResultTool,
   ],
-  exports: [PluginManifestValidatorService, PluginCompatibilityService, PluginMarketplaceService, PluginSdkMetadataService],
+  exports: [
+    PluginManifestValidatorService,
+    PluginCompatibilityService,
+    PluginMarketplaceService,
+    PluginSdkMetadataService,
+    PluginStateStoreService,
+    PluginLifecycleExecutorService,
+  ],
 })
 export class PluginMarketplaceModule implements OnModuleInit {
   constructor(
@@ -52,6 +78,11 @@ export class PluginMarketplaceModule implements OnModuleInit {
     private readonly removePlanTool: PluginRemovePlanTool,
     private readonly updatePlanTool: PluginUpdatePlanTool,
     private readonly sdkMetadataTool: PluginSdkMetadataTool,
+    private readonly inventoryTool: PluginInventoryTool,
+    private readonly enableTool: PluginEnableTool,
+    private readonly disableTool: PluginDisableTool,
+    private readonly stageUpdateTool: PluginStageUpdateTool,
+    private readonly lifecycleResultTool: PluginLifecycleResultTool,
   ) {}
 
   onModuleInit(): void {
@@ -62,5 +93,10 @@ export class PluginMarketplaceModule implements OnModuleInit {
     this.registry.register(PLUGIN_REMOVE_PLAN_TOOL_DEFINITION, this.removePlanTool);
     this.registry.register(PLUGIN_UPDATE_PLAN_TOOL_DEFINITION, this.updatePlanTool);
     this.registry.register(PLUGIN_SDK_METADATA_TOOL_DEFINITION, this.sdkMetadataTool);
+    this.registry.register(PLUGIN_INVENTORY_TOOL_DEFINITION, this.inventoryTool);
+    this.registry.register(PLUGIN_ENABLE_TOOL_DEFINITION, this.enableTool);
+    this.registry.register(PLUGIN_DISABLE_TOOL_DEFINITION, this.disableTool);
+    this.registry.register(PLUGIN_STAGE_UPDATE_TOOL_DEFINITION, this.stageUpdateTool);
+    this.registry.register(PLUGIN_LIFECYCLE_RESULT_TOOL_DEFINITION, this.lifecycleResultTool);
   }
 }
