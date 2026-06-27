@@ -1,10 +1,16 @@
+import * as fs from 'node:fs/promises';
+import * as os from 'node:os';
+import * as path from 'node:path';
+import { PathPolicyService } from '../../src/core/security/path-policy.service.js';
+import { IntegrationTelemetryPathService } from '../../src/modules/integration-telemetry/services/integration-telemetry-path.service.js';
 import { IntegrationTelemetryService } from '../../src/modules/integration-telemetry/services/integration-telemetry.service.js';
+import { RepositorySafetyService } from '../../src/modules/repository-intelligence/services/repository-safety.service.js';
 
 describe('IntegrationTelemetryService', () => {
   let service: IntegrationTelemetryService;
 
   beforeEach(() => {
-    service = new IntegrationTelemetryService();
+    service = createService();
   });
 
   it('checks Codex integration readiness from provided evidence', () => {
@@ -38,7 +44,7 @@ describe('IntegrationTelemetryService', () => {
     expect(result.recommendations).toContain('Open the session from the repository root so AGENTS.md is loaded.');
   });
 
-  it('records tool usage and summarizes estimated savings', () => {
+  it('records tool usage and summarizes estimated savings', async () => {
     const session = service.startSession({
       client: 'codex',
       workspaceRoot: '/repo',
@@ -61,7 +67,7 @@ describe('IntegrationTelemetryService', () => {
       fallbackReason: 'MCP unavailable',
     });
 
-    const summary = service.summary({ sessionId: session.id });
+    const summary = await service.summary({ sessionId: session.id });
 
     expect(summary).toMatchObject({
       sessions: 1,
@@ -75,4 +81,44 @@ describe('IntegrationTelemetryService', () => {
     });
     expect(summary.topTools[0]?.toolName).toBe('repository.overview');
   });
+
+  it('flushes telemetry to disk and reads it back for summaries', async () => {
+    const rootPath = await fs.mkdtemp(path.join(os.tmpdir(), 'integration-telemetry-'));
+    const session = service.startSession({
+      client: 'codex',
+      workspaceRoot: rootPath,
+      sessionId: 'persisted-session',
+    });
+    service.recordToolUsage({
+      sessionId: session.id,
+      toolName: 'integration.workflow_index',
+      status: 'success',
+      estimatedOutputTokens: 20,
+    });
+
+    const flushed = await service.flush({ rootPath });
+    const reloaded = createService();
+    const summary = await reloaded.summary({ rootPath, sessionId: session.id });
+
+    expect(flushed.recordsWritten).toBe(1);
+    expect(flushed.recordsPath).toContain('.ai-engineering-platform');
+    expect(summary.toolCalls).toBe(1);
+    expect(summary.estimatedManualReadTokensAvoided).toBe(120);
+  });
+
+  it('returns workflow index entries for task routing', () => {
+    const result = service.workflowIndex({ taskType: 'bug_investigation' });
+
+    expect(result.entries).toHaveLength(1);
+    expect(result.entries[0]?.startTools).toEqual(
+      expect.arrayContaining(['platform.health', 'investigation.create', 'repository.overview']),
+    );
+    expect(result.entries[0]?.relevantFiles).toContain('src/modules/investigation');
+  });
 });
+
+function createService(): IntegrationTelemetryService {
+  return new IntegrationTelemetryService(
+    new IntegrationTelemetryPathService(new RepositorySafetyService(new PathPolicyService())),
+  );
+}

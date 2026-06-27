@@ -17,6 +17,8 @@ describe('IntegrationTelemetryModule integration', () => {
         'integration.record_tool_usage',
         'integration.readiness',
         'integration.telemetry_summary',
+        'integration.flush_telemetry',
+        'integration.workflow_index',
       ]),
     );
 
@@ -42,6 +44,25 @@ describe('IntegrationTelemetryModule integration', () => {
     expect(result.ok).toBe(true);
     if (result.ok) {
       expect(result.output).toMatchObject({ ready: true });
+    }
+
+    await moduleRef.close();
+  });
+
+  it('executes workflow index through core execution', async () => {
+    const moduleRef = await Test.createTestingModule({ imports: [AppModule] }).compile();
+    await moduleRef.init();
+
+    const execution = moduleRef.get(McpExecutionService);
+    const result = await execution.execute({
+      toolName: 'integration.workflow_index',
+      input: { taskType: 'patch_execution' },
+      correlationId: 'corr_workflow_index',
+    });
+
+    expect(result.ok).toBe(true);
+    if (result.ok) {
+      expect(result.output.entries).toHaveLength(1);
     }
 
     await moduleRef.close();

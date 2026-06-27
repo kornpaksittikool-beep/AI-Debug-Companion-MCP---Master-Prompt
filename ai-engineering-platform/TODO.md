@@ -78,3 +78,6 @@
 | Codex MCP readiness check | Phase 19 | Completed |
 | Integration session telemetry | Phase 19 | Completed |
 | MCP usage and token-saving summary | Phase 19 | Completed |
+| Durable local telemetry flush/load | Phase 20 | Completed |
+| Workflow routing index | Phase 20 | Completed |
+| Workflow index MCP smoke coverage | Phase 20 | Completed |

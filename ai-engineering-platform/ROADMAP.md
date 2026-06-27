@@ -73,6 +73,9 @@ The system must be developed iteratively. Each phase must produce usable, verifi
 | M19: Codex Integration Telemetry | Phase 19 | MCP client readiness checks for configured server, expected tools, and project instructions | Phase 18 and Codex MCP config | High | Medium | Completed |
 | M19: Codex Integration Telemetry | Phase 19 | In-memory integration session and tool usage telemetry | Readiness checks | High | Medium | Completed |
 | M19: Codex Integration Telemetry | Phase 19 | Estimated manual-read token avoidance summary | Token budget tools | High | Medium | Completed |
+| M20: Durable Telemetry and Workflow Index | Phase 20 | Durable local telemetry flush and reload under project state | Phase 19 telemetry | High | Medium | Completed |
+| M20: Durable Telemetry and Workflow Index | Phase 20 | Workflow routing index from task type to tools, modules, and files | Phase 19 readiness and tool metadata | High | Medium | Completed |
+| M20: Durable Telemetry and Workflow Index | Phase 20 | MCP smoke coverage for workflow index and telemetry persistence | Durable telemetry tools | High | Low | Completed |
 
 ## Phase Gate Rules
 
@@ -87,4 +90,4 @@ Each phase must pass the following checks before the next phase begins:
 
 ## Current Phase
 
-Phase 19 is completed. Future phases must be planned and approved before implementation.
+Phase 20 is completed. Future phases must be planned and approved before implementation.

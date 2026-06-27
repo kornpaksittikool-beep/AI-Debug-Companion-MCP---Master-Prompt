@@ -65,6 +65,7 @@ export interface IntegrationReadinessCheck {
 
 export interface IntegrationTelemetrySummaryInput {
   readonly sessionId?: string;
+  readonly rootPath?: string;
 }
 
 export interface IntegrationTelemetrySummary {
@@ -83,4 +84,50 @@ export interface IntegrationTelemetrySummary {
 export interface IntegrationToolUsageSummary {
   readonly toolName: string;
   readonly calls: number;
+}
+
+export interface WorkflowIndexInput {
+  readonly taskType?: WorkflowTaskType;
+  readonly query?: string;
+}
+
+export type WorkflowTaskType =
+  | 'bug_investigation'
+  | 'architecture_review'
+  | 'phase_planning'
+  | 'patch_execution'
+  | 'token_optimization'
+  | 'plugin_workflow'
+  | 'database_analysis'
+  | 'git_analysis';
+
+export interface WorkflowIndexEntry {
+  readonly taskType: WorkflowTaskType;
+  readonly description: string;
+  readonly startTools: readonly string[];
+  readonly evidenceTools: readonly string[];
+  readonly planningTools: readonly string[];
+  readonly verificationTools: readonly string[];
+  readonly primaryModules: readonly string[];
+  readonly relevantFiles: readonly string[];
+  readonly avoidUntilNeeded: readonly string[];
+}
+
+export interface WorkflowIndexResult {
+  readonly entries: readonly WorkflowIndexEntry[];
+  readonly recommendations: readonly string[];
+}
+
+export interface TelemetryFlushInput {
+  readonly rootPath: string;
+}
+
+export interface TelemetryFlushResult {
+  readonly rootPath: string;
+  readonly telemetryDir: string;
+  readonly sessionsPath: string;
+  readonly recordsPath: string;
+  readonly sessionsWritten: number;
+  readonly recordsWritten: number;
+  readonly flushedAt: string;
 }

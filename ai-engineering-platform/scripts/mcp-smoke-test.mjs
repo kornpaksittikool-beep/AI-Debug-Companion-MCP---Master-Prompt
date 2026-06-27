@@ -129,7 +129,14 @@ try {
     estimatedInputTokens: 5,
     estimatedOutputTokens: tokenEstimate.estimatedTokens,
   });
+  const workflowIndex = await callTool(client, 'integration.workflow_index', {
+    taskType: 'bug_investigation',
+  });
+  const flushTelemetry = await callTool(client, 'integration.flush_telemetry', {
+    rootPath,
+  });
   const integrationSummary = await callTool(client, 'integration.telemetry_summary', {
+    rootPath,
     sessionId: integrationSession.id,
   });
 
@@ -152,12 +159,14 @@ try {
     tokenStrategyStatus: tokenStrategy.status,
     integrationReady: integrationReadiness.ready,
     integrationToolCalls: integrationSummary.toolCalls,
+    workflowIndexEntries: workflowIndex.entries.length,
+    telemetryRecordsWritten: flushTelemetry.recordsWritten,
   };
 
   if (
     summary.toolCount < 70 ||
     summary.healthStatus !== 'ok' ||
-    summary.platformPhase !== 'phase-19-codex-integration-telemetry' ||
+    summary.platformPhase !== 'phase-20-durable-telemetry-workflow-index' ||
     !summary.importResolved ||
     summary.approvalStatus !== 'approved' ||
     summary.proposalStatus !== 'ready_for_review' ||
@@ -170,7 +179,9 @@ try {
     summary.tokenEstimate <= 0 ||
     summary.tokenStrategyStatus !== 'within_budget' ||
     !summary.integrationReady ||
-    summary.integrationToolCalls !== 1
+    summary.integrationToolCalls !== 1 ||
+    summary.workflowIndexEntries !== 1 ||
+    summary.telemetryRecordsWritten !== 1
   ) {
     throw new Error(`MCP smoke test failed: ${JSON.stringify(summary, null, 2)}`);
   }

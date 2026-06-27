@@ -2,7 +2,30 @@ import { STANDARD_ERROR_SCHEMA } from '../../../core/errors/error-envelope.inter
 import type { JsonSchemaObject } from '../../../core/registry/interfaces/json-schema.interface.js';
 import { NO_RETRY } from '../../../core/registry/interfaces/retry-strategy.interface.js';
 import type { ToolDefinition } from '../../../core/registry/interfaces/tool-definition.interface.js';
-import { NO_PERMISSION } from '../../../core/security/permission.interface.js';
+import { NO_PERMISSION, type ToolPermission } from '../../../core/security/permission.interface.js';
+
+const TELEMETRY_FILE_PERMISSION: ToolPermission = {
+  fileSystem: {
+    read: true,
+    write: true,
+    allowedRoots: ['provided-rootPath'],
+  },
+  commands: {
+    execute: false,
+    allowList: [],
+  },
+  git: {
+    read: false,
+    write: false,
+  },
+  database: {
+    read: false,
+    write: false,
+  },
+  network: {
+    enabled: false,
+  },
+};
 
 const resultObjectSchema: JsonSchemaObject = {
   type: 'object',
@@ -100,6 +123,7 @@ export const INTEGRATION_TELEMETRY_SUMMARY_TOOL_DEFINITION: ToolDefinition = {
     additionalProperties: false,
     properties: {
       sessionId: { type: 'string' },
+      rootPath: { type: 'string' },
     },
   },
   outputSchema: resultObjectSchema,
@@ -109,4 +133,60 @@ export const INTEGRATION_TELEMETRY_SUMMARY_TOOL_DEFINITION: ToolDefinition = {
   retryStrategy: NO_RETRY,
   sideEffects: 'read',
   examples: [{ input: {}, output: { toolCalls: 0 } }],
+};
+
+export const INTEGRATION_FLUSH_TELEMETRY_TOOL_DEFINITION: ToolDefinition = {
+  name: 'integration.flush_telemetry',
+  version: '1.0.0',
+  description: 'Persists in-memory integration telemetry under .ai-engineering-platform/integration-telemetry.',
+  module: 'integration-telemetry',
+  inputSchema: {
+    type: 'object',
+    required: ['rootPath'],
+    additionalProperties: false,
+    properties: {
+      rootPath: { type: 'string' },
+    },
+  },
+  outputSchema: resultObjectSchema,
+  errorSchema: STANDARD_ERROR_SCHEMA,
+  permissions: TELEMETRY_FILE_PERMISSION,
+  timeoutMs: 3000,
+  retryStrategy: NO_RETRY,
+  sideEffects: 'write',
+  examples: [{ input: { rootPath: '/repo' }, output: { recordsWritten: 1 } }],
+};
+
+export const INTEGRATION_WORKFLOW_INDEX_TOOL_DEFINITION: ToolDefinition = {
+  name: 'integration.workflow_index',
+  version: '1.0.0',
+  description: 'Returns the MCP workflow index for routing task types to tools, modules, and files.',
+  module: 'integration-telemetry',
+  inputSchema: {
+    type: 'object',
+    additionalProperties: false,
+    properties: {
+      taskType: {
+        type: 'string',
+        enum: [
+          'bug_investigation',
+          'architecture_review',
+          'phase_planning',
+          'patch_execution',
+          'token_optimization',
+          'plugin_workflow',
+          'database_analysis',
+          'git_analysis',
+        ],
+      },
+      query: { type: 'string' },
+    },
+  },
+  outputSchema: resultObjectSchema,
+  errorSchema: STANDARD_ERROR_SCHEMA,
+  permissions: NO_PERMISSION,
+  timeoutMs: 3000,
+  retryStrategy: NO_RETRY,
+  sideEffects: 'read',
+  examples: [{ input: { taskType: 'bug_investigation' }, output: { entries: [] } }],
 };

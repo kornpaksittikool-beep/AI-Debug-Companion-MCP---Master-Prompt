@@ -4,8 +4,9 @@ import type { ToolHandler } from '../../../core/registry/interfaces/tool-handler
 import type {
   IntegrationReadinessInputDto,
   IntegrationSessionInputDto,
-  IntegrationTelemetrySummaryInputDto,
+  TelemetryFlushInputDto,
   ToolUsageRecordInputDto,
+  WorkflowIndexInputDto,
 } from '../dto/integration-telemetry.dto.js';
 import { IntegrationTelemetryService } from '../services/integration-telemetry.service.js';
 
@@ -46,9 +47,28 @@ export class IntegrationReadinessTool implements ToolHandler {
 export class IntegrationTelemetrySummaryTool implements ToolHandler {
   constructor(private readonly service: IntegrationTelemetryService) {}
 
+  async execute(input: JsonSchemaObject): Promise<JsonSchemaObject> {
+    const summary = await this.service.summary(input);
+    return summary as unknown as JsonSchemaObject;
+  }
+}
+
+@Injectable()
+export class IntegrationFlushTelemetryTool implements ToolHandler {
+  constructor(private readonly service: IntegrationTelemetryService) {}
+
+  async execute(input: JsonSchemaObject): Promise<JsonSchemaObject> {
+    return (await this.service.flush(input as unknown as TelemetryFlushInputDto)) as unknown as JsonSchemaObject;
+  }
+}
+
+@Injectable()
+export class IntegrationWorkflowIndexTool implements ToolHandler {
+  constructor(private readonly service: IntegrationTelemetryService) {}
+
   execute(input: JsonSchemaObject): Promise<JsonSchemaObject> {
     return Promise.resolve(
-      this.service.summary(input as unknown as IntegrationTelemetrySummaryInputDto) as unknown as JsonSchemaObject,
+      this.service.workflowIndex(input as unknown as WorkflowIndexInputDto) as unknown as JsonSchemaObject,
     );
   }
 }

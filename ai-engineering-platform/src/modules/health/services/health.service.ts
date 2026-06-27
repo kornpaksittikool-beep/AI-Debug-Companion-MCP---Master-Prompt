@@ -25,7 +25,7 @@ export class HealthService {
       platform: {
         name: 'ai-engineering-platform',
         version: '0.1.0',
-        phase: 'phase-19-codex-integration-telemetry',
+        phase: 'phase-20-durable-telemetry-workflow-index',
       },
       tools,
     };
