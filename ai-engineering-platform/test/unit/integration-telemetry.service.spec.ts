@@ -128,7 +128,6 @@ describe('IntegrationTelemetryService', () => {
 
     expect(entry?.startTools).toEqual([
       'platform.health',
-      'platform.tool_summary',
       'repository.project_profile',
     ]);
     expect(entry?.targetTokenRange).toEqual({ min: 1000, max: 2000 });
@@ -136,6 +135,9 @@ describe('IntegrationTelemetryService', () => {
     expect(entry?.maxExcerptCalls).toBe(2);
     expect(entry?.contextPolicy).toContain(
       'Use repository.project_profile with mode=summary as the main evidence artifact.',
+    );
+    expect(entry?.contextPolicy).toContain(
+      'Skip platform.tool_summary for explicit project summaries unless tool availability is unclear.',
     );
     expect(entry?.contextPolicy).toContain(
       'Stop after repository.project_profile plus README/package excerpts when those answer the summary.',
@@ -159,6 +161,7 @@ describe('IntegrationTelemetryService', () => {
         'repository.search_symbols',
         'repository.read_file_context',
         'repository.read_file_excerpt for docs/architecture.md or src/app.module.ts during routine summaries',
+        'platform.tool_summary for explicit project summaries when repository.project_profile is available',
         'platform.metadata',
       ]),
     );
@@ -170,6 +173,7 @@ describe('IntegrationTelemetryService', () => {
       expect.arrayContaining([
         'repository.import_graph unless dependency flow is the question',
         'repository.overview unless the compact profile is insufficient',
+        'platform.tool_summary unless tool availability is unclear',
         'repository.search_files unless README/package cannot be found from the summary profile',
         'docs/architecture.md and source tree summaries unless architecture is the question',
       ]),

@@ -121,3 +121,6 @@
 | Remove repository.search_files from default project-summary route | Phase 33 | Completed |
 | Add summary strict-mode guardrails for architecture docs, source tree summaries, and app module excerpts | Phase 33 | Completed |
 | Add telemetry warning for summary strict-mode search violations | Phase 33 | Completed |
+| Remove platform.tool_summary from default project-summary startup route | Phase 34 | Completed |
+| Update Codex skill to call project_profile directly for explicit summaries | Phase 34 | Completed |
+| Add telemetry warning for project-summary tool_summary startup violations | Phase 34 | Completed |

@@ -36,7 +36,7 @@ const WORKFLOW_INDEX: readonly WorkflowIndexEntry[] = [
     taskType: 'project_summary',
     description:
       'Summarize project purpose, stack, modules, and key files with a compact low-token profile route.',
-    startTools: ['platform.health', 'platform.tool_summary', 'repository.project_profile'],
+    startTools: ['platform.health', 'repository.project_profile'],
     evidenceTools: [
       'repository.read_file_excerpt',
       'git.recent_changes',
@@ -50,6 +50,7 @@ const WORKFLOW_INDEX: readonly WorkflowIndexEntry[] = [
     maxExcerptCalls: 2,
     contextPolicy: [
       'Use repository.project_profile with mode=summary as the main evidence artifact.',
+      'Skip platform.tool_summary for explicit project summaries unless tool availability is unclear.',
       'Stop after repository.project_profile plus README/package excerpts when those answer the summary.',
       'Do not call repository.search_files for routine summaries unless README/package cannot be found from the profile.',
       'Do not run repository.search_symbols for routine summaries; use file search and excerpts instead.',
@@ -66,6 +67,7 @@ const WORKFLOW_INDEX: readonly WorkflowIndexEntry[] = [
       'repository.read_file_context',
       'repository.overview',
       'repository.read_file_excerpt for docs/architecture.md or src/app.module.ts during routine summaries',
+      'platform.tool_summary for explicit project summaries when repository.project_profile is available',
       'platform.metadata',
     ],
     avoidUntilNeeded: [
@@ -73,6 +75,7 @@ const WORKFLOW_INDEX: readonly WorkflowIndexEntry[] = [
       'repository.call_graph unless call flow is the question',
       'repository.overview unless the compact profile is insufficient',
       'repository.project_profile without mode=summary for routine summaries',
+      'platform.tool_summary unless tool availability is unclear',
       'repository.search_files unless README/package cannot be found from the summary profile',
       'repository.search_symbols unless the project profile and excerpts cannot identify module boundaries',
       'repository.read_file_context unless a compact excerpt is insufficient',

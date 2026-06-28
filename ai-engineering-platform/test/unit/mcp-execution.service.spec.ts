@@ -157,4 +157,21 @@ describe('McpExecutionService', () => {
     expect(summary.budgetStatus?.recommendation).toContain('Summary strict mode was likely violated');
     expect(summary.budgetStatus?.recommendation).toContain('repository.search_files');
   });
+
+  it('warns when project summary startup mode is violated by tool summary', () => {
+    const telemetry = new ExecutionTelemetryService();
+    telemetry.recordSuccess({
+      correlationId: 'corr_tools',
+      toolName: 'platform.tool_summary',
+      startedAt: new Date('2026-01-01T00:00:00.000Z'),
+      executionTimeMs: 1,
+      input: {},
+      output: { tools: 'x'.repeat(120) },
+    });
+
+    const summary = telemetry.summary({ questionType: 'project_summary', targetTokens: 5 });
+
+    expect(summary.budgetStatus?.recommendation).toContain('Summary strict mode was likely violated');
+    expect(summary.budgetStatus?.recommendation).toContain('platform.tool_summary');
+  });
 });

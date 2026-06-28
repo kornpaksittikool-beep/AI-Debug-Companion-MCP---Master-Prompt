@@ -175,6 +175,7 @@ export class ExecutionTelemetryService {
       'repository.read_file_context',
       'repository.read_module_context',
       'repository.overview',
+      'platform.tool_summary',
     ]);
     if (!largestTool || !strictViolationTools.has(largestTool)) {
       return status;

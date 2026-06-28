@@ -29,7 +29,7 @@ const QUESTION_PROFILES: Record<TokenQuestionType, StrategyQuestionProfile> = {
     targetTokenRange: { min: 1000, max: 2000 },
     excerptMaxBytes: 700,
     maxExcerptCalls: 2,
-    startTools: ['platform.health', 'platform.tool_summary', 'repository.project_profile'],
+    startTools: ['platform.health', 'repository.project_profile'],
     evidenceTools: [
       'repository.read_file_excerpt',
     ],
@@ -41,6 +41,7 @@ const QUESTION_PROFILES: Record<TokenQuestionType, StrategyQuestionProfile> = {
     ],
     contextPolicy: [
       'Use repository.project_profile with mode=summary as the primary summary artifact.',
+      'Skip platform.tool_summary for explicit project summaries unless tool availability is unclear.',
       'Stop after repository.project_profile plus README/package excerpts when those answer the summary.',
       'Do not call repository.search_files for routine summaries unless README/package cannot be found from the profile.',
       'Do not run repository.search_symbols for routine summaries; use file search and excerpts instead.',
@@ -58,6 +59,7 @@ const QUESTION_PROFILES: Record<TokenQuestionType, StrategyQuestionProfile> = {
       'repository.read_file_context',
       'repository.overview',
       'repository.read_file_excerpt for docs/architecture.md or src/app.module.ts during routine summaries',
+      'platform.tool_summary for explicit project summaries when repository.project_profile is available',
       'platform.metadata',
     ],
   },
@@ -292,6 +294,7 @@ export class TokenBudgetService {
         'Avoid repository.read_file_context for summaries; use repository.read_file_excerpt first and stop if the summary is already answerable.',
         'Avoid repository.search_files for routine summaries when repository.project_profile already identifies README/package evidence.',
         'Avoid compact/full repository.project_profile for summaries; use mode=summary first.',
+        'Avoid platform.tool_summary for explicit project summaries unless tool availability is unclear.',
         'Avoid architecture docs, source tree summaries, and app module excerpts unless the user asks for architecture or module details.',
         'Avoid repository.import_graph unless dependency flow is the current question.',
         'Avoid reading unrelated files during code review; use changed files, impacted symbols, and tests.',

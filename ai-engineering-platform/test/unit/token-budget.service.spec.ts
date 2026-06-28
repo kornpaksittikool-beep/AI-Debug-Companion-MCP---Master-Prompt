@@ -108,6 +108,7 @@ describe('TokenBudgetService', () => {
         'repository.read_file_context',
         'repository.read_file_excerpt for docs/architecture.md or src/app.module.ts during routine summaries',
         'repository.overview',
+        'platform.tool_summary for explicit project summaries when repository.project_profile is available',
         'platform.metadata',
       ]),
     );
@@ -117,10 +118,14 @@ describe('TokenBudgetService', () => {
     expect(result.preferredTools).toEqual(
       expect.arrayContaining(['repository.project_profile', 'repository.read_file_excerpt']),
     );
+    expect(result.preferredTools).not.toContain('platform.tool_summary');
     expect(result.preferredTools).not.toContain('repository.search_files');
     expect(result.preferredTools).not.toContain('repository.search_symbols');
     expect(result.questionProfile.contextPolicy).toContain(
       'Use repository.project_profile with mode=summary as the primary summary artifact.',
+    );
+    expect(result.questionProfile.contextPolicy).toContain(
+      'Skip platform.tool_summary for explicit project summaries unless tool availability is unclear.',
     );
     expect(result.questionProfile.contextPolicy).toContain(
       'Stop after repository.project_profile plus README/package excerpts when those answer the summary.',

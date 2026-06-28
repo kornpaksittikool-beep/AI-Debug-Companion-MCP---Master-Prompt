@@ -113,6 +113,9 @@ The system must be developed iteratively. Each phase must produce usable, verifi
 | M33: Summary Strict Mode | Phase 33 | Remove `repository.search_files` from routine project-summary preferred/evidence routes | Phase 32 excerpt caps | High | Low | Completed |
 | M33: Summary Strict Mode | Phase 33 | Forbid architecture docs, source tree summaries, app module excerpts, and broad search unless explicitly requested | Phase 33 strict routing | High | Low | Completed |
 | M33: Summary Strict Mode | Phase 33 | Add telemetry recommendation when project-summary runs make broad search the largest token source | Automatic telemetry | High | Low | Completed |
+| M34: Skip Tool Summary for Summaries | Phase 34 | Remove `platform.tool_summary` from routine project-summary start/preferred routes | Phase 33 strict mode | High | Low | Completed |
+| M34: Skip Tool Summary for Summaries | Phase 34 | Update Codex skill guidance to call project profile directly for explicit summaries | Phase 34 startup routing | High | Low | Completed |
+| M34: Skip Tool Summary for Summaries | Phase 34 | Add telemetry recommendation when `platform.tool_summary` becomes the largest project-summary source | Automatic telemetry | High | Low | Completed |
 
 ## Phase Gate Rules
 
@@ -127,4 +130,4 @@ Each phase must pass the following checks before the next phase begins:
 
 ## Current Phase
 
-Phase 33 is completed. Future phases must be planned and approved before implementation.
+Phase 34 is completed. Future phases must be planned and approved before implementation.

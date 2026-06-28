@@ -52,14 +52,14 @@ For a follow-up question after activation, do not answer from memory alone. Eith
 Start with low-token MCP calls:
 
 1. `platform.health`
-2. `platform.tool_summary`
-3. `repository.project_profile` with `mode: "summary"` for project summaries; use compact mode only when summary mode is insufficient
+2. For project summaries, skip `platform.tool_summary` and call `repository.project_profile` with `mode: "summary"` directly.
+3. Use `platform.tool_summary` only when tool availability is unclear or the task is not a routine project summary.
 
 Then choose the closest question profile before expanding context:
 
 | Question type                        |                  Target MCP payload | Preferred route                                                                                                                         |
 | ------------------------------------ | ----------------------------------: | --------------------------------------------------------------------------------------------------------------------------------------- |
-| Summary / project purpose            |                       ~1k-2k tokens | `repository.project_profile` with `mode: "summary"`, then README/package excerpts only if needed; do not call search/files, architecture docs, source tree, or app module excerpts by default |
+| Summary / project purpose            |                       ~1k-2k tokens | `platform.health`, `repository.project_profile` with `mode: "summary"`, then README/package excerpts only if needed; skip `platform.tool_summary` by default |
 | Tech stack / architecture quick view |                   ~1.5k-2.5k tokens | manifests/config excerpts with `maxBytes` <= 900, `repository.search_symbols`, graph tools only for explicit dependency-flow questions  |
 | General debugging                    |                       ~3k-8k tokens | `investigation.create`, exact error search, symbol/file search, then full context only for narrowed failing files                       |
 | Code review                          | diff-scoped, usually ~4k-10k tokens | changed files, impacted symbols, related tests, `git.impact_hints`; avoid unrelated repository reads                                    |
@@ -81,21 +81,23 @@ Prefer focused manual file reads only after MCP narrows the target.
 
 ## Token Rule
 
-Use `platform.tool_summary` for routing. Do not call full `platform.metadata` for routine startup checks.
+Use `platform.tool_summary` for routing only when tool availability is unclear or the task is not a routine project summary. Do not call full `platform.metadata` for routine startup checks.
 
 Do not call `repository.import_graph` for ordinary project summaries, project-purpose answers, or short follow-ups. Call it only when the user asks about dependency flow, import relationships, architecture coupling, circular dependencies, or when file/symbol evidence is insufficient and you explain why the graph is needed.
 
 For project summaries, target this order:
 
-1. `repository.project_profile` with `mode: "summary"`
-2. Stop if the summary profile already identifies README/package evidence and the answer can be concise
-3. `repository.read_file_excerpt` with `purpose: "summary"` and `maxBytes` <= 700 for README, then package.json with `maxBytes` <= 500 only if package metadata is needed
-4. `repository.search_files` with `mode: "summary"` and `maxMatches` <= 8 only if README/package are missing from the summary profile
-5. `repository.search_symbols` only if the profile, file search, and excerpts still cannot identify module boundaries
-6. `repository.read_file_context` only when the user asks for exact implementation detail; do not use it for routine summaries
-7. `repository.overview` only if compact profile data is insufficient
+1. `platform.health`
+2. `repository.project_profile` with `mode: "summary"`
+3. Stop if the summary profile already identifies README/package evidence and the answer can be concise
+4. `repository.read_file_excerpt` with `purpose: "summary"` and `maxBytes` <= 700 for README, then package.json with `maxBytes` <= 500 only if package metadata is needed
+5. `platform.tool_summary` only if the tool list is unavailable, stale, or needed for a non-summary workflow
+6. `repository.search_files` with `mode: "summary"` and `maxMatches` <= 8 only if README/package are missing from the summary profile
+7. `repository.search_symbols` only if the profile, file search, and excerpts still cannot identify module boundaries
+8. `repository.read_file_context` only when the user asks for exact implementation detail; do not use it for routine summaries
+9. `repository.overview` only if compact profile data is insufficient
 
-For project summaries, treat `repository.search_files`, `repository.search_symbols`, architecture docs, source tree summaries, app module excerpts, and `repository.read_file_context` as expensive. Do not call them by default; if one is required, use the narrowest query/limit and report why.
+For project summaries, treat `platform.tool_summary`, `repository.search_files`, `repository.search_symbols`, architecture docs, source tree summaries, app module excerpts, and `repository.read_file_context` as expensive. Do not call them by default; if one is required, use the narrowest query/limit and report why.
 
 Do not read `docs/architecture.md`, `src/app.module.ts`, source tree summaries, module lists, symbol search, import graph, or call graph for routine summaries unless the user explicitly asks for architecture, modules, dependencies, or source structure.
 
@@ -112,6 +114,8 @@ Treat `doNotCallTools` from `token_budget.recommend_strategy` or `integration.wo
 When reporting telemetry, call `integration.auto_telemetry_summary` with `questionType` or `targetTokens`. If it returns `budgetStatus.status: "over_budget"`, explicitly report the over-budget state and reduce context before continuing.
 
 If `integration.auto_telemetry_summary` for `project_summary` reports `repository.search_files` as the largest source, say the workflow violated summary strict mode and avoid search_files on the next pass.
+
+If `integration.auto_telemetry_summary` for `project_summary` reports `platform.tool_summary` as the largest source, say the workflow violated summary startup mode and skip tool_summary on the next pass.
 
 Avoid broad reads of `playwright-report`, `coverage`, `.next`, `dist`, `build`, `node_modules`, generated reports, and lockfile-heavy content unless the user asks about those artifacts.
 
