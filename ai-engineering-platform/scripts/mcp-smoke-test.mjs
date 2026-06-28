@@ -206,6 +206,9 @@ try {
     tokenStrategyDoNotCallTools: tokenStrategy.doNotCallTools,
     summaryStrategyQuestionType: summaryTokenStrategy.questionProfile?.questionType,
     summaryStrategyGateMode: summaryTokenStrategy.questionProfile?.gateMode,
+    summaryStrategyDefaultReportMode: summaryTokenStrategy.questionProfile?.defaultReportMode,
+    summaryStrategyDebugReportTriggers:
+      summaryTokenStrategy.questionProfile?.debugReportTriggers ?? [],
     summaryStrategyPreferredTools: summaryTokenStrategy.preferredTools,
     summaryStrategyDoNotCallTools: summaryTokenStrategy.doNotCallTools,
     integrationReady: integrationReadiness.ready,
@@ -214,6 +217,9 @@ try {
     summaryWorkflowDoNotCallTools: summaryWorkflowIndex.entries[0]?.doNotCallTools ?? [],
     summaryWorkflowEvidenceTools: summaryWorkflowIndex.entries[0]?.evidenceTools ?? [],
     summaryWorkflowGateMode: summaryWorkflowIndex.entries[0]?.gateMode,
+    summaryWorkflowDefaultReportMode: summaryWorkflowIndex.entries[0]?.defaultReportMode,
+    summaryWorkflowDebugReportTriggers:
+      summaryWorkflowIndex.entries[0]?.debugReportTriggers ?? [],
     telemetryRecordsWritten: flushTelemetry.recordsWritten,
     autoTelemetryToolCalls: autoTelemetry.toolCalls,
     autoTelemetryEstimatedTokens: autoTelemetry.estimatedTotalTokens,
@@ -223,7 +229,7 @@ try {
   if (
     summary.toolCount < 84 ||
     summary.healthStatus !== 'ok' ||
-    summary.platformPhase !== 'phase-36-adaptive-gate-compactness' ||
+    summary.platformPhase !== 'phase-37-user-facing-compact-reporting' ||
     !summary.metadataCompact ||
     summary.toolSummaryModules < 1 ||
     !summary.projectProfileSummary ||
@@ -254,6 +260,9 @@ try {
     !summary.tokenStrategyDoNotCallTools.includes('repository.read_file_context') ||
     summary.summaryStrategyQuestionType !== 'project_summary' ||
     summary.summaryStrategyGateMode !== 'compact_read_only' ||
+    summary.summaryStrategyDefaultReportMode !== 'normal_user_summary' ||
+    !summary.summaryStrategyDebugReportTriggers.includes('tools used') ||
+    !summary.summaryStrategyDebugReportTriggers.includes('debug MCP') ||
     summary.summaryStrategyPreferredTools.includes('platform.tool_summary') ||
     summary.summaryStrategyPreferredTools.includes('repository.search_files') ||
     summary.summaryStrategyPreferredTools.includes('repository.search_symbols') ||
@@ -264,6 +273,9 @@ try {
     !summary.summaryStrategyDoNotCallTools.includes('repository.search_symbols') ||
     summary.summaryWorkflowEvidenceTools.includes('platform.tool_summary') ||
     summary.summaryWorkflowGateMode !== 'compact_read_only' ||
+    summary.summaryWorkflowDefaultReportMode !== 'normal_user_summary' ||
+    !summary.summaryWorkflowDebugReportTriggers.includes('telemetry') ||
+    !summary.summaryWorkflowDebugReportTriggers.includes('evidence detail') ||
     summary.summaryWorkflowEvidenceTools.includes('repository.search_files') ||
     summary.summaryWorkflowEvidenceTools.includes('repository.search_symbols') ||
     !summary.summaryWorkflowDoNotCallTools.some((tool) => tool.includes('platform.tool_summary')) ||

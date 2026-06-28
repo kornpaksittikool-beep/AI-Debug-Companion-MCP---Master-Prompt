@@ -128,6 +128,14 @@ describe('IntegrationTelemetryService', () => {
 
     expect(entry?.startTools).toEqual(['platform.health', 'repository.project_profile']);
     expect(entry?.gateMode).toBe('compact_read_only');
+    expect(entry?.defaultReportMode).toBe('normal_user_summary');
+    expect(entry?.debugReportTriggers).toEqual([
+      'tools used',
+      'telemetry',
+      'token detail',
+      'evidence detail',
+      'debug MCP',
+    ]);
     expect(entry?.targetTokenRange).toEqual({ min: 1000, max: 2000 });
     expect(entry?.excerptMaxBytes).toBe(700);
     expect(entry?.maxExcerptCalls).toBe(2);
@@ -135,10 +143,19 @@ describe('IntegrationTelemetryService', () => {
       'Start every explicit skill response with a Workflow Gate; use compact_read_only mode for routine summaries.',
     );
     expect(entry?.contextPolicy).toContain(
-      'For compact_read_only mode, keep the gate to 4-5 short lines while preserving objective, evidence, impact, approval, verification, and MCP route.',
+      'For normal_user_summary, keep routine read-only Workflow Gate output to 1-2 short lines while preserving evidence, no-change impact, and MCP route.',
+    );
+    expect(entry?.contextPolicy).toContain(
+      'Use debug_telemetry only when the user asks for tools used, telemetry, token detail, evidence detail, or debug MCP.',
     );
     expect(entry?.contextPolicy).toContain(
       'For read-only project summaries, set Impact to "No file changes", Approval to "Not required: read-only", and Verification to evidence/tool output plus the telemetry footer.',
+    );
+    expect(entry?.contextPolicy).toContain(
+      'In normal_user_summary, summarize evidence as short file labels such as README, package, or production checklist instead of absolute paths.',
+    );
+    expect(entry?.contextPolicy).toContain(
+      'In normal_user_summary, summarize token status in one line, for example "Token: ~1.6k MCP payload, within target".',
     );
     expect(entry?.contextPolicy).toContain(
       'Use repository.project_profile with mode=summary as the main evidence artifact.',

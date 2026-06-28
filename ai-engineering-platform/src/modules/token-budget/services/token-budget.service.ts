@@ -23,10 +23,20 @@ const PRIORITY_WEIGHT: Record<ContextPriority, number> = {
   high: 3,
   critical: 4,
 };
+const DEFAULT_REPORT_MODE = 'normal_user_summary' as const;
+const DEBUG_REPORT_TRIGGERS = [
+  'tools used',
+  'telemetry',
+  'token detail',
+  'evidence detail',
+  'debug MCP',
+] as const;
 const QUESTION_PROFILES: Record<TokenQuestionType, StrategyQuestionProfile> = {
   project_summary: {
     questionType: 'project_summary',
     gateMode: 'compact_read_only',
+    defaultReportMode: DEFAULT_REPORT_MODE,
+    debugReportTriggers: DEBUG_REPORT_TRIGGERS,
     targetTokenRange: { min: 1000, max: 2000 },
     excerptMaxBytes: 700,
     maxExcerptCalls: 2,
@@ -40,8 +50,11 @@ const QUESTION_PROFILES: Record<TokenQuestionType, StrategyQuestionProfile> = {
     ],
     contextPolicy: [
       'Start every explicit skill response with a Workflow Gate; use compact_read_only mode for routine summaries.',
-      'For compact_read_only mode, keep the gate to 4-5 short lines while preserving objective, evidence, impact, approval, verification, and MCP route.',
+      'For normal_user_summary, keep routine read-only Workflow Gate output to 1-2 short lines while preserving evidence, no-change impact, and MCP route.',
+      'Use debug_telemetry only when the user asks for tools used, telemetry, token detail, evidence detail, or debug MCP.',
       'For read-only project summaries, set Impact to "No file changes", Approval to "Not required: read-only", and Verification to evidence/tool output plus the telemetry footer.',
+      'In normal_user_summary, summarize evidence as short file labels such as README, package, or production checklist instead of absolute paths.',
+      'In normal_user_summary, summarize token status in one line, for example "Token: ~1.6k MCP payload, within target".',
       'Use repository.project_profile with mode=summary as the primary summary artifact.',
       'Skip platform.tool_summary for explicit project summaries unless tool availability is unclear.',
       'Stop after repository.project_profile plus README/package excerpts when those answer the summary.',
@@ -68,6 +81,8 @@ const QUESTION_PROFILES: Record<TokenQuestionType, StrategyQuestionProfile> = {
   tech_stack_quick_view: {
     questionType: 'tech_stack_quick_view',
     gateMode: 'compact_read_only',
+    defaultReportMode: DEFAULT_REPORT_MODE,
+    debugReportTriggers: DEBUG_REPORT_TRIGGERS,
     targetTokenRange: { min: 1500, max: 2500 },
     excerptMaxBytes: 900,
     maxExcerptCalls: 3,
@@ -93,6 +108,8 @@ const QUESTION_PROFILES: Record<TokenQuestionType, StrategyQuestionProfile> = {
   debugging: {
     questionType: 'debugging',
     gateMode: 'expanded_execution',
+    defaultReportMode: DEFAULT_REPORT_MODE,
+    debugReportTriggers: DEBUG_REPORT_TRIGGERS,
     targetTokenRange: { min: 3000, max: 8000 },
     excerptMaxBytes: 1200,
     maxExcerptCalls: 5,
@@ -124,6 +141,8 @@ const QUESTION_PROFILES: Record<TokenQuestionType, StrategyQuestionProfile> = {
   code_review: {
     questionType: 'code_review',
     gateMode: 'expanded_execution',
+    defaultReportMode: DEFAULT_REPORT_MODE,
+    debugReportTriggers: DEBUG_REPORT_TRIGGERS,
     targetTokenRange: { min: 4000, max: 10000 },
     excerptMaxBytes: 1200,
     maxExcerptCalls: 6,
@@ -154,6 +173,8 @@ const QUESTION_PROFILES: Record<TokenQuestionType, StrategyQuestionProfile> = {
   planning: {
     questionType: 'planning',
     gateMode: 'expanded_execution',
+    defaultReportMode: DEFAULT_REPORT_MODE,
+    debugReportTriggers: DEBUG_REPORT_TRIGGERS,
     targetTokenRange: { min: 2000, max: 6000 },
     excerptMaxBytes: 1000,
     maxExcerptCalls: 4,
@@ -185,6 +206,8 @@ const QUESTION_PROFILES: Record<TokenQuestionType, StrategyQuestionProfile> = {
   general: {
     questionType: 'general',
     gateMode: 'compact_read_only',
+    defaultReportMode: DEFAULT_REPORT_MODE,
+    debugReportTriggers: DEBUG_REPORT_TRIGGERS,
     targetTokenRange: { min: 1500, max: 4000 },
     excerptMaxBytes: 900,
     maxExcerptCalls: 3,

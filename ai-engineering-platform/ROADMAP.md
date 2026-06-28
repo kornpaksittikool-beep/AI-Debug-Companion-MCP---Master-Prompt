@@ -122,6 +122,9 @@ The system must be developed iteratively. Each phase must produce usable, verifi
 | M36: Adaptive Gate Compactness               | Phase 36 | Add compact read-only and expanded execution gate modes to skill, token strategy, and workflow index                            | Phase 35 mandatory gate policy                   | High     | Low                  | Completed |
 | M36: Adaptive Gate Compactness               | Phase 36 | Keep routine summary gates to 4-5 short lines while preserving planning-first evidence and approval semantics                   | Phase 36 gate modes                              | High     | Low                  | Completed |
 | M36: Adaptive Gate Compactness               | Phase 36 | Add smoke and unit coverage for `compact_read_only` summary routing                                                             | Phase 36 gate modes                              | High     | Low                  | Completed |
+| M37: User-Facing Compact Reporting           | Phase 37 | Add `normal_user_summary` and `debug_telemetry` reporting metadata to token strategy and workflow index                         | Phase 36 gate modes                              | High     | Low                  | Completed |
+| M37: User-Facing Compact Reporting           | Phase 37 | Make read-only summary gates and MCP footers compact by default while preserving MCP, evidence, read-only, and token visibility | Phase 37 reporting modes                         | High     | Low                  | Completed |
+| M37: User-Facing Compact Reporting           | Phase 37 | Add unit and smoke coverage for compact reporting metadata                                                                      | Phase 37 reporting modes                         | High     | Low                  | Completed |
 
 ## Phase Gate Rules
 
@@ -136,4 +139,4 @@ Each phase must pass the following checks before the next phase begins:
 
 ## Current Phase
 
-Phase 36 is completed. Future phases must be planned and approved before implementation.
+Phase 37 is completed. Future phases must be planned and approved before implementation.

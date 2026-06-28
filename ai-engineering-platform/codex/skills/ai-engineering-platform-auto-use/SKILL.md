@@ -24,6 +24,7 @@ When the user writes `$ai-engineering-platform-auto-use` anywhere in the message
 - Start every response with the adaptive Workflow Gate before giving the substantive answer.
 - Use the default low-token workflow first.
 - End with the MCP footer.
+- Use `normal_user_summary` reporting by default. Use `debug_telemetry` only when the user asks for tools used, telemetry, debug MCP, token detail, or evidence detail.
 
 Examples:
 
@@ -41,7 +42,12 @@ Choose the smallest gate that satisfies planning-first:
 - Use `compact_read_only` gate mode for routine summaries, tech stack checks, project-purpose questions, token checks, database reads, and git reads when no file change is requested.
 - Use `expanded_execution` gate mode for implementation, refactoring, debugging that may modify files, code review, patch execution, security review, and planning that can lead to writes.
 
-For compact read-only requests, the gate must be 4-5 short lines and may combine fields:
+For compact read-only requests in `normal_user_summary`, the gate must be 1-2 very short lines and may combine fields:
+
+- `Workflow Gate: read-only | Evidence: ... | Impact: no file changes`
+- Optional second line: `MCP: used | Token target: ...`
+
+For compact read-only requests in `debug_telemetry`, the gate may expand to 4-5 short lines:
 
 - `Workflow Gate: read-only`
 - `Objective: ...`
@@ -78,11 +84,7 @@ For write or change requests:
 Example compact read-only summary gate:
 
 ```text
-Workflow Gate: read-only
-- Objective: summarize project purpose from repo evidence
-- Evidence: health + project_profile, excerpt only if needed
-- Impact/Approval: No file changes; Not required: read-only
-- Verification/MCP: cite evidence and telemetry footer; use low-token summary route
+Workflow Gate: read-only | Evidence: repo profile + excerpts | Impact: no file changes
 ```
 
 Example expanded execution gate:
@@ -192,7 +194,35 @@ Call `platform.metadata` only when full tool descriptions or schemas are actuall
 
 ## Reporting Rule
 
-For repository understanding, debugging, review, or planning responses, include a concise MCP footer:
+Use these reporting modes for repository understanding, debugging, review, or planning responses.
+
+### normal_user_summary
+
+This is the default. Optimize for a regular user who wants the answer, not tool telemetry.
+
+- Keep read-only Workflow Gate output to 1-2 short lines.
+- Keep the footer short.
+- Do not show detailed `Tools used`.
+- Do not show absolute paths unless they are necessary to disambiguate evidence or the user asked for detail.
+- Summarize evidence as short labels, for example `README`, `package`, `production checklist`, `ROADMAP`, or `TODO`.
+- Summarize token status in one line, for example `Token: ~1.6k MCP payload, within target`.
+- Still say whether MCP was used.
+- Still say when the work was read-only/no file changes.
+- For write/change tasks, keep the expanded execution gate and verification/rollback plan.
+
+Normal footer shape:
+
+```text
+MCP: used, evidence-based
+Evidence: README, package, production checklist
+Token: ~1.6k MCP payload, within target
+```
+
+### debug_telemetry
+
+Use this mode only when the user asks for "ใช้ tool อะไร", "tools used", "telemetry", "debug MCP", "token detail", "evidence detail", or equivalent wording.
+
+Include:
 
 - MCP used: yes/no
 - Tools used
@@ -200,6 +230,7 @@ For repository understanding, debugging, review, or planning responses, include 
 - Estimated MCP payload tokens from `integration.auto_telemetry_summary`; clearly say when the number is whole-session telemetry rather than this-turn telemetry
 - Codex billing note: exact total Codex billing is unavailable unless Codex exposes model usage metadata to tools. Do not present MCP token estimates as exact Codex billing.
 - Largest token source and a reduction recommendation when useful
+- Over-budget details and fallback details when present
 
 If the answer reuses evidence from a previous MCP call in the same thread without making a new tool call, write `MCP used: reused previous MCP evidence` and name the prior evidence or tools.
 

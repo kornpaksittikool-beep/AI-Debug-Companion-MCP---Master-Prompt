@@ -31,12 +31,22 @@ const DEFAULT_EXPECTED_TOOLS = [
   'token_budget.recommend_strategy',
 ];
 const MANUAL_READ_AVOIDED_MULTIPLIER = 6;
+const DEFAULT_REPORT_MODE = 'normal_user_summary' as const;
+const DEBUG_REPORT_TRIGGERS = [
+  'tools used',
+  'telemetry',
+  'token detail',
+  'evidence detail',
+  'debug MCP',
+] as const;
 const WORKFLOW_INDEX: readonly WorkflowIndexEntry[] = [
   {
     taskType: 'project_summary',
     description:
       'Summarize project purpose, stack, modules, and key files with a compact low-token profile route.',
     gateMode: 'compact_read_only',
+    defaultReportMode: DEFAULT_REPORT_MODE,
+    debugReportTriggers: DEBUG_REPORT_TRIGGERS,
     startTools: ['platform.health', 'repository.project_profile'],
     evidenceTools: ['repository.read_file_excerpt', 'git.recent_changes'],
     planningTools: ['token_budget.estimate'],
@@ -48,8 +58,11 @@ const WORKFLOW_INDEX: readonly WorkflowIndexEntry[] = [
     maxExcerptCalls: 2,
     contextPolicy: [
       'Start every explicit skill response with a Workflow Gate; use compact_read_only mode for routine summaries.',
-      'For compact_read_only mode, keep the gate to 4-5 short lines while preserving objective, evidence, impact, approval, verification, and MCP route.',
+      'For normal_user_summary, keep routine read-only Workflow Gate output to 1-2 short lines while preserving evidence, no-change impact, and MCP route.',
+      'Use debug_telemetry only when the user asks for tools used, telemetry, token detail, evidence detail, or debug MCP.',
       'For read-only project summaries, set Impact to "No file changes", Approval to "Not required: read-only", and Verification to evidence/tool output plus the telemetry footer.',
+      'In normal_user_summary, summarize evidence as short file labels such as README, package, or production checklist instead of absolute paths.',
+      'In normal_user_summary, summarize token status in one line, for example "Token: ~1.6k MCP payload, within target".',
       'Use repository.project_profile with mode=summary as the main evidence artifact.',
       'Skip platform.tool_summary for explicit project summaries unless tool availability is unclear.',
       'Stop after repository.project_profile plus README/package excerpts when those answer the summary.',
@@ -90,6 +103,8 @@ const WORKFLOW_INDEX: readonly WorkflowIndexEntry[] = [
     description:
       'Identify stack, package manager, frameworks, entry points, and architecture shape with compact evidence.',
     gateMode: 'compact_read_only',
+    defaultReportMode: DEFAULT_REPORT_MODE,
+    debugReportTriggers: DEBUG_REPORT_TRIGGERS,
     startTools: ['platform.health', 'platform.tool_summary', 'repository.project_profile'],
     evidenceTools: [
       'repository.read_file_excerpt',
@@ -132,6 +147,8 @@ const WORKFLOW_INDEX: readonly WorkflowIndexEntry[] = [
     taskType: 'bug_investigation',
     description: 'Investigate a defect with traceable evidence before proposing fixes.',
     gateMode: 'expanded_execution',
+    defaultReportMode: DEFAULT_REPORT_MODE,
+    debugReportTriggers: DEBUG_REPORT_TRIGGERS,
     startTools: ['platform.health', 'platform.tool_summary', 'investigation.create'],
     evidenceTools: [
       'repository.search_files',
@@ -181,6 +198,8 @@ const WORKFLOW_INDEX: readonly WorkflowIndexEntry[] = [
     description:
       'Review only changed files, impacted symbols, and focused risk evidence before summarizing findings.',
     gateMode: 'expanded_execution',
+    defaultReportMode: DEFAULT_REPORT_MODE,
+    debugReportTriggers: DEBUG_REPORT_TRIGGERS,
     startTools: ['platform.health', 'platform.tool_summary', 'git.impact_hints'],
     evidenceTools: [
       'git.recent_changes',
@@ -221,6 +240,8 @@ const WORKFLOW_INDEX: readonly WorkflowIndexEntry[] = [
     taskType: 'architecture_review',
     description: 'Review module boundaries, dependency flow, and phase architecture decisions.',
     gateMode: 'expanded_execution',
+    defaultReportMode: DEFAULT_REPORT_MODE,
+    debugReportTriggers: DEBUG_REPORT_TRIGGERS,
     startTools: ['platform.health', 'platform.tool_summary', 'repository.overview'],
     evidenceTools: [
       'repository.search_files',
@@ -253,6 +274,8 @@ const WORKFLOW_INDEX: readonly WorkflowIndexEntry[] = [
     taskType: 'phase_planning',
     description: 'Plan the next iterative phase from roadmap, TODO, and completed phase reports.',
     gateMode: 'expanded_execution',
+    defaultReportMode: DEFAULT_REPORT_MODE,
+    debugReportTriggers: DEBUG_REPORT_TRIGGERS,
     startTools: [
       'platform.health',
       'platform.tool_summary',
@@ -286,6 +309,8 @@ const WORKFLOW_INDEX: readonly WorkflowIndexEntry[] = [
     description:
       'Plan features or refactors with roadmap, TODO, phase reports, and narrow impact evidence.',
     gateMode: 'expanded_execution',
+    defaultReportMode: DEFAULT_REPORT_MODE,
+    debugReportTriggers: DEBUG_REPORT_TRIGGERS,
     startTools: ['platform.health', 'platform.tool_summary', 'integration.workflow_index'],
     evidenceTools: [
       'repository.search_files',
@@ -322,6 +347,8 @@ const WORKFLOW_INDEX: readonly WorkflowIndexEntry[] = [
     taskType: 'patch_execution',
     description: 'Create, apply, verify, and roll back approved deterministic patches.',
     gateMode: 'expanded_execution',
+    defaultReportMode: DEFAULT_REPORT_MODE,
+    debugReportTriggers: DEBUG_REPORT_TRIGGERS,
     startTools: ['planning.summarize_plan', 'planning.approval_gate'],
     evidenceTools: ['repository.read_file_context', 'git.impact_hints'],
     planningTools: ['patch.create_proposal', 'patch.rollback_plan'],
@@ -343,6 +370,8 @@ const WORKFLOW_INDEX: readonly WorkflowIndexEntry[] = [
     taskType: 'token_optimization',
     description: 'Reduce context usage with MCP-first evidence, estimates, and compression.',
     gateMode: 'expanded_execution',
+    defaultReportMode: DEFAULT_REPORT_MODE,
+    debugReportTriggers: DEBUG_REPORT_TRIGGERS,
     startTools: ['platform.health', 'token_budget.recommend_strategy'],
     evidenceTools: [
       'token_budget.estimate',
@@ -375,6 +404,8 @@ const WORKFLOW_INDEX: readonly WorkflowIndexEntry[] = [
     description:
       'Validate, stage, and inspect local or remote plugins without executing untrusted code.',
     gateMode: 'expanded_execution',
+    defaultReportMode: DEFAULT_REPORT_MODE,
+    debugReportTriggers: DEBUG_REPORT_TRIGGERS,
     startTools: ['plugin.catalog', 'plugin.validate_manifest'],
     evidenceTools: [
       'plugin.resolve_compatibility',
@@ -400,6 +431,8 @@ const WORKFLOW_INDEX: readonly WorkflowIndexEntry[] = [
     taskType: 'database_analysis',
     description: 'Inspect database capabilities and schema through read-only tools.',
     gateMode: 'compact_read_only',
+    defaultReportMode: DEFAULT_REPORT_MODE,
+    debugReportTriggers: DEBUG_REPORT_TRIGGERS,
     startTools: ['database.supported_dialects', 'database.connection_profile'],
     evidenceTools: ['database.schema', 'database.relations', 'database.query_preview'],
     planningTools: ['planning.impact_report'],
@@ -425,6 +458,8 @@ const WORKFLOW_INDEX: readonly WorkflowIndexEntry[] = [
     taskType: 'git_analysis',
     description: 'Use read-only git history to understand risk, ownership, and change frequency.',
     gateMode: 'compact_read_only',
+    defaultReportMode: DEFAULT_REPORT_MODE,
+    debugReportTriggers: DEBUG_REPORT_TRIGGERS,
     startTools: ['git.recent_changes'],
     evidenceTools: ['git.blame', 'git.find_commit_by_file', 'git.impact_hints'],
     planningTools: ['planning.impact_report'],

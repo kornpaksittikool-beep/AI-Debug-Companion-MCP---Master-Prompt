@@ -130,3 +130,6 @@
 | Add adaptive compact read-only and expanded execution gate modes                                                     | Phase 36 | Completed |
 | Keep routine summary gates to 4-5 short lines without dropping planning evidence                                     | Phase 36 | Completed |
 | Add unit and smoke coverage for `compact_read_only` summary gate routing                                             | Phase 36 | Completed |
+| Add `normal_user_summary` and `debug_telemetry` reporting metadata to summary strategy and workflow routing          | Phase 37 | Completed |
+| Compact default read-only gates, footers, evidence labels, and token lines for user-facing summaries                 | Phase 37 | Completed |
+| Add unit and smoke coverage for compact reporting metadata                                                           | Phase 37 | Completed |

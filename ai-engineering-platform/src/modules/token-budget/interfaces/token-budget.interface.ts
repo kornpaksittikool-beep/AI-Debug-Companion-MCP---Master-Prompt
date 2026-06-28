@@ -64,6 +64,8 @@ export type TokenQuestionType =
   | 'planning'
   | 'general';
 
+export type ReportMode = 'normal_user_summary' | 'debug_telemetry';
+
 export interface StrategyRecommendationOptions {
   readonly objective: string;
   readonly questionType?: TokenQuestionType;
@@ -75,6 +77,8 @@ export interface StrategyRecommendationOptions {
 export interface StrategyQuestionProfile {
   readonly questionType: TokenQuestionType;
   readonly gateMode: 'compact_read_only' | 'expanded_execution';
+  readonly defaultReportMode: ReportMode;
+  readonly debugReportTriggers: readonly string[];
   readonly targetTokenRange: {
     readonly min: number;
     readonly max: number;

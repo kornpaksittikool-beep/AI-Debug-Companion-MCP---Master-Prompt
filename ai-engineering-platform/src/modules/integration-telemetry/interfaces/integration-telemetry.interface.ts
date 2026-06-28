@@ -105,10 +105,14 @@ export type WorkflowTaskType =
   | 'database_analysis'
   | 'git_analysis';
 
+export type ReportMode = 'normal_user_summary' | 'debug_telemetry';
+
 export interface WorkflowIndexEntry {
   readonly taskType: WorkflowTaskType;
   readonly description: string;
   readonly gateMode: 'compact_read_only' | 'expanded_execution';
+  readonly defaultReportMode: ReportMode;
+  readonly debugReportTriggers: readonly string[];
   readonly startTools: readonly string[];
   readonly evidenceTools: readonly string[];
   readonly planningTools: readonly string[];

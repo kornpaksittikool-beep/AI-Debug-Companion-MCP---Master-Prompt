@@ -96,6 +96,14 @@ describe('TokenBudgetService', () => {
     expect(result.questionProfile).toMatchObject({
       questionType: 'project_summary',
       gateMode: 'compact_read_only',
+      defaultReportMode: 'normal_user_summary',
+      debugReportTriggers: [
+        'tools used',
+        'telemetry',
+        'token detail',
+        'evidence detail',
+        'debug MCP',
+      ],
       targetTokenRange: { min: 1000, max: 2000 },
       excerptMaxBytes: 700,
       maxExcerptCalls: 2,
@@ -126,10 +134,19 @@ describe('TokenBudgetService', () => {
       'Start every explicit skill response with a Workflow Gate; use compact_read_only mode for routine summaries.',
     );
     expect(result.questionProfile.contextPolicy).toContain(
-      'For compact_read_only mode, keep the gate to 4-5 short lines while preserving objective, evidence, impact, approval, verification, and MCP route.',
+      'For normal_user_summary, keep routine read-only Workflow Gate output to 1-2 short lines while preserving evidence, no-change impact, and MCP route.',
+    );
+    expect(result.questionProfile.contextPolicy).toContain(
+      'Use debug_telemetry only when the user asks for tools used, telemetry, token detail, evidence detail, or debug MCP.',
     );
     expect(result.questionProfile.contextPolicy).toContain(
       'For read-only project summaries, set Impact to "No file changes", Approval to "Not required: read-only", and Verification to evidence/tool output plus the telemetry footer.',
+    );
+    expect(result.questionProfile.contextPolicy).toContain(
+      'In normal_user_summary, summarize evidence as short file labels such as README, package, or production checklist instead of absolute paths.',
+    );
+    expect(result.questionProfile.contextPolicy).toContain(
+      'In normal_user_summary, summarize token status in one line, for example "Token: ~1.6k MCP payload, within target".',
     );
     expect(result.questionProfile.contextPolicy).toContain(
       'Use repository.project_profile with mode=summary as the primary summary artifact.',
