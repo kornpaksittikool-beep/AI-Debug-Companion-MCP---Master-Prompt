@@ -172,7 +172,7 @@ try {
   if (
     summary.toolCount < 80 ||
     summary.healthStatus !== 'ok' ||
-    summary.platformPhase !== 'phase-23-codex-auto-use-integration' ||
+    summary.platformPhase !== 'phase-24-token-aware-mcp-routing' ||
     !summary.metadataCompact ||
     summary.toolSummaryModules < 1 ||
     !summary.importResolved ||

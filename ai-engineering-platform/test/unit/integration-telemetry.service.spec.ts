@@ -18,9 +18,10 @@ describe('IntegrationTelemetryService', () => {
       configuredServerName: 'ai_engineering_platform',
       availableTools: [
         'platform.health',
+        'platform.tool_summary',
         'repository.overview',
+        'repository.search_files',
         'repository.search_symbols',
-        'repository.import_graph',
         'token_budget.estimate',
         'token_budget.recommend_strategy',
       ],
@@ -114,6 +115,20 @@ describe('IntegrationTelemetryService', () => {
       expect.arrayContaining(['platform.health', 'investigation.create', 'repository.overview']),
     );
     expect(result.entries[0]?.relevantFiles).toContain('src/modules/investigation');
+  });
+
+  it('returns low-token project summary routing without import graph by default', () => {
+    const result = service.workflowIndex({ taskType: 'project_summary' });
+    const entry = result.entries[0];
+
+    expect(entry?.startTools).toEqual(['platform.health', 'platform.tool_summary', 'repository.overview']);
+    expect(entry?.evidenceTools).toEqual(
+      expect.arrayContaining(['repository.search_files', 'repository.search_symbols']),
+    );
+    expect(entry?.evidenceTools).not.toContain('repository.import_graph');
+    expect(entry?.avoidUntilNeeded).toEqual(
+      expect.arrayContaining(['repository.import_graph unless dependency flow is the question']),
+    );
   });
 });
 

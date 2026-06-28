@@ -50,11 +50,10 @@ Start with low-token MCP calls:
 2. `platform.tool_summary`
 3. `repository.overview`
 
-Then choose focused tools:
+For normal project summaries and follow-up questions, continue with only focused discovery:
 
 - Use `repository.search_files` to find important files, configs, routes, docs, package manifests, and entry points.
 - Use `repository.search_symbols` for TypeScript/JavaScript classes, functions, services, controllers, modules, and DTOs.
-- Use `repository.import_graph` for dependency flow when the repo is TypeScript or JavaScript.
 - Use `git.recent_changes` and `git.impact_hints` when history or regression risk matters.
 - Use `investigation.create` and evidence tools for bug reports, logs, screenshots, or unclear failures.
 - Use `planning.create_plan`, `planning.impact_report`, and `planning.approval_gate` before implementation work.
@@ -66,6 +65,17 @@ Prefer focused manual file reads only after MCP narrows the target.
 
 Use `platform.tool_summary` for routing. Do not call full `platform.metadata` for routine startup checks.
 
+Do not call `repository.import_graph` for ordinary project summaries, project-purpose answers, or short follow-ups. Call it only when the user asks about dependency flow, import relationships, architecture coupling, circular dependencies, or when file/symbol evidence is insufficient and you explain why the graph is needed.
+
+For project summaries, target this order:
+
+1. `repository.overview`
+2. `repository.search_files`
+3. `repository.search_symbols`
+4. `repository.read_file_context` only for the few files that explain purpose or entry points
+
+Avoid broad reads of `playwright-report`, `coverage`, `.next`, `dist`, `build`, `node_modules`, generated reports, and lockfile-heavy content unless the user asks about those artifacts.
+
 Call `platform.metadata` only when full tool descriptions or schemas are actually required. If metadata is needed, prefer compact input such as `{ "includeTools": false }`.
 
 ## Reporting Rule
@@ -75,7 +85,7 @@ For repository understanding, debugging, review, or planning responses, include 
 - MCP used: yes/no
 - Tools used
 - Evidence summary with file/tool references where available
-- Estimated MCP payload tokens from `integration.auto_telemetry_summary`
+- Estimated MCP payload tokens from `integration.auto_telemetry_summary`; clearly say when the number is whole-session telemetry rather than this-turn telemetry
 - Largest token source and a reduction recommendation when useful
 
 If the answer reuses evidence from a previous MCP call in the same thread without making a new tool call, write `MCP used: reused previous MCP evidence` and name the prior evidence or tools.

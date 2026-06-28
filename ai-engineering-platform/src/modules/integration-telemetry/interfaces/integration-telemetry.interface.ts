@@ -92,6 +92,7 @@ export interface WorkflowIndexInput {
 }
 
 export type WorkflowTaskType =
+  | 'project_summary'
   | 'bug_investigation'
   | 'architecture_review'
   | 'phase_planning'

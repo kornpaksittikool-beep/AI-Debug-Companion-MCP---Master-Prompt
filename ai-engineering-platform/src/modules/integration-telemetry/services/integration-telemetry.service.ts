@@ -22,40 +22,68 @@ import { IntegrationTelemetryPathService } from './integration-telemetry-path.se
 const DEFAULT_SERVER_NAME = 'ai_engineering_platform';
 const DEFAULT_EXPECTED_TOOLS = [
   'platform.health',
+  'platform.tool_summary',
   'repository.overview',
+  'repository.search_files',
   'repository.search_symbols',
-  'repository.import_graph',
   'token_budget.estimate',
   'token_budget.recommend_strategy',
 ];
 const MANUAL_READ_AVOIDED_MULTIPLIER = 6;
 const WORKFLOW_INDEX: readonly WorkflowIndexEntry[] = [
   {
+    taskType: 'project_summary',
+    description: 'Summarize project purpose, stack, modules, and key files with a low-token evidence route.',
+    startTools: ['platform.health', 'platform.tool_summary', 'repository.overview'],
+    evidenceTools: ['repository.search_files', 'repository.search_symbols', 'git.recent_changes'],
+    planningTools: ['token_budget.estimate'],
+    verificationTools: ['integration.auto_telemetry_summary'],
+    primaryModules: ['health', 'repository-intelligence', 'integration-telemetry'],
+    relevantFiles: ['package.json', 'pnpm-workspace.yaml', 'README.md', 'apps', 'src'],
+    avoidUntilNeeded: [
+      'repository.import_graph unless dependency flow is the question',
+      'repository.call_graph unless call flow is the question',
+      'repository.read_module_context for broad directories',
+      'full platform.metadata',
+    ],
+  },
+  {
     taskType: 'bug_investigation',
     description: 'Investigate a defect with traceable evidence before proposing fixes.',
     startTools: ['platform.health', 'investigation.create', 'repository.overview'],
-    evidenceTools: ['repository.search_symbols', 'repository.import_graph', 'git.recent_changes', 'security.audit_project'],
+    evidenceTools: ['repository.search_files', 'repository.search_symbols', 'git.recent_changes', 'security.audit_project'],
     planningTools: ['planning.create_plan', 'planning.impact_report'],
     verificationTools: ['verification.run_check', 'patch.rollback_plan'],
     primaryModules: ['investigation', 'repository-intelligence', 'git-intelligence', 'planning-impact'],
     relevantFiles: ['src/modules/investigation', 'src/modules/repository-intelligence', 'src/modules/git-intelligence'],
-    avoidUntilNeeded: ['repository.read_module_context', 'patch.apply_proposal'],
+    avoidUntilNeeded: [
+      'repository.import_graph unless the suspected defect is import/dependency related',
+      'repository.read_module_context',
+      'patch.apply_proposal',
+    ],
   },
   {
     taskType: 'architecture_review',
     description: 'Review module boundaries, dependency flow, and phase architecture decisions.',
-    startTools: ['platform.metadata', 'repository.overview', 'repository.import_graph'],
-    evidenceTools: ['repository.call_graph', 'repository.index_status', 'memory.search'],
+    startTools: ['platform.health', 'platform.tool_summary', 'repository.overview'],
+    evidenceTools: [
+      'repository.search_files',
+      'repository.search_symbols',
+      'repository.import_graph',
+      'repository.call_graph',
+      'repository.index_status',
+      'memory.search',
+    ],
     planningTools: ['planning.impact_report'],
     verificationTools: ['security.audit_tool_permissions'],
     primaryModules: ['core', 'repository-intelligence', 'project-memory'],
     relevantFiles: ['docs/architecture.md', 'docs/adr', 'src/app.module.ts', 'src/core'],
-    avoidUntilNeeded: ['repository.read_file_context for broad docs', 'patch.apply_proposal'],
+    avoidUntilNeeded: ['full platform.metadata', 'repository.read_file_context for broad docs', 'patch.apply_proposal'],
   },
   {
     taskType: 'phase_planning',
     description: 'Plan the next iterative phase from roadmap, TODO, and completed phase reports.',
-    startTools: ['platform.metadata', 'memory.search', 'integration.workflow_index'],
+    startTools: ['platform.health', 'platform.tool_summary', 'memory.search', 'integration.workflow_index'],
     evidenceTools: ['repository.search_files', 'git.recent_changes'],
     planningTools: ['planning.create_plan', 'planning.impact_report'],
     verificationTools: ['token_budget.estimate'],
@@ -78,12 +106,16 @@ const WORKFLOW_INDEX: readonly WorkflowIndexEntry[] = [
     taskType: 'token_optimization',
     description: 'Reduce context usage with MCP-first evidence, estimates, and compression.',
     startTools: ['platform.health', 'token_budget.recommend_strategy'],
-    evidenceTools: ['token_budget.estimate', 'repository.search_symbols', 'repository.import_graph'],
+    evidenceTools: ['token_budget.estimate', 'repository.search_files', 'repository.search_symbols'],
     planningTools: ['token_budget.compress_context'],
     verificationTools: ['integration.telemetry_summary'],
     primaryModules: ['token-budget', 'integration-telemetry', 'repository-intelligence'],
     relevantFiles: ['src/modules/token-budget', 'src/modules/integration-telemetry', 'AGENTS.md'],
-    avoidUntilNeeded: ['repository.read_module_context', 'full repository file reads'],
+    avoidUntilNeeded: [
+      'repository.import_graph unless it was the largest token source under investigation',
+      'repository.read_module_context',
+      'full repository file reads',
+    ],
   },
   {
     taskType: 'plugin_workflow',
@@ -272,7 +304,7 @@ export class IntegrationTelemetryService {
       recommendations:
         entries.length > 0
           ? ['Start with the listed startTools, then expand only through evidenceTools that answer the current question.']
-          : ['No workflow matched. Use platform.metadata and repository.overview to gather a first routing signal.'],
+          : ['No workflow matched. Use platform.health, platform.tool_summary, and repository.overview to gather a first routing signal.'],
     };
   }
 
@@ -287,7 +319,7 @@ export class IntegrationTelemetryService {
 
     const recommendations = ['Open a new Codex session after MCP config changes so tool namespaces refresh.'];
     if (missingTools.length > 0) {
-      recommendations.push('Run platform.metadata and confirm the expected tool list.');
+      recommendations.push('Run platform.tool_summary and confirm the expected compact tool list.');
     }
     if (!instructionsLoaded) {
       recommendations.push('Open the session from the repository root so AGENTS.md is loaded.');

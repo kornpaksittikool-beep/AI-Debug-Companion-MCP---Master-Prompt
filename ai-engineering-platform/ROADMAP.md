@@ -85,6 +85,9 @@ The system must be developed iteratively. Each phase must produce usable, verifi
 | M23: Codex Auto-Use Integration | Phase 23 | Global Codex skill for natural Thai and English repository intents | Phase 22 compact tool summary | High | Medium | Completed |
 | M23: Codex Auto-Use Integration | Phase 23 | One-command Codex integration installer for MCP config and skill installation | MCP build artifact and Codex home | High | Medium | Completed |
 | M23: Codex Auto-Use Integration | Phase 23 | Documentation for auto-use limits and verification workflow | Codex skill and installer | High | Low | Completed |
+| M24: Token-Aware MCP Routing | Phase 24 | Low-token project summary workflow that avoids import graph by default | Phase 23 auto-use skill | High | Medium | Completed |
+| M24: Token-Aware MCP Routing | Phase 24 | Workflow index and token recommendation updates for on-demand graph tools | Integration telemetry and token budget modules | High | Medium | Completed |
+| M24: Token-Aware MCP Routing | Phase 24 | Skill policy for session telemetry clarity and generated artifact exclusions | Codex auto-use skill | High | Low | Completed |
 
 ## Phase Gate Rules
 
@@ -99,4 +102,4 @@ Each phase must pass the following checks before the next phase begins:
 
 ## Current Phase
 
-Phase 23 is completed. Future phases must be planned and approved before implementation.
+Phase 24 is completed. Future phases must be planned and approved before implementation.

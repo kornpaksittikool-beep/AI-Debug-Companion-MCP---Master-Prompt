@@ -58,7 +58,7 @@ export const PLATFORM_METADATA_TOOL_DEFINITION: ToolDefinition = {
         platform: {
           name: 'ai-engineering-platform',
           version: '0.1.0',
-          phase: 'phase-23-codex-auto-use-integration',
+          phase: 'phase-24-token-aware-mcp-routing',
         },
         tools: [],
       },
@@ -69,13 +69,13 @@ export const PLATFORM_METADATA_TOOL_DEFINITION: ToolDefinition = {
         platform: {
           name: 'ai-engineering-platform',
           version: '0.1.0',
-          phase: 'phase-23-codex-auto-use-integration',
+          phase: 'phase-24-token-aware-mcp-routing',
         },
         toolSummary: {
           platform: {
             name: 'ai-engineering-platform',
             version: '0.1.0',
-            phase: 'phase-23-codex-auto-use-integration',
+            phase: 'phase-24-token-aware-mcp-routing',
           },
           totalTools: 0,
           modules: [],

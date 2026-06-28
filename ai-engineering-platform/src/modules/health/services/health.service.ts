@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+﻿import { Injectable } from '@nestjs/common';
 import { ToolRegistryService } from '../../../core/registry/services/tool-registry.service.js';
 import type {
   HealthOutputDto,
@@ -12,7 +12,7 @@ import type {
 const PLATFORM_DETAILS = {
   name: 'ai-engineering-platform',
   version: '0.1.0',
-  phase: 'phase-23-codex-auto-use-integration',
+  phase: 'phase-24-token-aware-mcp-routing',
 } as const;
 
 @Injectable()

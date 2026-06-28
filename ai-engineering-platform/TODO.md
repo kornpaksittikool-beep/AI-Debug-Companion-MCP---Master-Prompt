@@ -90,3 +90,6 @@
 | Codex auto-use skill | Phase 23 | Completed |
 | Codex integration installer | Phase 23 | Completed |
 | Auto-use integration documentation | Phase 23 | Completed |
+| Low-token project summary routing | Phase 24 | Completed |
+| On-demand import graph policy | Phase 24 | Completed |
+| Token-aware skill and workflow index updates | Phase 24 | Completed |

@@ -78,7 +78,7 @@ export class TokenBudgetService {
       items,
       recommendations: [
         'Use compressed context as a routing artifact, then request precise symbol or file context only for unresolved evidence.',
-        'Prefer repository.search_symbols or repository.import_graph before expanding broad module context.',
+        'Prefer repository.search_files and repository.search_symbols before expanding broad module context.',
       ],
     };
   }
@@ -88,9 +88,10 @@ export class TokenBudgetService {
     const availableTools = new Set(input.availableTools ?? []);
     const preferredTools = [
       'platform.health',
+      'platform.tool_summary',
       'repository.overview',
+      'repository.search_files',
       'repository.search_symbols',
-      'repository.import_graph',
       'token_budget.estimate',
       'token_budget.compress_context',
       'planning.create_plan',
@@ -105,7 +106,8 @@ export class TokenBudgetService {
       preferredTools,
       avoid: [
         'Avoid reading the whole repository into model context.',
-        'Avoid expanding module context before symbol or import evidence narrows the target.',
+        'Avoid repository.import_graph unless dependency flow is the current question.',
+        'Avoid expanding module context before file or symbol evidence narrows the target.',
         'Avoid sending generated coverage or build artifacts unless they are the investigation target.',
       ],
     };
@@ -269,7 +271,7 @@ export class TokenBudgetService {
   private recommendedFlow(status: StrategyRecommendationResult['status']): readonly string[] {
     const base = [
       'Verify MCP health before gathering broad context.',
-      'Collect repository overview and symbol/import evidence first.',
+      'Collect repository overview, file matches, and symbol evidence first.',
       'Estimate token cost before expanding context.',
     ];
 

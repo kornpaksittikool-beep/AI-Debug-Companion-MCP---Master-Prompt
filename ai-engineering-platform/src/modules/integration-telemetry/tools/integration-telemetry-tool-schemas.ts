@@ -169,6 +169,7 @@ export const INTEGRATION_WORKFLOW_INDEX_TOOL_DEFINITION: ToolDefinition = {
       taskType: {
         type: 'string',
         enum: [
+          'project_summary',
           'bug_investigation',
           'architecture_review',
           'phase_planning',
