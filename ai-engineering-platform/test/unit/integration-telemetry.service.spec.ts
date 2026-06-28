@@ -135,7 +135,7 @@ describe('IntegrationTelemetryService', () => {
     expect(entry?.excerptMaxBytes).toBe(700);
     expect(entry?.maxExcerptCalls).toBe(2);
     expect(entry?.contextPolicy).toContain(
-      'Use repository.project_profile as the main evidence artifact.',
+      'Use repository.project_profile with mode=summary as the main evidence artifact.',
     );
     expect(entry?.contextPolicy).toContain(
       'Call repository.search_files with mode=summary and maxMatches<=8 for routine summaries.',

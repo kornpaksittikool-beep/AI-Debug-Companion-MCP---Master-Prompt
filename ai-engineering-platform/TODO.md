@@ -112,3 +112,6 @@
 | Add capped summary mode to repository.search_files | Phase 30 | Completed |
 | Route summaries through mode=summary and maxMatches<=8 | Phase 30 | Completed |
 | Add smoke coverage for summary search caps | Phase 30 | Completed |
+| Add summary mode to repository.project_profile | Phase 31 | Completed |
+| Route summaries through project_profile mode=summary | Phase 31 | Completed |
+| Add smoke coverage for summary project profile payload shape | Phase 31 | Completed |

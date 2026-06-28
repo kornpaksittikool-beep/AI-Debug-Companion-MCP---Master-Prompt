@@ -104,6 +104,9 @@ The system must be developed iteratively. Each phase must produce usable, verifi
 | M30: Summary Search Result Caps | Phase 30 | Add `repository.search_files` summary mode with max 8 returned matches and no preview payload | Phase 29 summary guardrails | High | Medium | Completed |
 | M30: Summary Search Result Caps | Phase 30 | Route summary workflows through `mode=summary` and `maxMatches<=8` | Phase 30 search mode | High | Low | Completed |
 | M30: Summary Search Result Caps | Phase 30 | Add smoke coverage for capped summary search and compact project-profile next tools | Phase 30 routing update | High | Low | Completed |
+| M31: Summary Project Profile Mode | Phase 31 | Add `repository.project_profile` summary mode with smaller key-file, manifest, entrypoint, extension, and largest-file payloads | Phase 30 search caps | High | Medium | Completed |
+| M31: Summary Project Profile Mode | Phase 31 | Route project-summary workflows and Codex skill guidance through `mode=summary` | Phase 31 profile mode | High | Low | Completed |
+| M31: Summary Project Profile Mode | Phase 31 | Add smoke coverage for summary profile mode and capped profile payload shape | Phase 31 routing update | High | Low | Completed |
 
 ## Phase Gate Rules
 
@@ -118,4 +121,4 @@ Each phase must pass the following checks before the next phase begins:
 
 ## Current Phase
 
-Phase 30 is completed. Future phases must be planned and approved before implementation.
+Phase 31 is completed. Future phases must be planned and approved before implementation.

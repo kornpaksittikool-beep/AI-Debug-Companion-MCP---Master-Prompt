@@ -49,7 +49,7 @@ export interface RepositoryProjectProfile {
   readonly entrypointHints: readonly RepositoryFile[];
   readonly largestFiles: readonly RepositoryFile[];
   readonly tokenPolicy: {
-    readonly profile: 'compact';
+    readonly profile: 'compact' | 'summary';
     readonly exactCodexBillingAvailable: false;
     readonly billingNote: string;
     readonly recommendedNextTools: readonly string[];

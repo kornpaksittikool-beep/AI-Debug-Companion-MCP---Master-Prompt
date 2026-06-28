@@ -50,7 +50,7 @@ const WORKFLOW_INDEX: readonly WorkflowIndexEntry[] = [
     excerptMaxBytes: 700,
     maxExcerptCalls: 2,
     contextPolicy: [
-      'Use repository.project_profile as the main evidence artifact.',
+      'Use repository.project_profile with mode=summary as the main evidence artifact.',
       'Call repository.search_files with mode=summary and maxMatches<=8 for routine summaries.',
       'Do not run repository.search_symbols for routine summaries; use file search and excerpts instead.',
       'Read at most 2 repository.read_file_excerpt results for README, package manifests, or entry points.',
@@ -69,6 +69,7 @@ const WORKFLOW_INDEX: readonly WorkflowIndexEntry[] = [
       'repository.import_graph unless dependency flow is the question',
       'repository.call_graph unless call flow is the question',
       'repository.overview unless the compact profile is insufficient',
+      'repository.project_profile without mode=summary for routine summaries',
       'repository.search_files without mode=summary and maxMatches<=8',
       'repository.search_symbols unless the project profile and excerpts cannot identify module boundaries',
       'repository.read_file_context unless a compact excerpt is insufficient',

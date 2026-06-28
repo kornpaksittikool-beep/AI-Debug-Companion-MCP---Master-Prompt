@@ -49,6 +49,7 @@ const projectProfileSchema: JsonSchemaObject = {
     maxKeyFiles: { type: 'number' },
     maxLargestFiles: { type: 'number' },
     maxExtensions: { type: 'number' },
+    mode: { type: 'string', enum: ['compact', 'summary'] },
   },
 };
 
@@ -71,7 +72,7 @@ export const REPOSITORY_PROJECT_PROFILE_TOOL_DEFINITION: ToolDefinition = {
   timeoutMs: 5000,
   retryStrategy: NO_RETRY,
   sideEffects: 'read',
-  examples: [{ input: { rootPath: '/repo', maxFiles: 200 }, output: { tokenPolicy: { profile: 'compact' } } }],
+  examples: [{ input: { rootPath: '/repo', mode: 'summary' }, output: { tokenPolicy: { profile: 'summary' } } }],
 };
 
 export const REPOSITORY_OVERVIEW_TOOL_DEFINITION: ToolDefinition = {

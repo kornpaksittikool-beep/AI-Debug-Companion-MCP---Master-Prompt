@@ -70,6 +70,25 @@ describe('RepositoryIntelligenceService', () => {
     expect(profile.tokenPolicy.avoidUntilNeeded).toContain('repository.overview');
   });
 
+  it('returns a smaller summary project profile for routine summaries', async () => {
+    const root = await createFixture();
+    await fs.writeFile(path.join(root, 'package.json'), '{"name":"demo"}\n');
+    await fs.writeFile(path.join(root, 'tsconfig.json'), '{}\n');
+    await fs.writeFile(path.join(root, 'Dockerfile'), 'FROM node\n');
+    await fs.writeFile(path.join(root, 'PRODUCTION_CHECKLIST.md'), '# Checklist\n');
+    await fs.writeFile(path.join(root, 'src', 'main.ts'), 'bootstrap();\n');
+    const service = createService();
+
+    const profile = await service.projectProfile({ rootPath: root, mode: 'summary' });
+
+    expect(profile.tokenPolicy.profile).toBe('summary');
+    expect(profile.keyFiles.length).toBeLessThanOrEqual(5);
+    expect(profile.packageManifests.length).toBeLessThanOrEqual(5);
+    expect(profile.entrypointHints.length).toBeLessThanOrEqual(5);
+    expect(profile.extensionCounts.length).toBeLessThanOrEqual(4);
+    expect(profile.largestFiles).toHaveLength(0);
+  });
+
   it('searches files by query and extension', async () => {
     const root = await createFixture();
     const service = createService();

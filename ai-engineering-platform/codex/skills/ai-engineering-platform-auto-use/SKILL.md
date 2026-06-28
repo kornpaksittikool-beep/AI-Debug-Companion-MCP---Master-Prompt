@@ -53,13 +53,13 @@ Start with low-token MCP calls:
 
 1. `platform.health`
 2. `platform.tool_summary`
-3. `repository.project_profile`
+3. `repository.project_profile` with `mode: "summary"` for project summaries; use compact mode only when summary mode is insufficient
 
 Then choose the closest question profile before expanding context:
 
 | Question type                        |                  Target MCP payload | Preferred route                                                                                                                         |
 | ------------------------------------ | ----------------------------------: | --------------------------------------------------------------------------------------------------------------------------------------- |
-| Summary / project purpose            |                       ~1k-2k tokens | `repository.project_profile`, `repository.search_files` with `mode: "summary"` and `maxMatches` <= 8, at most 2 `repository.read_file_excerpt` calls with `maxBytes` 500-700 |
+| Summary / project purpose            |                       ~1k-2k tokens | `repository.project_profile` with `mode: "summary"`, `repository.search_files` with `mode: "summary"` and `maxMatches` <= 8, at most 2 `repository.read_file_excerpt` calls with `maxBytes` 500-700 |
 | Tech stack / architecture quick view |                   ~1.5k-2.5k tokens | manifests/config excerpts with `maxBytes` <= 900, `repository.search_symbols`, graph tools only for explicit dependency-flow questions  |
 | General debugging                    |                       ~3k-8k tokens | `investigation.create`, exact error search, symbol/file search, then full context only for narrowed failing files                       |
 | Code review                          | diff-scoped, usually ~4k-10k tokens | changed files, impacted symbols, related tests, `git.impact_hints`; avoid unrelated repository reads                                    |
@@ -87,7 +87,7 @@ Do not call `repository.import_graph` for ordinary project summaries, project-pu
 
 For project summaries, target this order:
 
-1. `repository.project_profile`
+1. `repository.project_profile` with `mode: "summary"`
 2. `repository.search_files` with `mode: "summary"` and `maxMatches` <= 8
 3. `repository.read_file_excerpt` with `purpose: "summary"` and `maxBytes` 500-700 for at most 2 files that explain purpose or entry points
 4. `repository.search_symbols` only if the profile, file search, and excerpts still cannot identify module boundaries

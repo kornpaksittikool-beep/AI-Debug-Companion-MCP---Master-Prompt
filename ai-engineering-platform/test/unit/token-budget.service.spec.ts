@@ -114,6 +114,9 @@ describe('TokenBudgetService', () => {
     );
     expect(result.preferredTools).not.toContain('repository.search_symbols');
     expect(result.questionProfile.contextPolicy).toContain(
+      'Use repository.project_profile with mode=summary as the primary summary artifact.',
+    );
+    expect(result.questionProfile.contextPolicy).toContain(
       'Call repository.search_files with mode=summary and maxMatches<=8 for routine summaries.',
     );
     expect(result.questionProfile.contextPolicy).toContain(

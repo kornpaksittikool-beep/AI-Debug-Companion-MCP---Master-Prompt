@@ -27,6 +27,11 @@ const DEFAULT_PROFILE_MAX_DEPTH = 4;
 const DEFAULT_PROFILE_MAX_EXTENSIONS = 8;
 const DEFAULT_PROFILE_MAX_KEY_FILES = 12;
 const DEFAULT_PROFILE_MAX_LARGEST_FILES = 3;
+const SUMMARY_PROFILE_MAX_FILES = 120;
+const SUMMARY_PROFILE_MAX_DEPTH = 3;
+const SUMMARY_PROFILE_MAX_EXTENSIONS = 4;
+const SUMMARY_PROFILE_MAX_KEY_FILES = 5;
+const SUMMARY_PROFILE_MAX_LARGEST_FILES = 0;
 const DEFAULT_SEARCH_MAX_MATCHES = 25;
 const SUMMARY_SEARCH_MAX_MATCHES = 8;
 const KEY_FILE_NAMES = new Set([
@@ -83,24 +88,31 @@ export class RepositoryIntelligenceService {
       readonly maxKeyFiles?: number;
       readonly maxLargestFiles?: number;
       readonly maxExtensions?: number;
+      readonly mode?: 'compact' | 'summary';
     },
   ): Promise<RepositoryProjectProfile> {
+    const profile = options.mode ?? 'compact';
     const scan = await this.scan({
       ...options,
-      maxFiles: options.maxFiles ?? DEFAULT_PROFILE_MAX_FILES,
-      maxDepth: options.maxDepth ?? DEFAULT_PROFILE_MAX_DEPTH,
+      maxFiles: options.maxFiles ?? (profile === 'summary' ? SUMMARY_PROFILE_MAX_FILES : DEFAULT_PROFILE_MAX_FILES),
+      maxDepth: options.maxDepth ?? (profile === 'summary' ? SUMMARY_PROFILE_MAX_DEPTH : DEFAULT_PROFILE_MAX_DEPTH),
       includeTextPreview: false,
     });
-    const extensionCounts = this.extensionCounts(scan.files).slice(0, options.maxExtensions ?? DEFAULT_PROFILE_MAX_EXTENSIONS);
+    const maxKeyFiles = options.maxKeyFiles ?? (profile === 'summary' ? SUMMARY_PROFILE_MAX_KEY_FILES : DEFAULT_PROFILE_MAX_KEY_FILES);
+    const maxLargestFiles = options.maxLargestFiles ?? (profile === 'summary' ? SUMMARY_PROFILE_MAX_LARGEST_FILES : DEFAULT_PROFILE_MAX_LARGEST_FILES);
+    const extensionCounts = this.extensionCounts(scan.files).slice(
+      0,
+      options.maxExtensions ?? (profile === 'summary' ? SUMMARY_PROFILE_MAX_EXTENSIONS : DEFAULT_PROFILE_MAX_EXTENSIONS),
+    );
     const keyFiles = scan.files
       .filter((file) => KEY_FILE_NAMES.has(file.relativePath.split('/').pop() ?? file.relativePath))
-      .slice(0, options.maxKeyFiles ?? DEFAULT_PROFILE_MAX_KEY_FILES);
+      .slice(0, maxKeyFiles);
     const packageManifests = scan.files
       .filter((file) => file.relativePath.endsWith('package.json'))
-      .slice(0, options.maxKeyFiles ?? DEFAULT_PROFILE_MAX_KEY_FILES);
+      .slice(0, maxKeyFiles);
     const entrypointHints = scan.files
       .filter((file) => ENTRYPOINT_PATTERNS.some((pattern) => pattern.test(file.relativePath)))
-      .slice(0, options.maxKeyFiles ?? DEFAULT_PROFILE_MAX_KEY_FILES);
+      .slice(0, maxKeyFiles);
 
     return {
       rootPath: scan.rootPath,
@@ -113,9 +125,9 @@ export class RepositoryIntelligenceService {
       entrypointHints,
       largestFiles: [...scan.files]
         .sort((a, b) => b.sizeBytes - a.sizeBytes)
-        .slice(0, options.maxLargestFiles ?? DEFAULT_PROFILE_MAX_LARGEST_FILES),
+        .slice(0, maxLargestFiles),
       tokenPolicy: {
-        profile: 'compact',
+        profile,
         exactCodexBillingAvailable: false,
         billingNote:
           'MCP can estimate payload tokens for tool inputs and outputs. Exact total Codex billing requires host-provided model usage metadata, which is not available inside this MCP server.',

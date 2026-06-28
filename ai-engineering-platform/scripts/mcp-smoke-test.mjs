@@ -65,7 +65,10 @@ try {
   const health = await callTool(client, 'platform.health', {});
   const metadata = await callTool(client, 'platform.metadata', { includeTools: false });
   const toolSummary = await callTool(client, 'platform.tool_summary', {});
-  const projectProfile = await callTool(client, 'repository.project_profile', { rootPath });
+  const projectProfile = await callTool(client, 'repository.project_profile', {
+    rootPath,
+    mode: 'summary',
+  });
   const summaryFileSearch = await callTool(client, 'repository.search_files', {
     rootPath,
     query: 'src',
@@ -174,7 +177,9 @@ try {
     platformPhase: metadata.platform.phase,
     metadataCompact: !metadata.tools && metadata.toolSummary?.totalTools === tools.tools.length,
     toolSummaryModules: toolSummary.modules.length,
-    projectProfileCompact: projectProfile.tokenPolicy?.profile === 'compact',
+    projectProfileSummary: projectProfile.tokenPolicy?.profile === 'summary',
+    projectProfileKeyFiles: projectProfile.keyFiles.length,
+    projectProfileLargestFiles: projectProfile.largestFiles.length,
     projectProfileSummaryNextTools: projectProfile.tokenPolicy?.recommendedNextTools ?? [],
     summarySearchReturnedMatches: summaryFileSearch.returnedMatches,
     summarySearchMaxMatches: summaryFileSearch.tokenPolicy?.maxMatches,
@@ -215,10 +220,12 @@ try {
   if (
     summary.toolCount < 84 ||
     summary.healthStatus !== 'ok' ||
-    summary.platformPhase !== 'phase-30-summary-search-result-caps' ||
+    summary.platformPhase !== 'phase-31-summary-project-profile-mode' ||
     !summary.metadataCompact ||
     summary.toolSummaryModules < 1 ||
-    !summary.projectProfileCompact ||
+    !summary.projectProfileSummary ||
+    summary.projectProfileKeyFiles > 5 ||
+    summary.projectProfileLargestFiles !== 0 ||
     summary.projectProfileSummaryNextTools.some((tool) => tool === 'repository.search_symbols') ||
     summary.summarySearchProfile !== 'summary' ||
     summary.summarySearchMaxMatches !== 8 ||

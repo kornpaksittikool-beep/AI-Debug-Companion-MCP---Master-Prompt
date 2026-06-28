@@ -10,6 +10,7 @@ export interface RepositoryProjectProfileInputDto extends RepositoryOverviewInpu
   readonly maxKeyFiles?: number;
   readonly maxLargestFiles?: number;
   readonly maxExtensions?: number;
+  readonly mode?: 'compact' | 'summary';
 }
 
 export interface RepositoryScanInputDto extends RepositoryOverviewInputDto {
