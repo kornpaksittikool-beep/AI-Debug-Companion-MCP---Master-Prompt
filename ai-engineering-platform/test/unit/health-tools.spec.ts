@@ -1,4 +1,4 @@
-import { ToolRegistryService } from '../../src/core/registry/services/tool-registry.service.js';
+﻿import { ToolRegistryService } from '../../src/core/registry/services/tool-registry.service.js';
 import { NO_RETRY } from '../../src/core/registry/interfaces/retry-strategy.interface.js';
 import { NO_PERMISSION } from '../../src/core/security/permission.interface.js';
 import { HealthService } from '../../src/modules/health/services/health.service.js';
@@ -27,7 +27,7 @@ describe('Health tools', () => {
 
     expect(output.platform).toBeDefined();
     expect(output.platform).toMatchObject({
-      phase: 'phase-22-compact-metadata-token-reporting-ux',
+      phase: 'phase-23-codex-auto-use-integration',
     });
     expect(output.tools).toEqual([]);
   });

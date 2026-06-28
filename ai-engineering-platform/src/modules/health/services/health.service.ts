@@ -12,7 +12,7 @@ import type {
 const PLATFORM_DETAILS = {
   name: 'ai-engineering-platform',
   version: '0.1.0',
-  phase: 'phase-22-compact-metadata-token-reporting-ux',
+  phase: 'phase-23-codex-auto-use-integration',
 } as const;
 
 @Injectable()

@@ -87,3 +87,6 @@
 | Compact platform metadata mode | Phase 22 | Completed |
 | Compact platform tool summary | Phase 22 | Completed |
 | Compact metadata MCP smoke coverage | Phase 22 | Completed |
+| Codex auto-use skill | Phase 23 | Completed |
+| Codex integration installer | Phase 23 | Completed |
+| Auto-use integration documentation | Phase 23 | Completed |

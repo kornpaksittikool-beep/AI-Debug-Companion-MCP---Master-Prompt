@@ -1,4 +1,4 @@
-import { Client } from '@modelcontextprotocol/sdk/client/index.js';
+﻿import { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio.js';
 import { createHash } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
@@ -172,7 +172,7 @@ try {
   if (
     summary.toolCount < 80 ||
     summary.healthStatus !== 'ok' ||
-    summary.platformPhase !== 'phase-22-compact-metadata-token-reporting-ux' ||
+    summary.platformPhase !== 'phase-23-codex-auto-use-integration' ||
     !summary.metadataCompact ||
     summary.toolSummaryModules < 1 ||
     !summary.importResolved ||

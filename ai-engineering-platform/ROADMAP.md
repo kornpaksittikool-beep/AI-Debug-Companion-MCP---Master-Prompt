@@ -82,6 +82,9 @@ The system must be developed iteratively. Each phase must produce usable, verifi
 | M22: Compact Metadata and Token Reporting UX | Phase 22 | Compact metadata mode for low-token platform startup checks | Platform metadata and automatic telemetry | High | Medium | Completed |
 | M22: Compact Metadata and Token Reporting UX | Phase 22 | Compact tool summary grouped by module for routing | Tool registry | High | Medium | Completed |
 | M22: Compact Metadata and Token Reporting UX | Phase 22 | MCP smoke coverage proving compact routing and telemetry remain usable | Compact metadata and telemetry summary | High | Low | Completed |
+| M23: Codex Auto-Use Integration | Phase 23 | Global Codex skill for natural Thai and English repository intents | Phase 22 compact tool summary | High | Medium | Completed |
+| M23: Codex Auto-Use Integration | Phase 23 | One-command Codex integration installer for MCP config and skill installation | MCP build artifact and Codex home | High | Medium | Completed |
+| M23: Codex Auto-Use Integration | Phase 23 | Documentation for auto-use limits and verification workflow | Codex skill and installer | High | Low | Completed |
 
 ## Phase Gate Rules
 
@@ -96,4 +99,4 @@ Each phase must pass the following checks before the next phase begins:
 
 ## Current Phase
 
-Phase 22 is completed. Future phases must be planned and approved before implementation.
+Phase 23 is completed. Future phases must be planned and approved before implementation.

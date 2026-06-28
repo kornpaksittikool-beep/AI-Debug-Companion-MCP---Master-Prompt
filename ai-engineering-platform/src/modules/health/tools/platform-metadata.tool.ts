@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+﻿import { Injectable } from '@nestjs/common';
 import { STANDARD_ERROR_SCHEMA } from '../../../core/errors/error-envelope.interface.js';
 import { NO_RETRY } from '../../../core/registry/interfaces/retry-strategy.interface.js';
 import type { JsonSchemaObject } from '../../../core/registry/interfaces/json-schema.interface.js';
@@ -58,7 +58,7 @@ export const PLATFORM_METADATA_TOOL_DEFINITION: ToolDefinition = {
         platform: {
           name: 'ai-engineering-platform',
           version: '0.1.0',
-          phase: 'phase-22-compact-metadata-token-reporting-ux',
+          phase: 'phase-23-codex-auto-use-integration',
         },
         tools: [],
       },
@@ -69,13 +69,13 @@ export const PLATFORM_METADATA_TOOL_DEFINITION: ToolDefinition = {
         platform: {
           name: 'ai-engineering-platform',
           version: '0.1.0',
-          phase: 'phase-22-compact-metadata-token-reporting-ux',
+          phase: 'phase-23-codex-auto-use-integration',
         },
         toolSummary: {
           platform: {
             name: 'ai-engineering-platform',
             version: '0.1.0',
-            phase: 'phase-22-compact-metadata-token-reporting-ux',
+            phase: 'phase-23-codex-auto-use-integration',
           },
           totalTools: 0,
           modules: [],
