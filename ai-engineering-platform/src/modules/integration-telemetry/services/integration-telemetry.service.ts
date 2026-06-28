@@ -23,7 +23,7 @@ const DEFAULT_SERVER_NAME = 'ai_engineering_platform';
 const DEFAULT_EXPECTED_TOOLS = [
   'platform.health',
   'platform.tool_summary',
-  'repository.overview',
+  'repository.project_profile',
   'repository.search_files',
   'repository.search_symbols',
   'token_budget.estimate',
@@ -33,8 +33,8 @@ const MANUAL_READ_AVOIDED_MULTIPLIER = 6;
 const WORKFLOW_INDEX: readonly WorkflowIndexEntry[] = [
   {
     taskType: 'project_summary',
-    description: 'Summarize project purpose, stack, modules, and key files with a low-token evidence route.',
-    startTools: ['platform.health', 'platform.tool_summary', 'repository.overview'],
+    description: 'Summarize project purpose, stack, modules, and key files with a compact low-token profile route.',
+    startTools: ['platform.health', 'platform.tool_summary', 'repository.project_profile'],
     evidenceTools: ['repository.search_files', 'repository.search_symbols', 'git.recent_changes'],
     planningTools: ['token_budget.estimate'],
     verificationTools: ['integration.auto_telemetry_summary'],
@@ -43,6 +43,7 @@ const WORKFLOW_INDEX: readonly WorkflowIndexEntry[] = [
     avoidUntilNeeded: [
       'repository.import_graph unless dependency flow is the question',
       'repository.call_graph unless call flow is the question',
+      'repository.overview unless the compact profile is insufficient',
       'repository.read_module_context for broad directories',
       'full platform.metadata',
     ],
@@ -304,7 +305,9 @@ export class IntegrationTelemetryService {
       recommendations:
         entries.length > 0
           ? ['Start with the listed startTools, then expand only through evidenceTools that answer the current question.']
-          : ['No workflow matched. Use platform.health, platform.tool_summary, and repository.overview to gather a first routing signal.'],
+          : [
+              'No workflow matched. Use platform.health, platform.tool_summary, and repository.project_profile to gather a first routing signal.',
+            ],
     };
   }
 
@@ -335,7 +338,10 @@ export class IntegrationTelemetryService {
     if (toolCalls === 0) {
       return ['No telemetry recorded yet. Record tool usage after MCP calls to measure real adoption.'];
     }
-    const recommendations = ['Compare estimated avoided manual-read tokens against direct file-read workflows.'];
+    const recommendations = [
+      'Compare estimated avoided manual-read tokens against direct file-read workflows.',
+      'Exact total Codex billing is unavailable unless the Codex host provides model usage metadata.',
+    ];
     if (fallbackCalls > 0) {
       recommendations.push('Investigate fallback reasons and improve MCP availability or tool coverage.');
     }

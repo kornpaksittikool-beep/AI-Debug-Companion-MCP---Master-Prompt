@@ -54,6 +54,22 @@ describe('RepositoryIntelligenceService', () => {
     );
   });
 
+  it('returns a compact project profile with billing limits', async () => {
+    const root = await createFixture();
+    await fs.writeFile(path.join(root, 'package.json'), '{"name":"demo"}\n');
+    const service = createService();
+
+    const profile = await service.projectProfile({ rootPath: root });
+
+    expect(profile.tokenPolicy).toMatchObject({
+      profile: 'compact',
+      exactCodexBillingAvailable: false,
+    });
+    expect(profile.keyFiles.map((file) => file.relativePath)).toEqual(expect.arrayContaining(['README.md']));
+    expect(profile.packageManifests.map((file) => file.relativePath)).toEqual(expect.arrayContaining(['package.json']));
+    expect(profile.tokenPolicy.avoidUntilNeeded).toContain('repository.overview');
+  });
+
   it('searches files by query and extension', async () => {
     const root = await createFixture();
     const service = createService();

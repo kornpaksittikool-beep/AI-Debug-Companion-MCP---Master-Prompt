@@ -90,6 +90,9 @@ The system must be developed iteratively. Each phase must produce usable, verifi
 | M24: Token-Aware MCP Routing | Phase 24 | Skill policy for session telemetry clarity and generated artifact exclusions | Codex auto-use skill | High | Low | Completed |
 | M25: Explicit Skill Activation | Phase 25 | Restrict Codex skill activation to explicit `$ai-engineering-platform-auto-use` invocation | Phase 24 token-aware routing | High | Low | Completed |
 | M25: Explicit Skill Activation | Phase 25 | Update installed skill and documentation to avoid surprising auto-trigger behavior | Codex integration installer | High | Low | Completed |
+| M26: Compact Profile Token Reporting | Phase 26 | Add `repository.project_profile` for lower-token project summaries | Phase 24 token-aware routing | High | Medium | Completed |
+| M26: Compact Profile Token Reporting | Phase 26 | Route project-summary workflows and Codex skill guidance through compact profile before overview | Phase 25 explicit skill activation | High | Medium | Completed |
+| M26: Compact Profile Token Reporting | Phase 26 | Clarify MCP payload estimates versus exact total Codex billing limits | Phase 21 automatic telemetry | High | Low | Completed |
 
 ## Phase Gate Rules
 
@@ -104,4 +107,4 @@ Each phase must pass the following checks before the next phase begins:
 
 ## Current Phase
 
-Phase 25 is completed. Future phases must be planned and approved before implementation.
+Phase 26 is completed. Future phases must be planned and approved before implementation.

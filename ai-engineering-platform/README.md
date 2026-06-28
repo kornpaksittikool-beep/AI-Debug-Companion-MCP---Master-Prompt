@@ -1,8 +1,8 @@
-# AI Engineering Platform
+﻿# AI Engineering Platform
 
 AI Engineering Platform is a production-oriented MCP foundation for evidence-driven software engineering workflows.
 
-Phase 25 provides the Core MCP Framework, Investigation Engine, bounded Repository Intelligence, TypeScript/JavaScript symbol intelligence, bounded import and call graphs, persistent repository graph indexing, cross-repository search, read-only SQLite Database Intelligence, PostgreSQL/MySQL connection profile validation, read-only Git Intelligence, Planning and Impact Engine, patch proposal workflow, deterministic approved patch application, rollback execution, allow-listed verification execution, versioned Project Memory, cache foundation, cache invalidation, read-only security audits, plugin marketplace readiness, semantic plugin compatibility resolution, approved local plugin state loading, remote plugin staging metadata, provider-neutral AI routing contracts, token-aware context budgeting tools, client integration telemetry, durable telemetry flush/load, workflow routing index, automatic MCP execution token telemetry, compact metadata routing, token-aware MCP routing, and an explicit Codex skill command for MCP-assisted work. It does not include automatic unapproved patch application, dynamic remote plugin installation, external plugin code execution, external database network execution, AI API execution, exact provider tokenizer integration, exact Codex billing telemetry, distributed telemetry storage, distributed cache, vector memory, cloud sync, remote Git hosting integration, automatic skill activation for ordinary prompts, or guaranteed host-level forced tool use.
+Phase 26 provides the Core MCP Framework, Investigation Engine, bounded Repository Intelligence, compact project profile routing, TypeScript/JavaScript symbol intelligence, bounded import and call graphs, persistent repository graph indexing, cross-repository search, read-only SQLite Database Intelligence, PostgreSQL/MySQL connection profile validation, read-only Git Intelligence, Planning and Impact Engine, patch proposal workflow, deterministic approved patch application, rollback execution, allow-listed verification execution, versioned Project Memory, cache foundation, cache invalidation, read-only security audits, plugin marketplace readiness, semantic plugin compatibility resolution, approved local plugin state loading, remote plugin staging metadata, provider-neutral AI routing contracts, token-aware context budgeting tools, client integration telemetry, durable telemetry flush/load, workflow routing index, automatic MCP execution token telemetry, compact metadata routing, token-aware MCP routing, and an explicit Codex skill command for MCP-assisted work. It does not include automatic unapproved patch application, dynamic remote plugin installation, external plugin code execution, external database network execution, AI API execution, exact provider tokenizer integration, exact total Codex billing telemetry without host usage metadata, distributed telemetry storage, distributed cache, vector memory, cloud sync, remote Git hosting integration, automatic skill activation for ordinary prompts, or guaranteed host-level forced tool use.
 
 ## Requirements
 
@@ -52,6 +52,7 @@ The Phase 1 server uses stdio transport through the official Model Context Proto
 - Hypothesis tracking.
 - Visited resource tracking.
 - Evidence-backed investigation closure.
+- Compact repository project profile for low-token summaries.
 - Safe bounded repository overview.
 - Safe bounded repository scan.
 - File search by path, extension, and text preview.
@@ -158,6 +159,10 @@ Returns the current investigation session state.
 ### `investigation.close`
 
 Closes an investigation with an evidence-backed conclusion.
+
+### `repository.project_profile`
+
+Returns a compact repository profile for low-token project summaries. It reports key files, package manifests, entrypoint hints, top extensions, a small largest-file sample, and a billing note that exact total Codex billing requires host-provided usage metadata.
 
 ### `repository.overview`
 

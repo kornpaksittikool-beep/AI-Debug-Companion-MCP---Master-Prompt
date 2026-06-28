@@ -52,7 +52,7 @@ No separate `$ai-agent` alias is installed. Current behavior after Phase 25 requ
 ### Keep MCP startup low-token
 
 - Reason: auto-use would be too expensive if every project prompt called full metadata.
-- Benefits: the skill starts with `platform.health`, `platform.tool_summary`, and `repository.overview`.
+- Benefits: the skill started with `platform.health`, `platform.tool_summary`, and `repository.overview` in Phase 23. Phase 26 later moved project summaries to `repository.project_profile` before `repository.overview`.
 - Drawbacks: full tool descriptions are not available unless explicitly requested.
 - Impact: routine project summaries avoid the Phase 21 `platform.metadata` token spike.
 

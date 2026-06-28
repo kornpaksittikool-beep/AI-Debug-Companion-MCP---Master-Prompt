@@ -42,10 +42,36 @@ const boundedScanSchema: JsonSchemaObject = {
   },
 };
 
+const projectProfileSchema: JsonSchemaObject = {
+  ...boundedScanSchema,
+  properties: {
+    ...(boundedScanSchema.properties as JsonSchemaObject),
+    maxKeyFiles: { type: 'number' },
+    maxLargestFiles: { type: 'number' },
+    maxExtensions: { type: 'number' },
+  },
+};
+
 const resultObjectSchema: JsonSchemaObject = {
   type: 'object',
   additionalProperties: true,
   properties: {},
+};
+
+export const REPOSITORY_PROJECT_PROFILE_TOOL_DEFINITION: ToolDefinition = {
+  name: 'repository.project_profile',
+  version: '1.0.0',
+  description:
+    'Returns a compact repository profile for low-token project summaries, including key files, manifests, entrypoints, and billing limitations.',
+  module: 'repository-intelligence',
+  inputSchema: projectProfileSchema,
+  outputSchema: resultObjectSchema,
+  errorSchema: STANDARD_ERROR_SCHEMA,
+  permissions: REPOSITORY_READ_PERMISSION,
+  timeoutMs: 5000,
+  retryStrategy: NO_RETRY,
+  sideEffects: 'read',
+  examples: [{ input: { rootPath: '/repo', maxFiles: 200 }, output: { tokenPolicy: { profile: 'compact' } } }],
 };
 
 export const REPOSITORY_OVERVIEW_TOOL_DEFINITION: ToolDefinition = {

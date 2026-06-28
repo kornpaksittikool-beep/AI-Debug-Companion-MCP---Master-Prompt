@@ -17,6 +17,7 @@ import {
   REPOSITORY_IMPORT_GRAPH_TOOL_DEFINITION,
   REPOSITORY_INDEX_STATUS_TOOL_DEFINITION,
   REPOSITORY_OVERVIEW_TOOL_DEFINITION,
+  REPOSITORY_PROJECT_PROFILE_TOOL_DEFINITION,
   REPOSITORY_READ_FILE_CONTEXT_TOOL_DEFINITION,
   REPOSITORY_READ_MODULE_CONTEXT_TOOL_DEFINITION,
   REPOSITORY_READ_SYMBOL_CONTEXT_TOOL_DEFINITION,
@@ -31,6 +32,7 @@ import {
   RepositoryImportGraphTool,
   RepositoryIndexStatusTool,
   RepositoryOverviewTool,
+  RepositoryProjectProfileTool,
   RepositoryReadFileContextTool,
   RepositoryReadModuleContextTool,
   RepositoryReadSymbolContextTool,
@@ -53,6 +55,7 @@ import {
     RepositoryGraphService,
     RepositoryIndexStoreService,
     RepositoryMultiRootService,
+    RepositoryProjectProfileTool,
     RepositoryOverviewTool,
     RepositoryScanTool,
     RepositorySearchFilesTool,
@@ -78,6 +81,7 @@ import {
 export class RepositoryIntelligenceModule implements OnModuleInit {
   constructor(
     private readonly registry: ToolRegistryService,
+    private readonly projectProfileTool: RepositoryProjectProfileTool,
     private readonly overviewTool: RepositoryOverviewTool,
     private readonly scanTool: RepositoryScanTool,
     private readonly searchFilesTool: RepositorySearchFilesTool,
@@ -93,6 +97,7 @@ export class RepositoryIntelligenceModule implements OnModuleInit {
   ) {}
 
   onModuleInit(): void {
+    this.registry.register(REPOSITORY_PROJECT_PROFILE_TOOL_DEFINITION, this.projectProfileTool);
     this.registry.register(REPOSITORY_OVERVIEW_TOOL_DEFINITION, this.overviewTool);
     this.registry.register(REPOSITORY_SCAN_TOOL_DEFINITION, this.scanTool);
     this.registry.register(REPOSITORY_SEARCH_FILES_TOOL_DEFINITION, this.searchFilesTool);

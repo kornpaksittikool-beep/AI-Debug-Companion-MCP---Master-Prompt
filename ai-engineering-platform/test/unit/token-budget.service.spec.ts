@@ -43,17 +43,24 @@ describe('TokenBudgetService', () => {
       objective: 'debug repository issue',
       currentTokens: 9000,
       maxTokens: 4000,
-      availableTools: ['platform.health', 'platform.tool_summary', 'repository.overview', 'repository.search_files', 'token_budget.estimate'],
+      availableTools: [
+        'platform.health',
+        'platform.tool_summary',
+        'repository.project_profile',
+        'repository.search_files',
+        'token_budget.estimate',
+      ],
     });
 
     expect(result.status).toBe('over_budget');
     expect(result.preferredTools).toEqual([
       'platform.health',
       'platform.tool_summary',
-      'repository.overview',
+      'repository.project_profile',
       'repository.search_files',
       'token_budget.estimate',
     ]);
+    expect(result.avoid).toContain('Avoid repository.overview unless repository.project_profile is insufficient.');
     expect(result.avoid).toContain('Avoid repository.import_graph unless dependency flow is the current question.');
     expect(result.recommendedFlow).toContain(
       'Compress current context and replace low-priority items with targeted follow-up reads.',

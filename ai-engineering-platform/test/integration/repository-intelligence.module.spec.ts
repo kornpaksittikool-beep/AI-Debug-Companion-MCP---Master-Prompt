@@ -27,6 +27,7 @@ describe('RepositoryIntelligenceModule integration', () => {
 
     expect(toolNames).toEqual(
       expect.arrayContaining([
+        'repository.project_profile',
         'repository.overview',
         'repository.scan',
         'repository.search_files',
@@ -41,6 +42,29 @@ describe('RepositoryIntelligenceModule integration', () => {
         'repository.cross_repo_search',
       ]),
     );
+
+    await moduleRef.close();
+  });
+
+  it('executes repository project profile through core execution', async () => {
+    const rootPath = await createFixture();
+    const moduleRef = await Test.createTestingModule({ imports: [AppModule] }).compile();
+    await moduleRef.init();
+
+    const execution = moduleRef.get(McpExecutionService);
+    const result = await execution.execute({
+      toolName: 'repository.project_profile',
+      input: { rootPath },
+      correlationId: 'corr_repo_profile',
+    });
+
+    expect(result.ok).toBe(true);
+    if (result.ok) {
+      expect(result.output.tokenPolicy).toMatchObject({
+        profile: 'compact',
+        exactCodexBillingAvailable: false,
+      });
+    }
 
     await moduleRef.close();
   });

@@ -62,6 +62,7 @@ try {
   const health = await callTool(client, 'platform.health', {});
   const metadata = await callTool(client, 'platform.metadata', { includeTools: false });
   const toolSummary = await callTool(client, 'platform.tool_summary', {});
+  const projectProfile = await callTool(client, 'repository.project_profile', { rootPath });
   const importGraph = await callTool(client, 'repository.import_graph', { rootPath });
   const plan = await callTool(client, 'planning.create_plan', {
     objective: 'Smoke update README',
@@ -149,6 +150,8 @@ try {
     platformPhase: metadata.platform.phase,
     metadataCompact: !metadata.tools && metadata.toolSummary?.totalTools === tools.tools.length,
     toolSummaryModules: toolSummary.modules.length,
+    projectProfileCompact: projectProfile.tokenPolicy?.profile === 'compact',
+    exactCodexBillingAvailable: projectProfile.tokenPolicy?.exactCodexBillingAvailable === true,
     importResolved: importGraph.edges.some((edge) => edge.resolvedRelativePath === 'src/helper.ts'),
     planStatus: plan.status,
     approvalStatus: approval.status,
@@ -170,11 +173,13 @@ try {
   };
 
   if (
-    summary.toolCount < 80 ||
+    summary.toolCount < 83 ||
     summary.healthStatus !== 'ok' ||
-    summary.platformPhase !== 'phase-25-explicit-skill-activation' ||
+    summary.platformPhase !== 'phase-26-compact-profile-token-reporting' ||
     !summary.metadataCompact ||
     summary.toolSummaryModules < 1 ||
+    !summary.projectProfileCompact ||
+    summary.exactCodexBillingAvailable ||
     !summary.importResolved ||
     summary.approvalStatus !== 'approved' ||
     summary.proposalStatus !== 'ready_for_review' ||

@@ -6,6 +6,12 @@ export interface RepositoryOverviewInputDto {
   readonly ignorePatterns?: readonly string[];
 }
 
+export interface RepositoryProjectProfileInputDto extends RepositoryOverviewInputDto {
+  readonly maxKeyFiles?: number;
+  readonly maxLargestFiles?: number;
+  readonly maxExtensions?: number;
+}
+
 export interface RepositoryScanInputDto extends RepositoryOverviewInputDto {
   readonly includeTextPreview?: boolean;
   readonly previewMaxBytes?: number;

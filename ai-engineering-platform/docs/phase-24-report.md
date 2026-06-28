@@ -8,7 +8,7 @@ Phase 24 reduces MCP payload usage for natural project summaries and follow-up p
 
 | Deliverable | Status | Evidence |
 | --- | --- | --- |
-| Low-token project summary route | Completed | `integration.workflow_index` now includes `project_summary` with `platform.health`, `platform.tool_summary`, and `repository.overview` as start tools. |
+| Low-token project summary route | Completed | `integration.workflow_index` added `project_summary` with `platform.health`, `platform.tool_summary`, and `repository.overview` as Phase 24 start tools. Phase 26 later replaced the default repository start tool with `repository.project_profile`. |
 | On-demand import graph policy | Completed | `repository.import_graph` is removed from default summary, bug, and token optimization evidence routes. |
 | Token recommendation update | Completed | `token_budget.recommend_strategy` prefers health, tool summary, overview, file search, and symbol search before broad context. |
 | Skill routing update | Completed | `ai-engineering-platform-auto-use` avoids import graph for ordinary summaries and follow-ups. |

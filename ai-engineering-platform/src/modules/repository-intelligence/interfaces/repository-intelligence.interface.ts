@@ -38,6 +38,25 @@ export interface RepositoryOverview {
   readonly truncated: boolean;
 }
 
+export interface RepositoryProjectProfile {
+  readonly rootPath: string;
+  readonly fileCount: number;
+  readonly truncated: boolean;
+  readonly extensionCounts: readonly ExtensionCount[];
+  readonly keyFiles: readonly RepositoryFile[];
+  readonly packageManifests: readonly RepositoryFile[];
+  readonly workspaceHints: readonly string[];
+  readonly entrypointHints: readonly RepositoryFile[];
+  readonly largestFiles: readonly RepositoryFile[];
+  readonly tokenPolicy: {
+    readonly profile: 'compact';
+    readonly exactCodexBillingAvailable: false;
+    readonly billingNote: string;
+    readonly recommendedNextTools: readonly string[];
+    readonly avoidUntilNeeded: readonly string[];
+  };
+}
+
 export interface ExtensionCount {
   readonly extension: string;
   readonly count: number;

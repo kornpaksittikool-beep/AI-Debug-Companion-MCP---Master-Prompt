@@ -19,7 +19,7 @@ describe('IntegrationTelemetryService', () => {
       availableTools: [
         'platform.health',
         'platform.tool_summary',
-        'repository.overview',
+        'repository.project_profile',
         'repository.search_files',
         'repository.search_symbols',
         'token_budget.estimate',
@@ -41,7 +41,7 @@ describe('IntegrationTelemetryService', () => {
     });
 
     expect(result.ready).toBe(false);
-    expect(result.missingTools).toContain('repository.overview');
+    expect(result.missingTools).toContain('repository.project_profile');
     expect(result.recommendations).toContain('Open the session from the repository root so AGENTS.md is loaded.');
   });
 
@@ -121,13 +121,16 @@ describe('IntegrationTelemetryService', () => {
     const result = service.workflowIndex({ taskType: 'project_summary' });
     const entry = result.entries[0];
 
-    expect(entry?.startTools).toEqual(['platform.health', 'platform.tool_summary', 'repository.overview']);
+    expect(entry?.startTools).toEqual(['platform.health', 'platform.tool_summary', 'repository.project_profile']);
     expect(entry?.evidenceTools).toEqual(
       expect.arrayContaining(['repository.search_files', 'repository.search_symbols']),
     );
     expect(entry?.evidenceTools).not.toContain('repository.import_graph');
     expect(entry?.avoidUntilNeeded).toEqual(
-      expect.arrayContaining(['repository.import_graph unless dependency flow is the question']),
+      expect.arrayContaining([
+        'repository.import_graph unless dependency flow is the question',
+        'repository.overview unless the compact profile is insufficient',
+      ]),
     );
   });
 });

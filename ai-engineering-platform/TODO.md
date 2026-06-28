@@ -95,3 +95,6 @@
 | Token-aware skill and workflow index updates | Phase 24 | Completed |
 | Explicit skill activation policy | Phase 25 | Completed |
 | Disable ordinary-prompt auto-triggering | Phase 25 | Completed |
+| Compact project profile tool | Phase 26 | Completed |
+| Profile-first token routing | Phase 26 | Completed |
+| Codex billing limitation reporting | Phase 26 | Completed |

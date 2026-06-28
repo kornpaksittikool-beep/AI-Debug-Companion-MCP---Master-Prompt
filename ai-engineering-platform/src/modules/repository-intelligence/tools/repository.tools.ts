@@ -7,6 +7,7 @@ import type {
   RepositoryCrossRepoSearchInputDto,
   RepositoryImportGraphInputDto,
   RepositoryIndexStatusInputDto,
+  RepositoryProjectProfileInputDto,
   RepositoryReadFileContextInputDto,
   RepositoryReadModuleContextInputDto,
   RepositoryReadSymbolContextInputDto,
@@ -28,6 +29,17 @@ export class RepositoryOverviewTool implements ToolHandler {
   execute(input: JsonSchemaObject): Promise<JsonSchemaObject> {
     return this.service
       .overview(input as unknown as RepositoryOverviewInputDto)
+      .then((result) => result as unknown as JsonSchemaObject);
+  }
+}
+
+@Injectable()
+export class RepositoryProjectProfileTool implements ToolHandler {
+  constructor(private readonly service: RepositoryIntelligenceService) {}
+
+  execute(input: JsonSchemaObject): Promise<JsonSchemaObject> {
+    return this.service
+      .projectProfile(input as unknown as RepositoryProjectProfileInputDto)
       .then((result) => result as unknown as JsonSchemaObject);
   }
 }

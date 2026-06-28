@@ -18,6 +18,7 @@ import {
   RepositoryImportGraphTool,
   RepositoryIndexStatusTool,
   RepositoryOverviewTool,
+  RepositoryProjectProfileTool,
   RepositoryReadFileContextTool,
   RepositoryReadSymbolContextTool,
   RepositoryRebuildIndexTool,
@@ -73,6 +74,12 @@ describe('Repository tools', () => {
 
     await expect(new RepositoryOverviewTool(service).execute({ rootPath })).resolves.toMatchObject({
       fileCount: 3,
+    });
+    await expect(new RepositoryProjectProfileTool(service).execute({ rootPath })).resolves.toMatchObject({
+      tokenPolicy: {
+        profile: 'compact',
+        exactCodexBillingAvailable: false,
+      },
     });
     await expect(new RepositoryScanTool(service).execute({ rootPath })).resolves.toMatchObject({
       rootPath,

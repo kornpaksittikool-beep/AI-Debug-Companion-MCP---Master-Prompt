@@ -6,6 +6,7 @@ import type {
   ModuleContextOptions,
   ModuleContextResult,
   RepositoryOverview,
+  RepositoryProjectProfile,
   RepositoryScanOptions,
   RepositoryScanResult,
   RepositorySearchOptions,
@@ -16,6 +17,28 @@ import { RepositorySafetyService } from './repository-safety.service.js';
 
 const DEFAULT_CONTEXT_MAX_BYTES = 16 * 1024;
 const DEFAULT_MODULE_MAX_FILES = 25;
+const DEFAULT_PROFILE_MAX_FILES = 200;
+const DEFAULT_PROFILE_MAX_DEPTH = 4;
+const DEFAULT_PROFILE_MAX_EXTENSIONS = 8;
+const DEFAULT_PROFILE_MAX_KEY_FILES = 12;
+const DEFAULT_PROFILE_MAX_LARGEST_FILES = 3;
+const KEY_FILE_NAMES = new Set([
+  'README.md',
+  'package.json',
+  'pnpm-workspace.yaml',
+  'turbo.json',
+  'nx.json',
+  'nest-cli.json',
+  'next.config.js',
+  'next.config.ts',
+  'vite.config.ts',
+  'tsconfig.json',
+  'docker-compose.yml',
+  'Dockerfile',
+  'PRODUCTION_CHECKLIST.md',
+  'AGENTS.md',
+]);
+const ENTRYPOINT_PATTERNS = [/^src\/main\.[tj]s$/, /^src\/app\.module\.ts$/, /^apps\/[^/]+\/src\/main\.[tj]s$/, /^apps\/[^/]+\/src\/app\.module\.ts$/, /^apps\/[^/]+\/src\/app\//];
 
 @Injectable()
 export class RepositoryIntelligenceService {
@@ -45,6 +68,53 @@ export class RepositoryIntelligenceService {
         .sort((a, b) => b.count - a.count || a.extension.localeCompare(b.extension)),
       largestFiles: [...scan.files].sort((a, b) => b.sizeBytes - a.sizeBytes).slice(0, 10),
       truncated: scan.truncated,
+    };
+  }
+
+  async projectProfile(
+    options: RepositoryScanOptions & {
+      readonly maxKeyFiles?: number;
+      readonly maxLargestFiles?: number;
+      readonly maxExtensions?: number;
+    },
+  ): Promise<RepositoryProjectProfile> {
+    const scan = await this.scan({
+      ...options,
+      maxFiles: options.maxFiles ?? DEFAULT_PROFILE_MAX_FILES,
+      maxDepth: options.maxDepth ?? DEFAULT_PROFILE_MAX_DEPTH,
+      includeTextPreview: false,
+    });
+    const extensionCounts = this.extensionCounts(scan.files).slice(0, options.maxExtensions ?? DEFAULT_PROFILE_MAX_EXTENSIONS);
+    const keyFiles = scan.files
+      .filter((file) => KEY_FILE_NAMES.has(file.relativePath.split('/').pop() ?? file.relativePath))
+      .slice(0, options.maxKeyFiles ?? DEFAULT_PROFILE_MAX_KEY_FILES);
+    const packageManifests = scan.files
+      .filter((file) => file.relativePath.endsWith('package.json'))
+      .slice(0, options.maxKeyFiles ?? DEFAULT_PROFILE_MAX_KEY_FILES);
+    const entrypointHints = scan.files
+      .filter((file) => ENTRYPOINT_PATTERNS.some((pattern) => pattern.test(file.relativePath)))
+      .slice(0, options.maxKeyFiles ?? DEFAULT_PROFILE_MAX_KEY_FILES);
+
+    return {
+      rootPath: scan.rootPath,
+      fileCount: scan.files.length,
+      truncated: scan.truncated,
+      extensionCounts,
+      keyFiles,
+      packageManifests,
+      workspaceHints: this.workspaceHints(scan.files),
+      entrypointHints,
+      largestFiles: [...scan.files]
+        .sort((a, b) => b.sizeBytes - a.sizeBytes)
+        .slice(0, options.maxLargestFiles ?? DEFAULT_PROFILE_MAX_LARGEST_FILES),
+      tokenPolicy: {
+        profile: 'compact',
+        exactCodexBillingAvailable: false,
+        billingNote:
+          'MCP can estimate payload tokens for tool inputs and outputs. Exact total Codex billing requires host-provided model usage metadata, which is not available inside this MCP server.',
+        recommendedNextTools: ['repository.search_files', 'repository.search_symbols', 'repository.read_file_context'],
+        avoidUntilNeeded: ['repository.overview', 'repository.import_graph', 'repository.call_graph', 'repository.read_module_context'],
+      },
     };
   }
 
@@ -132,5 +202,38 @@ export class RepositoryIntelligenceService {
     } finally {
       await handle.close();
     }
+  }
+
+  private extensionCounts(files: readonly RepositoryScanResult['files'][number][]): readonly { extension: string; count: number }[] {
+    const counts = new Map<string, number>();
+    for (const file of files) {
+      const extension = file.extension || '[none]';
+      counts.set(extension, (counts.get(extension) ?? 0) + 1);
+    }
+
+    return [...counts.entries()]
+      .map(([extension, count]) => ({ extension, count }))
+      .sort((a, b) => b.count - a.count || a.extension.localeCompare(b.extension));
+  }
+
+  private workspaceHints(files: readonly RepositoryScanResult['files'][number][]): readonly string[] {
+    const paths = new Set(files.map((file) => file.relativePath));
+    const hints: string[] = [];
+    if (paths.has('pnpm-workspace.yaml')) {
+      hints.push('pnpm workspace');
+    }
+    if (paths.has('turbo.json')) {
+      hints.push('Turborepo');
+    }
+    if (paths.has('nx.json')) {
+      hints.push('Nx workspace');
+    }
+    if ([...paths].some((file) => file.startsWith('apps/'))) {
+      hints.push('apps directory');
+    }
+    if ([...paths].some((file) => file.startsWith('packages/'))) {
+      hints.push('packages directory');
+    }
+    return hints;
   }
 }
