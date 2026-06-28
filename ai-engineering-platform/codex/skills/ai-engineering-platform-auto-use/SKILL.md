@@ -21,6 +21,7 @@ When the user writes `$ai-engineering-platform-auto-use` anywhere in the message
 
 - Always start with MCP unless the MCP server is unavailable.
 - Do not answer from memory alone.
+- Start every response with the compact Workflow Gate before giving the substantive answer.
 - Use the default low-token workflow first.
 - End with the MCP footer.
 
@@ -30,6 +31,49 @@ Examples:
 - `$ai-engineering-platform-auto-use explain what this repository does`
 - `$ai-engineering-platform-auto-use debug this error`
 - `$ai-engineering-platform-auto-use review this code`
+
+## Mandatory Lightweight Planning Gate
+
+Every response after this skill is invoked must begin with a compact `Workflow Gate:` block before the answer, even for read-only requests such as summaries, tech stack questions, project-purpose questions, or token checks.
+
+The gate must include exactly these fields:
+
+- Objective
+- Investigation Plan
+- Evidence Target
+- Impact
+- Approval
+- Verification
+- MCP Usage Plan
+
+Keep the gate short. For routine summaries, keep the full answer near the summary target of ~1k-2k MCP payload tokens and do not expand context just to make the gate longer.
+
+For read-only requests:
+
+- Impact must say `No file changes`.
+- Approval must say `Not required: read-only`.
+- Verification must say the answer will be checked with evidence or tool output.
+- MCP Usage Plan must prefer the low-token route and avoid `platform.tool_summary` unless tool availability is unclear.
+
+For write or change requests:
+
+- Include a full execution plan in or immediately after the gate.
+- Request approval before editing files unless the user has already explicitly approved implementation in the same request.
+- Include a verification plan and rollback plan before implementation.
+- Use `planning.create_plan`, `planning.impact_report`, and `planning.approval_gate` when MCP planning state is needed.
+
+Example read-only summary gate:
+
+```text
+Workflow Gate:
+- Objective: summarize project purpose from repo evidence
+- Investigation Plan: health check, project profile, targeted excerpt only if needed
+- Evidence Target: README/package/profile
+- Impact: No file changes
+- Approval: Not required: read-only
+- Verification: cite MCP evidence and telemetry footer
+- MCP Usage Plan: use MCP with low-token summary route
+```
 
 ## Intent Routing
 
@@ -57,13 +101,13 @@ Start with low-token MCP calls:
 
 Then choose the closest question profile before expanding context:
 
-| Question type                        |                  Target MCP payload | Preferred route                                                                                                                         |
-| ------------------------------------ | ----------------------------------: | --------------------------------------------------------------------------------------------------------------------------------------- |
+| Question type                        |                  Target MCP payload | Preferred route                                                                                                                                              |
+| ------------------------------------ | ----------------------------------: | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | Summary / project purpose            |                       ~1k-2k tokens | `platform.health`, `repository.project_profile` with `mode: "summary"`, then README/package excerpts only if needed; skip `platform.tool_summary` by default |
-| Tech stack / architecture quick view |                   ~1.5k-2.5k tokens | manifests/config excerpts with `maxBytes` <= 900, `repository.search_symbols`, graph tools only for explicit dependency-flow questions  |
-| General debugging                    |                       ~3k-8k tokens | `investigation.create`, exact error search, symbol/file search, then full context only for narrowed failing files                       |
-| Code review                          | diff-scoped, usually ~4k-10k tokens | changed files, impacted symbols, related tests, `git.impact_hints`; avoid unrelated repository reads                                    |
-| Planning                             |                       ~2k-6k tokens | roadmap/TODO/phase-report excerpts with `maxBytes` <= 1000 plus `planning.impact_report` after target files are known                   |
+| Tech stack / architecture quick view |                   ~1.5k-2.5k tokens | manifests/config excerpts with `maxBytes` <= 900, `repository.search_symbols`, graph tools only for explicit dependency-flow questions                       |
+| General debugging                    |                       ~3k-8k tokens | `investigation.create`, exact error search, symbol/file search, then full context only for narrowed failing files                                            |
+| Code review                          | diff-scoped, usually ~4k-10k tokens | changed files, impacted symbols, related tests, `git.impact_hints`; avoid unrelated repository reads                                                         |
+| Planning                             |                       ~2k-6k tokens | roadmap/TODO/phase-report excerpts with `maxBytes` <= 1000 plus `planning.impact_report` after target files are known                                        |
 
 For normal project summaries and follow-up questions, continue with only focused discovery:
 

@@ -2,7 +2,7 @@
 
 AI Engineering Platform is a production-oriented MCP foundation for evidence-driven software engineering workflows.
 
-Phase 34 provides the Core MCP Framework, Investigation Engine, bounded Repository Intelligence, summary startup mode, summary strict mode, summary project profile mode, compact project profile routing, summary excerpt byte caps, low-token file excerpts, question-type token profiles, summary symbol-search guardrails, summary search result caps, TypeScript/JavaScript symbol intelligence, bounded import and call graphs, persistent repository graph indexing, cross-repository search, read-only SQLite Database Intelligence, PostgreSQL/MySQL connection profile validation, read-only Git Intelligence, Planning and Impact Engine, patch proposal workflow, deterministic approved patch application, rollback execution, allow-listed verification execution, versioned Project Memory, cache foundation, cache invalidation, read-only security audits, plugin marketplace readiness, semantic plugin compatibility resolution, approved local plugin state loading, remote plugin staging metadata, provider-neutral AI routing contracts, token-aware context budgeting tools, client integration telemetry, durable telemetry flush/load, workflow routing index, automatic MCP execution token telemetry, compact metadata routing, token-aware MCP routing, and an explicit Codex skill command for MCP-assisted work. It does not include automatic unapproved patch application, dynamic remote plugin installation, external plugin code execution, external database network execution, AI API execution, exact provider tokenizer integration, exact total Codex billing telemetry without host usage metadata, distributed telemetry storage, distributed cache, vector memory, cloud sync, remote Git hosting integration, automatic skill activation for ordinary prompts, or guaranteed host-level forced tool use.
+Phase 35 provides the Core MCP Framework, Investigation Engine, bounded Repository Intelligence, summary startup mode, summary strict mode, summary project profile mode, compact project profile routing, mandatory lightweight planning gates for explicit Codex skill responses, summary excerpt byte caps, low-token file excerpts, question-type token profiles, summary symbol-search guardrails, summary search result caps, TypeScript/JavaScript symbol intelligence, bounded import and call graphs, persistent repository graph indexing, cross-repository search, read-only SQLite Database Intelligence, PostgreSQL/MySQL connection profile validation, read-only Git Intelligence, Planning and Impact Engine, patch proposal workflow, deterministic approved patch application, rollback execution, allow-listed verification execution, versioned Project Memory, cache foundation, cache invalidation, read-only security audits, plugin marketplace readiness, semantic plugin compatibility resolution, approved local plugin state loading, remote plugin staging metadata, provider-neutral AI routing contracts, token-aware context budgeting tools, client integration telemetry, durable telemetry flush/load, workflow routing index, automatic MCP execution token telemetry, compact metadata routing, token-aware MCP routing, and an explicit Codex skill command for MCP-assisted work. It does not include automatic unapproved patch application, dynamic remote plugin installation, external plugin code execution, external database network execution, AI API execution, exact provider tokenizer integration, exact total Codex billing telemetry without host usage metadata, distributed telemetry storage, distributed cache, vector memory, cloud sync, remote Git hosting integration, automatic skill activation for ordinary prompts, or guaranteed host-level forced tool use.
 
 ## Requirements
 
@@ -117,6 +117,7 @@ The Phase 1 server uses stdio transport through the official Model Context Proto
 - Automatic MCP tool execution telemetry with approximate input and output token estimates.
 - Automatic execution telemetry summary and reset tools.
 - Explicit Codex skill command through `$ai-engineering-platform-auto-use`.
+- Mandatory lightweight `Workflow Gate` policy for every explicit skill response, including read-only summaries.
 - Codex integration installer for MCP config and skill installation.
 - Token-aware routing policy that keeps `repository.import_graph` on-demand for project summaries and follow-ups.
 - Jest unit and integration test baseline.
@@ -425,7 +426,7 @@ Compresses candidate context items to fit an approximate token budget while pres
 
 ### `token_budget.recommend_strategy`
 
-Recommends a token-aware MCP evidence gathering flow for a repository task. It accepts an optional `questionType` (`project_summary`, `tech_stack_quick_view`, `debugging`, `code_review`, `planning`, or `general`) and returns a target token range, excerpt `maxBytes`, excerpt call limits, start/evidence/escalation tools, and hard `doNotCallTools` guidance. For `project_summary`, startup mode skips `platform.tool_summary` when `repository.project_profile` is available, and strict mode excludes broad search, symbol search, architecture docs, source tree summaries, app module excerpts, and full context reads from the preferred route.
+Recommends a token-aware MCP evidence gathering flow for a repository task. It accepts an optional `questionType` (`project_summary`, `tech_stack_quick_view`, `debugging`, `code_review`, `planning`, or `general`) and returns a target token range, excerpt `maxBytes`, excerpt call limits, start/evidence/escalation tools, and hard `doNotCallTools` guidance. For `project_summary`, startup mode skips `platform.tool_summary` when `repository.project_profile` is available, strict mode excludes broad search, symbol search, architecture docs, source tree summaries, app module excerpts, and full context reads from the preferred route, and the context policy reminds clients to start explicit skill responses with the compact Workflow Gate.
 
 ### `integration.start_session`
 
@@ -449,7 +450,7 @@ Persists in-memory integration telemetry under `.ai-engineering-platform/integra
 
 ### `integration.workflow_index`
 
-Returns the MCP workflow index for routing task types to tools, modules, and files. Each entry includes a target token range, excerpt limits, hard do-not-call tools, and context policy so clients can keep summary, tech stack, debug, review, and planning workflows narrow.
+Returns the MCP workflow index for routing task types to tools, modules, and files. Each entry includes a target token range, excerpt limits, hard do-not-call tools, and context policy so clients can keep summary, tech stack, debug, review, and planning workflows narrow. The `project_summary` entry includes the mandatory lightweight planning gate policy, including read-only `No file changes` impact and `Not required: read-only` approval wording.
 
 ### `integration.auto_telemetry_summary`
 

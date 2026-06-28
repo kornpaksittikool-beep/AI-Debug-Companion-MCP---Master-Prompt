@@ -122,6 +122,12 @@ describe('TokenBudgetService', () => {
     expect(result.preferredTools).not.toContain('repository.search_files');
     expect(result.preferredTools).not.toContain('repository.search_symbols');
     expect(result.questionProfile.contextPolicy).toContain(
+      'Start every explicit skill response with a compact Workflow Gate containing Objective, Investigation Plan, Evidence Target, Impact, Approval, Verification, and MCP Usage Plan.',
+    );
+    expect(result.questionProfile.contextPolicy).toContain(
+      'For read-only project summaries, set Impact to "No file changes", Approval to "Not required: read-only", and Verification to evidence/tool output plus the telemetry footer.',
+    );
+    expect(result.questionProfile.contextPolicy).toContain(
       'Use repository.project_profile with mode=summary as the primary summary artifact.',
     );
     expect(result.questionProfile.contextPolicy).toContain(

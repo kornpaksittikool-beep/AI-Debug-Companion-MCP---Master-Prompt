@@ -126,13 +126,16 @@ describe('IntegrationTelemetryService', () => {
     const result = service.workflowIndex({ taskType: 'project_summary' });
     const entry = result.entries[0];
 
-    expect(entry?.startTools).toEqual([
-      'platform.health',
-      'repository.project_profile',
-    ]);
+    expect(entry?.startTools).toEqual(['platform.health', 'repository.project_profile']);
     expect(entry?.targetTokenRange).toEqual({ min: 1000, max: 2000 });
     expect(entry?.excerptMaxBytes).toBe(700);
     expect(entry?.maxExcerptCalls).toBe(2);
+    expect(entry?.contextPolicy).toContain(
+      'Start every explicit skill response with a compact Workflow Gate containing Objective, Investigation Plan, Evidence Target, Impact, Approval, Verification, and MCP Usage Plan.',
+    );
+    expect(entry?.contextPolicy).toContain(
+      'For read-only project summaries, set Impact to "No file changes", Approval to "Not required: read-only", and Verification to evidence/tool output plus the telemetry footer.',
+    );
     expect(entry?.contextPolicy).toContain(
       'Use repository.project_profile with mode=summary as the main evidence artifact.',
     );

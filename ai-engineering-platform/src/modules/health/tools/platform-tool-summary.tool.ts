@@ -53,7 +53,7 @@ export const PLATFORM_TOOL_SUMMARY_TOOL_DEFINITION: ToolDefinition = {
         platform: {
           name: 'ai-engineering-platform',
           version: '0.1.0',
-          phase: 'phase-34-skip-tool-summary-for-summaries',
+          phase: 'phase-35-mandatory-lightweight-planning-gate',
         },
         totalTools: 0,
         modules: [],
@@ -70,6 +70,8 @@ export class PlatformToolSummaryTool implements ToolHandler {
 
   execute(input: JsonSchemaObject): Promise<JsonSchemaObject> {
     const moduleFilter = typeof input.moduleFilter === 'string' ? input.moduleFilter : undefined;
-    return Promise.resolve(this.healthService.getToolSummary(moduleFilter) as unknown as JsonSchemaObject);
+    return Promise.resolve(
+      this.healthService.getToolSummary(moduleFilter) as unknown as JsonSchemaObject,
+    );
   }
 }

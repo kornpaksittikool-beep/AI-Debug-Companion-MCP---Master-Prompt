@@ -37,10 +37,7 @@ const WORKFLOW_INDEX: readonly WorkflowIndexEntry[] = [
     description:
       'Summarize project purpose, stack, modules, and key files with a compact low-token profile route.',
     startTools: ['platform.health', 'repository.project_profile'],
-    evidenceTools: [
-      'repository.read_file_excerpt',
-      'git.recent_changes',
-    ],
+    evidenceTools: ['repository.read_file_excerpt', 'git.recent_changes'],
     planningTools: ['token_budget.estimate'],
     verificationTools: ['integration.auto_telemetry_summary'],
     primaryModules: ['health', 'repository-intelligence', 'integration-telemetry'],
@@ -49,6 +46,8 @@ const WORKFLOW_INDEX: readonly WorkflowIndexEntry[] = [
     excerptMaxBytes: 700,
     maxExcerptCalls: 2,
     contextPolicy: [
+      'Start every explicit skill response with a compact Workflow Gate containing Objective, Investigation Plan, Evidence Target, Impact, Approval, Verification, and MCP Usage Plan.',
+      'For read-only project summaries, set Impact to "No file changes", Approval to "Not required: read-only", and Verification to evidence/tool output plus the telemetry footer.',
       'Use repository.project_profile with mode=summary as the main evidence artifact.',
       'Skip platform.tool_summary for explicit project summaries unless tool availability is unclear.',
       'Stop after repository.project_profile plus README/package excerpts when those answer the summary.',

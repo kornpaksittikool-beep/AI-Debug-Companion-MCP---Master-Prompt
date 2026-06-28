@@ -30,9 +30,7 @@ const QUESTION_PROFILES: Record<TokenQuestionType, StrategyQuestionProfile> = {
     excerptMaxBytes: 700,
     maxExcerptCalls: 2,
     startTools: ['platform.health', 'repository.project_profile'],
-    evidenceTools: [
-      'repository.read_file_excerpt',
-    ],
+    evidenceTools: ['repository.read_file_excerpt'],
     escalationTools: [
       'repository.search_files',
       'repository.search_symbols',
@@ -40,6 +38,8 @@ const QUESTION_PROFILES: Record<TokenQuestionType, StrategyQuestionProfile> = {
       'repository.read_file_context',
     ],
     contextPolicy: [
+      'Start every explicit skill response with a compact Workflow Gate containing Objective, Investigation Plan, Evidence Target, Impact, Approval, Verification, and MCP Usage Plan.',
+      'For read-only project summaries, set Impact to "No file changes", Approval to "Not required: read-only", and Verification to evidence/tool output plus the telemetry footer.',
       'Use repository.project_profile with mode=summary as the primary summary artifact.',
       'Skip platform.tool_summary for explicit project summaries unless tool availability is unclear.',
       'Stop after repository.project_profile plus README/package excerpts when those answer the summary.',

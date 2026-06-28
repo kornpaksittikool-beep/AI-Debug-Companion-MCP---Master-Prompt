@@ -12,7 +12,7 @@ import type {
 const PLATFORM_DETAILS = {
   name: 'ai-engineering-platform',
   version: '0.1.0',
-  phase: 'phase-34-skip-tool-summary-for-summaries',
+  phase: 'phase-35-mandatory-lightweight-planning-gate',
 } as const;
 
 @Injectable()
@@ -72,7 +72,10 @@ export class HealthService {
     };
   }
 
-  private getTools(moduleFilter: string | undefined, includeDescriptions: boolean): PlatformMetadataToolDto[] {
+  private getTools(
+    moduleFilter: string | undefined,
+    includeDescriptions: boolean,
+  ): PlatformMetadataToolDto[] {
     return this.registry
       .list()
       .filter((tool) => !moduleFilter || tool.module === moduleFilter)

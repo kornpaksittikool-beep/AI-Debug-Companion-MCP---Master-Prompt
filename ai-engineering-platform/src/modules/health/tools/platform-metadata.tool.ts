@@ -18,7 +18,8 @@ export const PLATFORM_METADATA_TOOL_DEFINITION: ToolDefinition = {
     properties: {
       includeTools: {
         type: 'boolean',
-        description: 'Include registered tool records. Defaults to true for backward compatibility.',
+        description:
+          'Include registered tool records. Defaults to true for backward compatibility.',
       },
       includeDescriptions: {
         type: 'boolean',
@@ -58,7 +59,7 @@ export const PLATFORM_METADATA_TOOL_DEFINITION: ToolDefinition = {
         platform: {
           name: 'ai-engineering-platform',
           version: '0.1.0',
-          phase: 'phase-34-skip-tool-summary-for-summaries',
+          phase: 'phase-35-mandatory-lightweight-planning-gate',
         },
         tools: [],
       },
@@ -69,13 +70,13 @@ export const PLATFORM_METADATA_TOOL_DEFINITION: ToolDefinition = {
         platform: {
           name: 'ai-engineering-platform',
           version: '0.1.0',
-          phase: 'phase-34-skip-tool-summary-for-summaries',
+          phase: 'phase-35-mandatory-lightweight-planning-gate',
         },
         toolSummary: {
           platform: {
             name: 'ai-engineering-platform',
             version: '0.1.0',
-            phase: 'phase-34-skip-tool-summary-for-summaries',
+            phase: 'phase-35-mandatory-lightweight-planning-gate',
           },
           totalTools: 0,
           modules: [],

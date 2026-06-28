@@ -27,7 +27,7 @@ describe('Health tools', () => {
 
     expect(output.platform).toBeDefined();
     expect(output.platform).toMatchObject({
-      phase: 'phase-34-skip-tool-summary-for-summaries',
+      phase: 'phase-35-mandatory-lightweight-planning-gate',
     });
     expect(output.tools).toEqual([]);
   });
