@@ -12,7 +12,7 @@ import type {
 const PLATFORM_DETAILS = {
   name: 'ai-engineering-platform',
   version: '0.1.0',
-  phase: 'phase-32-summary-excerpt-byte-caps',
+  phase: 'phase-33-summary-strict-mode',
 } as const;
 
 @Injectable()

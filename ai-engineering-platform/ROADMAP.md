@@ -110,6 +110,9 @@ The system must be developed iteratively. Each phase must produce usable, verifi
 | M32: Summary Excerpt Byte Caps | Phase 32 | Cap `repository.read_file_excerpt` summary defaults at 700 bytes while keeping routing/debug/review larger | Phase 31 profile mode | High | Medium | Completed |
 | M32: Summary Excerpt Byte Caps | Phase 32 | Route summary strategy and workflow guidance through `purpose=summary`, `maxBytes<=700`, and no more than 1-2 files | Phase 32 excerpt caps | High | Low | Completed |
 | M32: Summary Excerpt Byte Caps | Phase 32 | Add smoke and unit coverage for summary excerpt byte caps | Phase 32 routing update | High | Low | Completed |
+| M33: Summary Strict Mode | Phase 33 | Remove `repository.search_files` from routine project-summary preferred/evidence routes | Phase 32 excerpt caps | High | Low | Completed |
+| M33: Summary Strict Mode | Phase 33 | Forbid architecture docs, source tree summaries, app module excerpts, and broad search unless explicitly requested | Phase 33 strict routing | High | Low | Completed |
+| M33: Summary Strict Mode | Phase 33 | Add telemetry recommendation when project-summary runs make broad search the largest token source | Automatic telemetry | High | Low | Completed |
 
 ## Phase Gate Rules
 
@@ -124,4 +127,4 @@ Each phase must pass the following checks before the next phase begins:
 
 ## Current Phase
 
-Phase 32 is completed. Future phases must be planned and approved before implementation.
+Phase 33 is completed. Future phases must be planned and approved before implementation.

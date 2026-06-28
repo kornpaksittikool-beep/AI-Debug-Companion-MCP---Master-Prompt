@@ -140,4 +140,21 @@ describe('McpExecutionService', () => {
     });
     expect(summary.budgetStatus?.overByTokens).toBeGreaterThan(0);
   });
+
+  it('warns when project summary strict mode is violated by broad search', () => {
+    const telemetry = new ExecutionTelemetryService();
+    telemetry.recordSuccess({
+      correlationId: 'corr_search',
+      toolName: 'repository.search_files',
+      startedAt: new Date('2026-01-01T00:00:00.000Z'),
+      executionTimeMs: 1,
+      input: { query: 'src' },
+      output: { matches: 'x'.repeat(120) },
+    });
+
+    const summary = telemetry.summary({ questionType: 'project_summary', targetTokens: 5 });
+
+    expect(summary.budgetStatus?.recommendation).toContain('Summary strict mode was likely violated');
+    expect(summary.budgetStatus?.recommendation).toContain('repository.search_files');
+  });
 });

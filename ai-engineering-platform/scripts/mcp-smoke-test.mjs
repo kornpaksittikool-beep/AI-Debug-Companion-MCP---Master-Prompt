@@ -221,7 +221,7 @@ try {
   if (
     summary.toolCount < 84 ||
     summary.healthStatus !== 'ok' ||
-    summary.platformPhase !== 'phase-32-summary-excerpt-byte-caps' ||
+    summary.platformPhase !== 'phase-33-summary-strict-mode' ||
     !summary.metadataCompact ||
     summary.toolSummaryModules < 1 ||
     !summary.projectProfileSummary ||
@@ -251,9 +251,13 @@ try {
     summary.tokenStrategyExcerptMaxBytes !== 900 ||
     !summary.tokenStrategyDoNotCallTools.includes('repository.read_file_context') ||
     summary.summaryStrategyQuestionType !== 'project_summary' ||
+    summary.summaryStrategyPreferredTools.includes('repository.search_files') ||
     summary.summaryStrategyPreferredTools.includes('repository.search_symbols') ||
+    !summary.summaryStrategyDoNotCallTools.some((tool) => tool.includes('repository.search_files')) ||
     !summary.summaryStrategyDoNotCallTools.includes('repository.search_symbols') ||
+    summary.summaryWorkflowEvidenceTools.includes('repository.search_files') ||
     summary.summaryWorkflowEvidenceTools.includes('repository.search_symbols') ||
+    !summary.summaryWorkflowDoNotCallTools.some((tool) => tool.includes('repository.search_files')) ||
     !summary.summaryWorkflowDoNotCallTools.includes('repository.search_symbols') ||
     !summary.integrationReady ||
     summary.integrationToolCalls !== 1 ||

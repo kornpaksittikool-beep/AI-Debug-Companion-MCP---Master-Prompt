@@ -118,3 +118,6 @@
 | Cap summary read_file_excerpt default maxBytes at 700 | Phase 32 | Completed |
 | Update summary strategy and workflow excerpt guidance | Phase 32 | Completed |
 | Add smoke and unit coverage for summary excerpt caps | Phase 32 | Completed |
+| Remove repository.search_files from default project-summary route | Phase 33 | Completed |
+| Add summary strict-mode guardrails for architecture docs, source tree summaries, and app module excerpts | Phase 33 | Completed |
+| Add telemetry warning for summary strict-mode search violations | Phase 33 | Completed |

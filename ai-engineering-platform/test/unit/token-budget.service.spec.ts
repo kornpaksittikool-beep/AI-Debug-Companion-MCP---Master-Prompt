@@ -74,7 +74,10 @@ describe('TokenBudgetService', () => {
       'Avoid repository.read_file_context for summaries; use repository.read_file_excerpt first and stop if the summary is already answerable.',
     );
     expect(result.avoid).toContain(
-      'Avoid unbounded repository.search_files; use mode=summary and maxMatches<=8 for project summaries.',
+      'Avoid repository.search_files for routine summaries when repository.project_profile already identifies README/package evidence.',
+    );
+    expect(result.avoid).toContain(
+      'Avoid architecture docs, source tree summaries, and app module excerpts unless the user asks for architecture or module details.',
     );
     expect(result.avoid).toContain(
       'Avoid repository.import_graph unless dependency flow is the current question.',
@@ -100,8 +103,10 @@ describe('TokenBudgetService', () => {
     expect(result.doNotCallTools).toEqual(
       expect.arrayContaining([
         'repository.import_graph',
+        'repository.search_files for routine summaries when README/package are present in repository.project_profile',
         'repository.search_symbols',
         'repository.read_file_context',
+        'repository.read_file_excerpt for docs/architecture.md or src/app.module.ts during routine summaries',
         'repository.overview',
         'platform.metadata',
       ]),
@@ -112,12 +117,19 @@ describe('TokenBudgetService', () => {
     expect(result.preferredTools).toEqual(
       expect.arrayContaining(['repository.project_profile', 'repository.read_file_excerpt']),
     );
+    expect(result.preferredTools).not.toContain('repository.search_files');
     expect(result.preferredTools).not.toContain('repository.search_symbols');
     expect(result.questionProfile.contextPolicy).toContain(
       'Use repository.project_profile with mode=summary as the primary summary artifact.',
     );
     expect(result.questionProfile.contextPolicy).toContain(
-      'Call repository.search_files with mode=summary and maxMatches<=8 for routine summaries.',
+      'Stop after repository.project_profile plus README/package excerpts when those answer the summary.',
+    );
+    expect(result.questionProfile.contextPolicy).toContain(
+      'Do not call repository.search_files for routine summaries unless README/package cannot be found from the profile.',
+    );
+    expect(result.questionProfile.contextPolicy).toContain(
+      'Do not read docs/architecture.md, source tree summaries, or app module excerpts unless the user explicitly asks for architecture or module details.',
     );
     expect(result.questionProfile.contextPolicy).toContain(
       'Do not run repository.search_symbols for routine summaries; use file search and excerpts instead.',

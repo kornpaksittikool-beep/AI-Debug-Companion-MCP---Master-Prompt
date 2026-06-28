@@ -79,6 +79,7 @@ export class ExecutionTelemetryService {
     const estimatedTotalTokens = estimatedInputTokens + estimatedOutputTokens;
     const budgetStatus = this.budgetStatus(input, estimatedTotalTokens);
 
+    const topTools = this.topTools();
     return {
       toolCalls: this.records.length,
       successfulCalls,
@@ -86,9 +87,9 @@ export class ExecutionTelemetryService {
       estimatedInputTokens,
       estimatedOutputTokens,
       estimatedTotalTokens,
-      topTools: this.topTools(),
+      topTools,
       recentCalls: this.records.slice(-MAX_RECENT_CALLS),
-      ...(budgetStatus ? { budgetStatus } : {}),
+      ...(budgetStatus ? { budgetStatus: this.withStrictSummaryRecommendation(input, budgetStatus, topTools) } : {}),
     };
   }
 
@@ -153,6 +154,35 @@ export class ExecutionTelemetryService {
         status === 'over_budget'
           ? 'Reduce context immediately: stop broad reads, lower excerpt maxBytes, and replace full context with search or symbol evidence.'
           : 'Telemetry is within the selected target range.',
+    };
+  }
+
+  private withStrictSummaryRecommendation(
+    input: ExecutionTelemetrySummaryOptions,
+    status: ExecutionTelemetryBudgetStatus,
+    topTools: readonly ExecutionToolTelemetrySummary[],
+  ): ExecutionTelemetryBudgetStatus {
+    if (input.questionType !== 'project_summary') {
+      return status;
+    }
+
+    const largestTool = topTools[0]?.toolName;
+    const strictViolationTools = new Set([
+      'repository.search_files',
+      'repository.search_symbols',
+      'repository.import_graph',
+      'repository.call_graph',
+      'repository.read_file_context',
+      'repository.read_module_context',
+      'repository.overview',
+    ]);
+    if (!largestTool || !strictViolationTools.has(largestTool)) {
+      return status;
+    }
+
+    return {
+      ...status,
+      recommendation: `Summary strict mode was likely violated: ${largestTool} became the largest token source. Stop after repository.project_profile mode=summary plus README/package excerpts unless the user asks for deeper architecture, module, or source-tree detail.`,
     };
   }
 }

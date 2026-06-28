@@ -138,7 +138,10 @@ describe('IntegrationTelemetryService', () => {
       'Use repository.project_profile with mode=summary as the main evidence artifact.',
     );
     expect(entry?.contextPolicy).toContain(
-      'Call repository.search_files with mode=summary and maxMatches<=8 for routine summaries.',
+      'Stop after repository.project_profile plus README/package excerpts when those answer the summary.',
+    );
+    expect(entry?.contextPolicy).toContain(
+      'Do not call repository.search_files for routine summaries unless README/package cannot be found from the profile.',
     );
     expect(entry?.contextPolicy).toContain(
       'Do not run repository.search_symbols for routine summaries; use file search and excerpts instead.',
@@ -152,24 +155,23 @@ describe('IntegrationTelemetryService', () => {
     expect(entry?.doNotCallTools).toEqual(
       expect.arrayContaining([
         'repository.import_graph',
+        'repository.search_files for routine summaries when README/package are present in repository.project_profile',
         'repository.search_symbols',
         'repository.read_file_context',
+        'repository.read_file_excerpt for docs/architecture.md or src/app.module.ts during routine summaries',
         'platform.metadata',
       ]),
     );
-    expect(entry?.evidenceTools).toEqual(
-      expect.arrayContaining([
-        'repository.search_files',
-        'repository.read_file_excerpt',
-      ]),
-    );
+    expect(entry?.evidenceTools).toEqual(expect.arrayContaining(['repository.read_file_excerpt']));
+    expect(entry?.evidenceTools).not.toContain('repository.search_files');
     expect(entry?.evidenceTools).not.toContain('repository.search_symbols');
     expect(entry?.evidenceTools).not.toContain('repository.import_graph');
     expect(entry?.avoidUntilNeeded).toEqual(
       expect.arrayContaining([
         'repository.import_graph unless dependency flow is the question',
         'repository.overview unless the compact profile is insufficient',
-        'repository.read_file_context unless a compact excerpt is insufficient',
+        'repository.search_files unless README/package cannot be found from the summary profile',
+        'docs/architecture.md and source tree summaries unless architecture is the question',
       ]),
     );
   });

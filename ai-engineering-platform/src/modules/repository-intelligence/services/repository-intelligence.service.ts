@@ -132,11 +132,15 @@ export class RepositoryIntelligenceService {
         exactCodexBillingAvailable: false,
         billingNote:
           'MCP can estimate payload tokens for tool inputs and outputs. Exact total Codex billing requires host-provided model usage metadata, which is not available inside this MCP server.',
-        recommendedNextTools: ['repository.search_files with mode=summary and maxMatches<=8', 'repository.read_file_excerpt'],
+        recommendedNextTools: [
+          'repository.read_file_excerpt for README.md with purpose=summary and maxBytes<=700',
+          'repository.read_file_excerpt for package.json with purpose=summary and maxBytes<=500 when package metadata is needed',
+        ],
         avoidUntilNeeded: [
           'repository.overview',
           'repository.import_graph',
           'repository.call_graph',
+          'repository.search_files for routine summaries when README/package are present',
           'repository.search_symbols for routine summaries',
           'repository.read_file_context',
           'repository.read_module_context',
