@@ -2,9 +2,9 @@
 
 ## Summary
 
-Phase 23 improves real-world Codex usability by adding a global auto-use skill for natural repository prompts. Users should not need to type "use AI Engineering Platform MCP" for common engineering intents such as project summaries, architecture inspection, debugging, review, or planning.
+Phase 23 originally improved real-world Codex usability by adding a global auto-use skill for natural repository prompts. Phase 25 later changed activation to explicit-only after real usage showed auto-triggering could surprise users on ordinary prompts.
 
-This phase does not claim perfect host-level forced tool use. Codex still decides whether a skill triggers, but the skill metadata is intentionally broad and bilingual so natural Thai and English project requests are routed toward the MCP-first workflow.
+This phase does not claim perfect host-level forced tool use. Historical Phase 23 behavior used broad bilingual metadata; current behavior is documented in Phase 25.
 
 ## Deliverables
 
@@ -19,7 +19,7 @@ This phase does not claim perfect host-level forced tool use. Codex still decide
 
 ## Trigger Strategy
 
-The skill uses intent classes instead of exact prompt matching:
+Historical Phase 23 used intent classes instead of exact prompt matching:
 
 - Project summary and project explanation.
 - Tech stack, dependency, architecture, module, folder, and data-flow questions.
@@ -38,7 +38,7 @@ The platform intentionally exposes one user-facing skill entrypoint:
 $ai-engineering-platform-auto-use
 ```
 
-No separate `$ai-agent` alias is installed. This keeps user behavior simple: natural prompts can trigger the skill automatically, and explicit prompts can force the same skill when the user wants certainty.
+No separate `$ai-agent` alias is installed. Current behavior after Phase 25 requires explicit `$ai-engineering-platform-auto-use` activation.
 
 ## Architecture Decisions
 

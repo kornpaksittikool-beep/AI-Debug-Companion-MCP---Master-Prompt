@@ -172,7 +172,7 @@ try {
   if (
     summary.toolCount < 80 ||
     summary.healthStatus !== 'ok' ||
-    summary.platformPhase !== 'phase-24-token-aware-mcp-routing' ||
+    summary.platformPhase !== 'phase-25-explicit-skill-activation' ||
     !summary.metadataCompact ||
     summary.toolSummaryModules < 1 ||
     !summary.importResolved ||

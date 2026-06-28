@@ -53,7 +53,7 @@ export const PLATFORM_TOOL_SUMMARY_TOOL_DEFINITION: ToolDefinition = {
         platform: {
           name: 'ai-engineering-platform',
           version: '0.1.0',
-          phase: 'phase-24-token-aware-mcp-routing',
+          phase: 'phase-25-explicit-skill-activation',
         },
         totalTools: 0,
         modules: [],

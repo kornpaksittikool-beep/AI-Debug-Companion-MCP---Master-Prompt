@@ -1,13 +1,19 @@
 ---
 name: ai-engineering-platform-auto-use
-description: Automatically use the ai_engineering_platform MCP server for repository and software-engineering intents, even when the user does not mention MCP. Also use when the user explicitly invokes `$ai-engineering-platform-auto-use` as the single command-style entrypoint for this platform. Use for project summaries, project-purpose questions, tech-stack questions, architecture inspection, codebase understanding, bug investigation, debugging, code review, refactoring, feature planning, impact analysis, verification planning, and follow-up questions that refer to the current project with words like this project, it, system, repo, "สรุปโปรเจ็กต์นี้", "โปรเจ็กต์นี้ใช้อะไร", "โปรเจ็กต์นี้ทำอะไร", "ใช้ทำอะไร", "อันนี้ทำอะไร", "มันทำอะไร", "ระบบนี้ทำอะไร", "โครงสร้างเป็นยังไง", "ช่วย debug", "review code", or similar Thai or English requests about a project or repository.
+description: Explicit command-style entrypoint for the AI Engineering Platform MCP workflow. Use this skill only when the user writes `$ai-engineering-platform-auto-use` or directly asks to use this exact skill name. Do not trigger this skill automatically for ordinary project summaries, debugging, reviews, planning, token questions, or follow-up prompts that do not name the skill.
 ---
 
 # AI Engineering Platform Auto Use
 
-Use the `ai_engineering_platform` MCP server first for project and repository engineering work. The user should not need to explicitly ask for MCP.
+Use the `ai_engineering_platform` MCP server first only after the user explicitly invokes this skill.
 
 This is the only command-style skill name for the platform. Do not route users to aliases such as `$ai-agent`.
+
+## Activation Rule
+
+Use this skill only when the user explicitly writes `$ai-engineering-platform-auto-use` or asks to use this exact skill name.
+
+Do not activate this skill for ordinary prompts such as "สรุปโปรเจ็กต์นี้", "โปรเจ็กต์นี้ทำอะไร", "บอก token ที่ใช้", "debug this", or "review code" unless the prompt also names `$ai-engineering-platform-auto-use`.
 
 ## Explicit Command Mode
 
@@ -27,7 +33,7 @@ Examples:
 
 ## Intent Routing
 
-Treat these request types as MCP-first:
+After explicit activation, treat these request types as MCP-first:
 
 - Project summary or project explanation.
 - Project purpose or product-purpose questions, including "what does this project do?" and Thai variants such as "โปรเจ็กต์นี้ทำอะไร", "ใช้ทำอะไร", "อันนี้ทำอะไร", "มันทำอะไร", and "ระบบนี้ทำอะไร".

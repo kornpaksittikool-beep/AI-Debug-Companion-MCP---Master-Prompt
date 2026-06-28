@@ -93,3 +93,5 @@
 | Low-token project summary routing | Phase 24 | Completed |
 | On-demand import graph policy | Phase 24 | Completed |
 | Token-aware skill and workflow index updates | Phase 24 | Completed |
+| Explicit skill activation policy | Phase 25 | Completed |
+| Disable ordinary-prompt auto-triggering | Phase 25 | Completed |

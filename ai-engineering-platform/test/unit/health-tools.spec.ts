@@ -27,7 +27,7 @@ describe('Health tools', () => {
 
     expect(output.platform).toBeDefined();
     expect(output.platform).toMatchObject({
-      phase: 'phase-24-token-aware-mcp-routing',
+      phase: 'phase-25-explicit-skill-activation',
     });
     expect(output.tools).toEqual([]);
   });

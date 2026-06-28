@@ -69,7 +69,7 @@ async function main() {
     distMainPath,
     distReady,
     nextStep: distReady
-      ? 'Open a new Codex thread and ask a natural project question such as "สรุปโปรเจ็กต์นี้ให้หน่อย".'
+      ? 'Open a new Codex thread and explicitly invoke "$ai-engineering-platform-auto-use สรุปโปรเจ็กต์นี้ให้หน่อย".'
       : 'Run pnpm build, then open a new Codex thread.',
   };
 
