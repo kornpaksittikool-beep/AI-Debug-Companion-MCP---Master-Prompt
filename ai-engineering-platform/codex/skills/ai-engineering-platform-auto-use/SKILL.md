@@ -1,6 +1,6 @@
 ---
 name: ai-engineering-platform-auto-use
-description: Automatically use the ai_engineering_platform MCP server for repository and software-engineering intents, even when the user does not mention MCP. Use for project summaries, tech-stack questions, architecture inspection, codebase understanding, bug investigation, debugging, code review, refactoring, feature planning, impact analysis, verification planning, "สรุปโปรเจ็กต์นี้", "โปรเจ็กต์นี้ใช้อะไร", "โครงสร้างเป็นยังไง", "ช่วย debug", "review code", and similar Thai or English requests about a project or repository.
+description: Automatically use the ai_engineering_platform MCP server for repository and software-engineering intents, even when the user does not mention MCP. Use for project summaries, project-purpose questions, tech-stack questions, architecture inspection, codebase understanding, bug investigation, debugging, code review, refactoring, feature planning, impact analysis, verification planning, and follow-up questions that refer to the current project with words like this project, it, system, repo, "สรุปโปรเจ็กต์นี้", "โปรเจ็กต์นี้ใช้อะไร", "โปรเจ็กต์นี้ทำอะไร", "ใช้ทำอะไร", "อันนี้ทำอะไร", "มันทำอะไร", "ระบบนี้ทำอะไร", "โครงสร้างเป็นยังไง", "ช่วย debug", "review code", or similar Thai or English requests about a project or repository.
 ---
 
 # AI Engineering Platform Auto Use
@@ -12,13 +12,17 @@ Use the `ai_engineering_platform` MCP server first for project and repository en
 Treat these request types as MCP-first:
 
 - Project summary or project explanation.
+- Project purpose or product-purpose questions, including "what does this project do?" and Thai variants such as "โปรเจ็กต์นี้ทำอะไร", "ใช้ทำอะไร", "อันนี้ทำอะไร", "มันทำอะไร", and "ระบบนี้ทำอะไร".
 - Tech stack, dependency, architecture, module, folder, or data-flow questions.
 - Bug investigation, error/log/stack-trace analysis, and debugging.
 - Code review, risk review, technical debt, or security review.
 - Feature planning, refactoring, impact analysis, and verification planning.
+- Follow-up questions that use pronouns or short references such as "แล้วอันนี้ล่ะ", "แล้วโปรเจ็กต์นี้ใช้ทำอะไร", "แล้วมันทำอะไร", or "สรุปอีกที".
 - Thai equivalents such as "สรุปโปรเจ็กต์นี้", "โปรเจ็กต์นี้ใช้อะไร", "ดูโครงสร้างให้หน่อย", "ช่วยหาบั๊ก", "ช่วยวางแผนแก้", or casual variants.
 
 Do not require exact trigger wording. If the task needs repo facts, architecture evidence, git context, or file impact, use MCP before broad manual reads.
+
+For a follow-up question, do not answer from memory alone. Either call focused MCP tools again or explicitly say the answer reuses MCP evidence already gathered earlier in the same thread, then include the MCP footer.
 
 ## Default Workflow
 
@@ -55,6 +59,8 @@ For repository understanding, debugging, review, or planning responses, include 
 - Evidence summary with file/tool references where available
 - Estimated MCP payload tokens from `integration.auto_telemetry_summary`
 - Largest token source and a reduction recommendation when useful
+
+If the answer reuses evidence from a previous MCP call in the same thread without making a new tool call, write `MCP used: reused previous MCP evidence` and name the prior evidence or tools.
 
 If MCP tools are unavailable, state that once and continue with the smallest practical local inspection.
 

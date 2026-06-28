@@ -11,6 +11,7 @@ This phase does not claim perfect host-level forced tool use. Codex still decide
 | Deliverable | Status | Evidence |
 | --- | --- | --- |
 | Codex auto-use skill | Completed | `codex/skills/ai-engineering-platform-auto-use/SKILL.md` defines broad Thai and English triggers plus MCP-first workflow rules. |
+| Follow-up intent hardening | Completed | The auto-use skill handles project-purpose follow-ups such as "โปรเจ็กต์นี้ทำอะไร", "ใช้ทำอะไร", "อันนี้ทำอะไร", and "มันทำอะไร". |
 | Codex integration installer | Completed | `scripts/install-codex-integration.mjs` installs the skill into Codex home and ensures the MCP server config block exists. |
 | Package script | Completed | `pnpm codex:install` runs the installer. |
 | Documentation | Completed | README, roadmap, TODO, and this report document Phase 23 behavior and limits. |
@@ -25,6 +26,7 @@ The skill uses intent classes instead of exact prompt matching:
 - Code review, risk review, technical debt, and security review.
 - Feature planning, refactoring, impact analysis, and verification planning.
 - Thai casual prompts such as "สรุปโปรเจ็กต์นี้", "โปรเจ็กต์นี้ใช้อะไร", "ดูโครงสร้างให้หน่อย", "ช่วยหาบั๊ก", and "ช่วยวางแผนแก้".
+- Follow-up prompts that refer back to the current repository with short wording such as "แล้วโปรเจ็กต์นี้ใช้ทำอะไร", "อันนี้ทำอะไร", "มันทำอะไร", and "สรุปอีกที".
 
 ## Architecture Decisions
 
