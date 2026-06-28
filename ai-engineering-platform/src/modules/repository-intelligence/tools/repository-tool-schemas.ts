@@ -150,6 +150,31 @@ export const REPOSITORY_READ_FILE_CONTEXT_TOOL_DEFINITION: ToolDefinition = {
   examples: [{ input: { rootPath: '/repo', filePath: 'README.md' }, output: { content: '' } }],
 };
 
+export const REPOSITORY_READ_FILE_EXCERPT_TOOL_DEFINITION: ToolDefinition = {
+  name: 'repository.read_file_excerpt',
+  version: '1.0.0',
+  description: 'Reads a compact excerpt for one file, optimized for low-token project summaries and routing.',
+  module: 'repository-intelligence',
+  inputSchema: {
+    type: 'object',
+    required: ['rootPath', 'filePath'],
+    additionalProperties: false,
+    properties: {
+      rootPath: { type: 'string' },
+      filePath: { type: 'string' },
+      maxBytes: { type: 'number' },
+      purpose: { type: 'string', enum: ['summary', 'routing', 'debug', 'review'] },
+    },
+  },
+  outputSchema: resultObjectSchema,
+  errorSchema: STANDARD_ERROR_SCHEMA,
+  permissions: REPOSITORY_READ_PERMISSION,
+  timeoutMs: 3000,
+  retryStrategy: NO_RETRY,
+  sideEffects: 'read',
+  examples: [{ input: { rootPath: '/repo', filePath: 'README.md', purpose: 'summary' }, output: { excerpt: '' } }],
+};
+
 export const REPOSITORY_READ_MODULE_CONTEXT_TOOL_DEFINITION: ToolDefinition = {
   name: 'repository.read_module_context',
   version: '1.0.0',

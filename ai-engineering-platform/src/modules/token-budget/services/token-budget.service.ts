@@ -92,6 +92,7 @@ export class TokenBudgetService {
       'repository.project_profile',
       'repository.search_files',
       'repository.search_symbols',
+      'repository.read_file_excerpt',
       'token_budget.estimate',
       'token_budget.compress_context',
       'planning.create_plan',
@@ -107,6 +108,7 @@ export class TokenBudgetService {
       avoid: [
         'Avoid reading the whole repository into model context.',
         'Avoid repository.overview unless repository.project_profile is insufficient.',
+        'Avoid repository.read_file_context for summaries; use repository.read_file_excerpt first.',
         'Avoid repository.import_graph unless dependency flow is the current question.',
         'Avoid expanding module context before file or symbol evidence narrows the target.',
         'Avoid sending generated coverage or build artifacts unless they are the investigation target.',
@@ -273,6 +275,7 @@ export class TokenBudgetService {
     const base = [
       'Verify MCP health before gathering broad context.',
       'Collect compact project profile, file matches, and symbol evidence first.',
+      'Use file excerpts before full file context for summaries.',
       'Estimate token cost before expanding context.',
     ];
 

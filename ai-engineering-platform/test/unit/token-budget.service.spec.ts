@@ -48,6 +48,7 @@ describe('TokenBudgetService', () => {
         'platform.tool_summary',
         'repository.project_profile',
         'repository.search_files',
+        'repository.read_file_excerpt',
         'token_budget.estimate',
       ],
     });
@@ -58,9 +59,11 @@ describe('TokenBudgetService', () => {
       'platform.tool_summary',
       'repository.project_profile',
       'repository.search_files',
+      'repository.read_file_excerpt',
       'token_budget.estimate',
     ]);
     expect(result.avoid).toContain('Avoid repository.overview unless repository.project_profile is insufficient.');
+    expect(result.avoid).toContain('Avoid repository.read_file_context for summaries; use repository.read_file_excerpt first.');
     expect(result.avoid).toContain('Avoid repository.import_graph unless dependency flow is the current question.');
     expect(result.recommendedFlow).toContain(
       'Compress current context and replace low-priority items with targeted follow-up reads.',

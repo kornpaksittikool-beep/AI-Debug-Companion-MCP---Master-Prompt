@@ -94,6 +94,23 @@ describe('RepositoryIntelligenceService', () => {
     expect(context.truncated).toBe(true);
   });
 
+  it('reads compact file excerpts for summary routing', async () => {
+    const root = await createFixture();
+    await fs.writeFile(path.join(root, 'LONG.md'), '# Long\n' + 'x'.repeat(3000));
+    const service = createService();
+
+    const excerpt = await service.readFileExcerpt({
+      rootPath: root,
+      filePath: 'LONG.md',
+      purpose: 'summary',
+    });
+
+    expect(excerpt.relativePath).toBe('LONG.md');
+    expect(excerpt.excerpt.length).toBeLessThanOrEqual(1200);
+    expect(excerpt.truncated).toBe(true);
+    expect(excerpt.tokenPolicy.escalationTool).toBe('repository.read_file_context');
+  });
+
   it('reads bounded module context', async () => {
     const root = await createFixture();
     const service = createService();

@@ -79,6 +79,10 @@ export interface FileContextOptions {
   readonly maxBytes?: number;
 }
 
+export interface FileExcerptOptions extends FileContextOptions {
+  readonly purpose?: 'summary' | 'routing' | 'debug' | 'review';
+}
+
 export interface FileContextResult {
   readonly rootPath: string;
   readonly filePath: string;
@@ -86,6 +90,21 @@ export interface FileContextResult {
   readonly sizeBytes: number;
   readonly truncated: boolean;
   readonly content: string;
+}
+
+export interface FileExcerptResult {
+  readonly rootPath: string;
+  readonly filePath: string;
+  readonly relativePath: string;
+  readonly sizeBytes: number;
+  readonly maxBytes: number;
+  readonly truncated: boolean;
+  readonly excerpt: string;
+  readonly tokenPolicy: {
+    readonly profile: 'excerpt';
+    readonly recommendedUse: string;
+    readonly escalationTool: 'repository.read_file_context';
+  };
 }
 
 export interface ModuleContextOptions {

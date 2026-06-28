@@ -19,6 +19,7 @@ import {
   REPOSITORY_OVERVIEW_TOOL_DEFINITION,
   REPOSITORY_PROJECT_PROFILE_TOOL_DEFINITION,
   REPOSITORY_READ_FILE_CONTEXT_TOOL_DEFINITION,
+  REPOSITORY_READ_FILE_EXCERPT_TOOL_DEFINITION,
   REPOSITORY_READ_MODULE_CONTEXT_TOOL_DEFINITION,
   REPOSITORY_READ_SYMBOL_CONTEXT_TOOL_DEFINITION,
   REPOSITORY_REBUILD_INDEX_TOOL_DEFINITION,
@@ -34,6 +35,7 @@ import {
   RepositoryOverviewTool,
   RepositoryProjectProfileTool,
   RepositoryReadFileContextTool,
+  RepositoryReadFileExcerptTool,
   RepositoryReadModuleContextTool,
   RepositoryReadSymbolContextTool,
   RepositoryRebuildIndexTool,
@@ -60,6 +62,7 @@ import {
     RepositoryScanTool,
     RepositorySearchFilesTool,
     RepositoryReadFileContextTool,
+    RepositoryReadFileExcerptTool,
     RepositoryReadModuleContextTool,
     RepositorySearchSymbolsTool,
     RepositoryReadSymbolContextTool,
@@ -86,6 +89,7 @@ export class RepositoryIntelligenceModule implements OnModuleInit {
     private readonly scanTool: RepositoryScanTool,
     private readonly searchFilesTool: RepositorySearchFilesTool,
     private readonly readFileContextTool: RepositoryReadFileContextTool,
+    private readonly readFileExcerptTool: RepositoryReadFileExcerptTool,
     private readonly readModuleContextTool: RepositoryReadModuleContextTool,
     private readonly searchSymbolsTool: RepositorySearchSymbolsTool,
     private readonly readSymbolContextTool: RepositoryReadSymbolContextTool,
@@ -102,6 +106,7 @@ export class RepositoryIntelligenceModule implements OnModuleInit {
     this.registry.register(REPOSITORY_SCAN_TOOL_DEFINITION, this.scanTool);
     this.registry.register(REPOSITORY_SEARCH_FILES_TOOL_DEFINITION, this.searchFilesTool);
     this.registry.register(REPOSITORY_READ_FILE_CONTEXT_TOOL_DEFINITION, this.readFileContextTool);
+    this.registry.register(REPOSITORY_READ_FILE_EXCERPT_TOOL_DEFINITION, this.readFileExcerptTool);
     this.registry.register(REPOSITORY_READ_MODULE_CONTEXT_TOOL_DEFINITION, this.readModuleContextTool);
     this.registry.register(REPOSITORY_SEARCH_SYMBOLS_TOOL_DEFINITION, this.searchSymbolsTool);
     this.registry.register(REPOSITORY_READ_SYMBOL_CONTEXT_TOOL_DEFINITION, this.readSymbolContextTool);

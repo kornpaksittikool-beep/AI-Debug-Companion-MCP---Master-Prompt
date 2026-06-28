@@ -9,6 +9,7 @@ import type {
   RepositoryIndexStatusInputDto,
   RepositoryProjectProfileInputDto,
   RepositoryReadFileContextInputDto,
+  RepositoryReadFileExcerptInputDto,
   RepositoryReadModuleContextInputDto,
   RepositoryReadSymbolContextInputDto,
   RepositoryRebuildIndexInputDto,
@@ -73,6 +74,17 @@ export class RepositoryReadFileContextTool implements ToolHandler {
   execute(input: JsonSchemaObject): Promise<JsonSchemaObject> {
     return this.service
       .readFileContext(input as unknown as RepositoryReadFileContextInputDto)
+      .then((result) => result as unknown as JsonSchemaObject);
+  }
+}
+
+@Injectable()
+export class RepositoryReadFileExcerptTool implements ToolHandler {
+  constructor(private readonly service: RepositoryIntelligenceService) {}
+
+  execute(input: JsonSchemaObject): Promise<JsonSchemaObject> {
+    return this.service
+      .readFileExcerpt(input as unknown as RepositoryReadFileExcerptInputDto)
       .then((result) => result as unknown as JsonSchemaObject);
   }
 }

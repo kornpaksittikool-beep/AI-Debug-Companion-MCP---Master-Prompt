@@ -3,6 +3,8 @@ import * as fs from 'node:fs/promises';
 import type {
   FileContextOptions,
   FileContextResult,
+  FileExcerptOptions,
+  FileExcerptResult,
   ModuleContextOptions,
   ModuleContextResult,
   RepositoryOverview,
@@ -16,6 +18,8 @@ import { RepositoryScannerService } from './repository-scanner.service.js';
 import { RepositorySafetyService } from './repository-safety.service.js';
 
 const DEFAULT_CONTEXT_MAX_BYTES = 16 * 1024;
+const DEFAULT_EXCERPT_MAX_BYTES = 1200;
+const DEBUG_EXCERPT_MAX_BYTES = 2400;
 const DEFAULT_MODULE_MAX_FILES = 25;
 const DEFAULT_PROFILE_MAX_FILES = 200;
 const DEFAULT_PROFILE_MAX_DEPTH = 4;
@@ -112,8 +116,14 @@ export class RepositoryIntelligenceService {
         exactCodexBillingAvailable: false,
         billingNote:
           'MCP can estimate payload tokens for tool inputs and outputs. Exact total Codex billing requires host-provided model usage metadata, which is not available inside this MCP server.',
-        recommendedNextTools: ['repository.search_files', 'repository.search_symbols', 'repository.read_file_context'],
-        avoidUntilNeeded: ['repository.overview', 'repository.import_graph', 'repository.call_graph', 'repository.read_module_context'],
+        recommendedNextTools: ['repository.search_files', 'repository.search_symbols', 'repository.read_file_excerpt'],
+        avoidUntilNeeded: [
+          'repository.overview',
+          'repository.import_graph',
+          'repository.call_graph',
+          'repository.read_file_context',
+          'repository.read_module_context',
+        ],
       },
     };
   }
@@ -161,6 +171,30 @@ export class RepositoryIntelligenceService {
       sizeBytes: stat.size,
       truncated: stat.size > maxBytes,
       content,
+    };
+  }
+
+  async readFileExcerpt(options: FileExcerptOptions): Promise<FileExcerptResult> {
+    const rootPath = this.safety.resolveRoot(options.rootPath);
+    const filePath = this.safety.resolveInsideRoot(rootPath, options.filePath);
+    const stat = await fs.stat(filePath);
+    const defaultMaxBytes = options.purpose === 'debug' || options.purpose === 'review' ? DEBUG_EXCERPT_MAX_BYTES : DEFAULT_EXCERPT_MAX_BYTES;
+    const maxBytes = options.maxBytes ?? defaultMaxBytes;
+    const excerpt = await this.readBounded(filePath, maxBytes);
+
+    return {
+      rootPath,
+      filePath,
+      relativePath: this.safety.toRelative(rootPath, filePath),
+      sizeBytes: stat.size,
+      maxBytes,
+      truncated: stat.size > maxBytes,
+      excerpt,
+      tokenPolicy: {
+        profile: 'excerpt',
+        recommendedUse: 'Use this compact excerpt for project summaries and routing. Escalate only when the excerpt is insufficient.',
+        escalationTool: 'repository.read_file_context',
+      },
     };
   }
 

@@ -98,3 +98,6 @@
 | Compact project profile tool | Phase 26 | Completed |
 | Profile-first token routing | Phase 26 | Completed |
 | Codex billing limitation reporting | Phase 26 | Completed |
+| Compact file excerpt tool | Phase 27 | Completed |
+| Excerpt-first summary routing | Phase 27 | Completed |
+| Read-file-context escalation guidance | Phase 27 | Completed |

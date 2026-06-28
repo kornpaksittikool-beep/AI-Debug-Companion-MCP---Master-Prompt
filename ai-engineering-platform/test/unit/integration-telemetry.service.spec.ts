@@ -22,6 +22,7 @@ describe('IntegrationTelemetryService', () => {
         'repository.project_profile',
         'repository.search_files',
         'repository.search_symbols',
+        'repository.read_file_excerpt',
         'token_budget.estimate',
         'token_budget.recommend_strategy',
       ],
@@ -123,13 +124,14 @@ describe('IntegrationTelemetryService', () => {
 
     expect(entry?.startTools).toEqual(['platform.health', 'platform.tool_summary', 'repository.project_profile']);
     expect(entry?.evidenceTools).toEqual(
-      expect.arrayContaining(['repository.search_files', 'repository.search_symbols']),
+      expect.arrayContaining(['repository.search_files', 'repository.search_symbols', 'repository.read_file_excerpt']),
     );
     expect(entry?.evidenceTools).not.toContain('repository.import_graph');
     expect(entry?.avoidUntilNeeded).toEqual(
       expect.arrayContaining([
         'repository.import_graph unless dependency flow is the question',
         'repository.overview unless the compact profile is insufficient',
+        'repository.read_file_context unless a compact excerpt is insufficient',
       ]),
     );
   });

@@ -33,6 +33,10 @@ export interface RepositoryReadFileContextInputDto {
   readonly maxBytes?: number;
 }
 
+export interface RepositoryReadFileExcerptInputDto extends RepositoryReadFileContextInputDto {
+  readonly purpose?: 'summary' | 'routing' | 'debug' | 'review';
+}
+
 export interface RepositoryReadModuleContextInputDto {
   readonly rootPath: string;
   readonly modulePath: string;

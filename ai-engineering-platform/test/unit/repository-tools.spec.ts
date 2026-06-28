@@ -20,6 +20,7 @@ import {
   RepositoryOverviewTool,
   RepositoryProjectProfileTool,
   RepositoryReadFileContextTool,
+  RepositoryReadFileExcerptTool,
   RepositoryReadSymbolContextTool,
   RepositoryRebuildIndexTool,
   RepositoryScanTool,
@@ -93,6 +94,12 @@ describe('Repository tools', () => {
       new RepositoryReadFileContextTool(service).execute({ rootPath, filePath: 'README.md' }),
     ).resolves.toMatchObject({
       relativePath: 'README.md',
+    });
+    await expect(
+      new RepositoryReadFileExcerptTool(service).execute({ rootPath, filePath: 'README.md', purpose: 'summary' }),
+    ).resolves.toMatchObject({
+      relativePath: 'README.md',
+      tokenPolicy: { profile: 'excerpt' },
     });
   });
 

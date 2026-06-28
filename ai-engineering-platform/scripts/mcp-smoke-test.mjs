@@ -63,6 +63,11 @@ try {
   const metadata = await callTool(client, 'platform.metadata', { includeTools: false });
   const toolSummary = await callTool(client, 'platform.tool_summary', {});
   const projectProfile = await callTool(client, 'repository.project_profile', { rootPath });
+  const fileExcerpt = await callTool(client, 'repository.read_file_excerpt', {
+    rootPath,
+    filePath: 'README.md',
+    purpose: 'summary',
+  });
   const importGraph = await callTool(client, 'repository.import_graph', { rootPath });
   const plan = await callTool(client, 'planning.create_plan', {
     objective: 'Smoke update README',
@@ -151,6 +156,7 @@ try {
     metadataCompact: !metadata.tools && metadata.toolSummary?.totalTools === tools.tools.length,
     toolSummaryModules: toolSummary.modules.length,
     projectProfileCompact: projectProfile.tokenPolicy?.profile === 'compact',
+    fileExcerptProfile: fileExcerpt.tokenPolicy?.profile,
     exactCodexBillingAvailable: projectProfile.tokenPolicy?.exactCodexBillingAvailable === true,
     importResolved: importGraph.edges.some((edge) => edge.resolvedRelativePath === 'src/helper.ts'),
     planStatus: plan.status,
@@ -173,12 +179,13 @@ try {
   };
 
   if (
-    summary.toolCount < 83 ||
+    summary.toolCount < 84 ||
     summary.healthStatus !== 'ok' ||
-    summary.platformPhase !== 'phase-26-compact-profile-token-reporting' ||
+    summary.platformPhase !== 'phase-27-file-excerpt-token-reduction' ||
     !summary.metadataCompact ||
     summary.toolSummaryModules < 1 ||
     !summary.projectProfileCompact ||
+    summary.fileExcerptProfile !== 'excerpt' ||
     summary.exactCodexBillingAvailable ||
     !summary.importResolved ||
     summary.approvalStatus !== 'approved' ||

@@ -32,6 +32,7 @@ describe('RepositoryIntelligenceModule integration', () => {
         'repository.scan',
         'repository.search_files',
         'repository.read_file_context',
+        'repository.read_file_excerpt',
         'repository.read_module_context',
         'repository.search_symbols',
         'repository.read_symbol_context',
@@ -63,6 +64,29 @@ describe('RepositoryIntelligenceModule integration', () => {
       expect(result.output.tokenPolicy).toMatchObject({
         profile: 'compact',
         exactCodexBillingAvailable: false,
+      });
+    }
+
+    await moduleRef.close();
+  });
+
+  it('executes repository file excerpt through core execution', async () => {
+    const rootPath = await createFixture();
+    const moduleRef = await Test.createTestingModule({ imports: [AppModule] }).compile();
+    await moduleRef.init();
+
+    const execution = moduleRef.get(McpExecutionService);
+    const result = await execution.execute({
+      toolName: 'repository.read_file_excerpt',
+      input: { rootPath, filePath: 'README.md', purpose: 'summary' },
+      correlationId: 'corr_repo_excerpt',
+    });
+
+    expect(result.ok).toBe(true);
+    if (result.ok) {
+      expect(result.output).toMatchObject({
+        relativePath: 'README.md',
+        tokenPolicy: { profile: 'excerpt' },
       });
     }
 

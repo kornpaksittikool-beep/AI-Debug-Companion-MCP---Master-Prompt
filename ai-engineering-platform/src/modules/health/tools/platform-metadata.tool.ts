@@ -58,7 +58,7 @@ export const PLATFORM_METADATA_TOOL_DEFINITION: ToolDefinition = {
         platform: {
           name: 'ai-engineering-platform',
           version: '0.1.0',
-          phase: 'phase-26-compact-profile-token-reporting',
+          phase: 'phase-27-file-excerpt-token-reduction',
         },
         tools: [],
       },
@@ -69,13 +69,13 @@ export const PLATFORM_METADATA_TOOL_DEFINITION: ToolDefinition = {
         platform: {
           name: 'ai-engineering-platform',
           version: '0.1.0',
-          phase: 'phase-26-compact-profile-token-reporting',
+          phase: 'phase-27-file-excerpt-token-reduction',
         },
         toolSummary: {
           platform: {
             name: 'ai-engineering-platform',
             version: '0.1.0',
-            phase: 'phase-26-compact-profile-token-reporting',
+            phase: 'phase-27-file-excerpt-token-reduction',
           },
           totalTools: 0,
           modules: [],

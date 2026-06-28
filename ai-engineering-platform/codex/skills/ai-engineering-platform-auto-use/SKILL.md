@@ -59,6 +59,7 @@ For normal project summaries and follow-up questions, continue with only focused
 
 - Use `repository.search_files` to find important files, configs, routes, docs, package manifests, and entry points.
 - Use `repository.search_symbols` for TypeScript/JavaScript classes, functions, services, controllers, modules, and DTOs.
+- Use `repository.read_file_excerpt` for summary evidence from README, package manifests, entry points, or app modules.
 - Use `repository.overview` only when `repository.project_profile` is insufficient.
 - Use `git.recent_changes` and `git.impact_hints` when history or regression risk matters.
 - Use `investigation.create` and evidence tools for bug reports, logs, screenshots, or unclear failures.
@@ -78,10 +79,13 @@ For project summaries, target this order:
 1. `repository.project_profile`
 2. `repository.search_files`
 3. `repository.search_symbols`
-4. `repository.read_file_context` only for the few files that explain purpose or entry points
-5. `repository.overview` only if compact profile data is insufficient
+4. `repository.read_file_excerpt` with `purpose: "summary"` for at most 2-3 files that explain purpose or entry points
+5. `repository.read_file_context` only when an excerpt is insufficient and the answer needs precise details
+6. `repository.overview` only if compact profile data is insufficient
 
 Avoid broad reads of `playwright-report`, `coverage`, `.next`, `dist`, `build`, `node_modules`, generated reports, and lockfile-heavy content unless the user asks about those artifacts.
+
+For routine project summaries, avoid using `repository.read_file_context` as the largest token source. If `integration.auto_telemetry_summary` reports `repository.read_file_context` as the largest source, recommend replacing it with `repository.read_file_excerpt` next time.
 
 Call `platform.metadata` only when full tool descriptions or schemas are actually required. If metadata is needed, prefer compact input such as `{ "includeTools": false }`.
 
