@@ -7,10 +7,14 @@ import {
   PLATFORM_METADATA_TOOL_DEFINITION,
   PlatformMetadataTool,
 } from './tools/platform-metadata.tool.js';
+import {
+  PLATFORM_TOOL_SUMMARY_TOOL_DEFINITION,
+  PlatformToolSummaryTool,
+} from './tools/platform-tool-summary.tool.js';
 
 @Module({
   imports: [CoreModule],
-  providers: [HealthService, HealthTool, PlatformMetadataTool],
+  providers: [HealthService, HealthTool, PlatformMetadataTool, PlatformToolSummaryTool],
   exports: [HealthService],
 })
 export class HealthModule implements OnModuleInit {
@@ -18,10 +22,12 @@ export class HealthModule implements OnModuleInit {
     private readonly registry: ToolRegistryService,
     private readonly healthTool: HealthTool,
     private readonly platformMetadataTool: PlatformMetadataTool,
+    private readonly platformToolSummaryTool: PlatformToolSummaryTool,
   ) {}
 
   onModuleInit(): void {
     this.registry.register(HEALTH_TOOL_DEFINITION, this.healthTool);
     this.registry.register(PLATFORM_METADATA_TOOL_DEFINITION, this.platformMetadataTool);
+    this.registry.register(PLATFORM_TOOL_SUMMARY_TOOL_DEFINITION, this.platformToolSummaryTool);
   }
 }

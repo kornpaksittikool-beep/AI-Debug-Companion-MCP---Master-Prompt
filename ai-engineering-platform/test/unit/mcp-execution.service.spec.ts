@@ -99,7 +99,10 @@ describe('McpExecutionService', () => {
     const registry = new ToolRegistryService();
     const telemetry = new ExecutionTelemetryService();
     registry.register(definition, {
-      execute: (input) => Promise.resolve({ received: String(input.message) }),
+      execute: (input) => {
+        const message = typeof input.message === 'string' ? input.message : '';
+        return Promise.resolve({ received: message });
+      },
     });
     const service = new McpExecutionService(
       registry,

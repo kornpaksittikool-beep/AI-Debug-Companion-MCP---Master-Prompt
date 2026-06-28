@@ -14,7 +14,7 @@ describe('AppModule integration', () => {
     const toolNames = registry.list().map((tool) => tool.name);
 
     expect(toolNames).toEqual(
-      expect.arrayContaining(['platform.health', 'platform.metadata', 'example.echo']),
+      expect.arrayContaining(['platform.health', 'platform.metadata', 'platform.tool_summary', 'example.echo']),
     );
 
     await moduleRef.close();

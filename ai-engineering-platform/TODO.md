@@ -84,3 +84,6 @@
 | Automatic MCP execution telemetry | Phase 21 | Completed |
 | Automatic token telemetry summary tool | Phase 21 | Completed |
 | Automatic telemetry smoke coverage | Phase 21 | Completed |
+| Compact platform metadata mode | Phase 22 | Completed |
+| Compact platform tool summary | Phase 22 | Completed |
+| Compact metadata MCP smoke coverage | Phase 22 | Completed |

@@ -2,7 +2,7 @@
 
 AI Engineering Platform is a production-oriented MCP foundation for evidence-driven software engineering workflows.
 
-Phase 21 provides the Core MCP Framework, Investigation Engine, bounded Repository Intelligence, TypeScript/JavaScript symbol intelligence, bounded import and call graphs, persistent repository graph indexing, cross-repository search, read-only SQLite Database Intelligence, PostgreSQL/MySQL connection profile validation, read-only Git Intelligence, Planning and Impact Engine, patch proposal workflow, deterministic approved patch application, rollback execution, allow-listed verification execution, versioned Project Memory, cache foundation, cache invalidation, read-only security audits, plugin marketplace readiness, semantic plugin compatibility resolution, approved local plugin state loading, remote plugin staging metadata, provider-neutral AI routing contracts, token-aware context budgeting tools, client integration telemetry, durable telemetry flush/load, workflow routing index, and automatic MCP execution token telemetry. It does not include automatic unapproved patch application, dynamic remote plugin installation, external plugin code execution, external database network execution, AI API execution, exact provider tokenizer integration, distributed telemetry storage, distributed cache, vector memory, cloud sync, or remote Git hosting integration.
+Phase 22 provides the Core MCP Framework, Investigation Engine, bounded Repository Intelligence, TypeScript/JavaScript symbol intelligence, bounded import and call graphs, persistent repository graph indexing, cross-repository search, read-only SQLite Database Intelligence, PostgreSQL/MySQL connection profile validation, read-only Git Intelligence, Planning and Impact Engine, patch proposal workflow, deterministic approved patch application, rollback execution, allow-listed verification execution, versioned Project Memory, cache foundation, cache invalidation, read-only security audits, plugin marketplace readiness, semantic plugin compatibility resolution, approved local plugin state loading, remote plugin staging metadata, provider-neutral AI routing contracts, token-aware context budgeting tools, client integration telemetry, durable telemetry flush/load, workflow routing index, automatic MCP execution token telemetry, and compact metadata routing for lower-token MCP startup flows. It does not include automatic unapproved patch application, dynamic remote plugin installation, external plugin code execution, external database network execution, AI API execution, exact provider tokenizer integration, exact Codex billing telemetry, distributed telemetry storage, distributed cache, vector memory, cloud sync, or remote Git hosting integration.
 
 ## Requirements
 
@@ -44,6 +44,7 @@ The Phase 1 server uses stdio transport through the official Model Context Proto
 - Standardized error envelope.
 - Built-in `platform.health` tool.
 - Built-in `platform.metadata` tool.
+- Built-in `platform.tool_summary` tool for compact low-token routing.
 - Example `example.echo` plugin tool.
 - Investigation sessions.
 - Evidence registry inside each investigation session.
@@ -120,7 +121,11 @@ Returns platform health and readiness information.
 
 ### `platform.metadata`
 
-Returns platform metadata and registered tool names.
+Returns platform metadata and optionally registered tool details. Use `{ "includeTools": false }` for a compact summary when full tool descriptions are not needed.
+
+### `platform.tool_summary`
+
+Returns a compact registered tool summary grouped by module for low-token routing.
 
 ### `example.echo`
 

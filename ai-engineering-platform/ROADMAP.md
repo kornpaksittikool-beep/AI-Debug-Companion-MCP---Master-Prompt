@@ -79,6 +79,9 @@ The system must be developed iteratively. Each phase must produce usable, verifi
 | M21: Automatic Token Telemetry Reporting | Phase 21 | Core execution telemetry for every MCP tool call | Core MCP execution boundary | High | Medium | Completed |
 | M21: Automatic Token Telemetry Reporting | Phase 21 | Automatic token telemetry summary and reset tools | Core execution telemetry | High | Medium | Completed |
 | M21: Automatic Token Telemetry Reporting | Phase 21 | MCP smoke coverage proving automatic telemetry population | Summary tool | High | Low | Completed |
+| M22: Compact Metadata and Token Reporting UX | Phase 22 | Compact metadata mode for low-token platform startup checks | Platform metadata and automatic telemetry | High | Medium | Completed |
+| M22: Compact Metadata and Token Reporting UX | Phase 22 | Compact tool summary grouped by module for routing | Tool registry | High | Medium | Completed |
+| M22: Compact Metadata and Token Reporting UX | Phase 22 | MCP smoke coverage proving compact routing and telemetry remain usable | Compact metadata and telemetry summary | High | Low | Completed |
 
 ## Phase Gate Rules
 
@@ -93,4 +96,4 @@ Each phase must pass the following checks before the next phase begins:
 
 ## Current Phase
 
-Phase 21 is completed. Future phases must be planned and approved before implementation.
+Phase 22 is completed. Future phases must be planned and approved before implementation.

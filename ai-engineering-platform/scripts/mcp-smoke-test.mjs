@@ -60,7 +60,8 @@ await client.connect(transport);
 try {
   const tools = await client.listTools();
   const health = await callTool(client, 'platform.health', {});
-  const metadata = await callTool(client, 'platform.metadata', {});
+  const metadata = await callTool(client, 'platform.metadata', { includeTools: false });
+  const toolSummary = await callTool(client, 'platform.tool_summary', {});
   const importGraph = await callTool(client, 'repository.import_graph', { rootPath });
   const plan = await callTool(client, 'planning.create_plan', {
     objective: 'Smoke update README',
@@ -146,6 +147,8 @@ try {
     toolCount: tools.tools.length,
     healthStatus: health.status,
     platformPhase: metadata.platform.phase,
+    metadataCompact: !metadata.tools && metadata.toolSummary?.totalTools === tools.tools.length,
+    toolSummaryModules: toolSummary.modules.length,
     importResolved: importGraph.edges.some((edge) => edge.resolvedRelativePath === 'src/helper.ts'),
     planStatus: plan.status,
     approvalStatus: approval.status,
@@ -167,9 +170,11 @@ try {
   };
 
   if (
-    summary.toolCount < 70 ||
+    summary.toolCount < 80 ||
     summary.healthStatus !== 'ok' ||
-    summary.platformPhase !== 'phase-21-automatic-token-telemetry-reporting' ||
+    summary.platformPhase !== 'phase-22-compact-metadata-token-reporting-ux' ||
+    !summary.metadataCompact ||
+    summary.toolSummaryModules < 1 ||
     !summary.importResolved ||
     summary.approvalStatus !== 'approved' ||
     summary.proposalStatus !== 'ready_for_review' ||
