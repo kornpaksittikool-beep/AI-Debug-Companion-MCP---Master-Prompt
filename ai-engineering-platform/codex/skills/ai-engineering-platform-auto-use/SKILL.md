@@ -1,11 +1,29 @@
 ---
 name: ai-engineering-platform-auto-use
-description: Automatically use the ai_engineering_platform MCP server for repository and software-engineering intents, even when the user does not mention MCP. Use for project summaries, project-purpose questions, tech-stack questions, architecture inspection, codebase understanding, bug investigation, debugging, code review, refactoring, feature planning, impact analysis, verification planning, and follow-up questions that refer to the current project with words like this project, it, system, repo, "สรุปโปรเจ็กต์นี้", "โปรเจ็กต์นี้ใช้อะไร", "โปรเจ็กต์นี้ทำอะไร", "ใช้ทำอะไร", "อันนี้ทำอะไร", "มันทำอะไร", "ระบบนี้ทำอะไร", "โครงสร้างเป็นยังไง", "ช่วย debug", "review code", or similar Thai or English requests about a project or repository.
+description: Automatically use the ai_engineering_platform MCP server for repository and software-engineering intents, even when the user does not mention MCP. Also use when the user explicitly invokes `$ai-engineering-platform-auto-use` as the single command-style entrypoint for this platform. Use for project summaries, project-purpose questions, tech-stack questions, architecture inspection, codebase understanding, bug investigation, debugging, code review, refactoring, feature planning, impact analysis, verification planning, and follow-up questions that refer to the current project with words like this project, it, system, repo, "สรุปโปรเจ็กต์นี้", "โปรเจ็กต์นี้ใช้อะไร", "โปรเจ็กต์นี้ทำอะไร", "ใช้ทำอะไร", "อันนี้ทำอะไร", "มันทำอะไร", "ระบบนี้ทำอะไร", "โครงสร้างเป็นยังไง", "ช่วย debug", "review code", or similar Thai or English requests about a project or repository.
 ---
 
 # AI Engineering Platform Auto Use
 
 Use the `ai_engineering_platform` MCP server first for project and repository engineering work. The user should not need to explicitly ask for MCP.
+
+This is the only command-style skill name for the platform. Do not route users to aliases such as `$ai-agent`.
+
+## Explicit Command Mode
+
+When the user writes `$ai-engineering-platform-auto-use` anywhere in the message, treat it as an explicit command to use this platform. In that mode:
+
+- Always start with MCP unless the MCP server is unavailable.
+- Do not answer from memory alone.
+- Use the default low-token workflow first.
+- End with the MCP footer.
+
+Examples:
+
+- `$ai-engineering-platform-auto-use สรุปโปรเจ็กต์นี้`
+- `$ai-engineering-platform-auto-use โปรเจ็กต์นี้ทำอะไร`
+- `$ai-engineering-platform-auto-use debug error นี้`
+- `$ai-engineering-platform-auto-use review code รอบนี้`
 
 ## Intent Routing
 
