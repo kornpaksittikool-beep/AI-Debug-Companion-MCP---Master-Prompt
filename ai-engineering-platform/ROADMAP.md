@@ -99,6 +99,8 @@ The system must be developed iteratively. Each phase must produce usable, verifi
 | M28: Question-Type Token Profiles | Phase 28 | Add explicit token budget profiles for summaries, tech stack quick views, debugging, code review, and planning | Phase 27 excerpt-first routing | High | Medium | Completed |
 | M28: Question-Type Token Profiles | Phase 28 | Enforce excerpt maxBytes, excerpt call limits, hard do-not-call tools, and telemetry over-budget reporting | Phase 28 workflow profiles | High | Medium | Completed |
 | M28: Question-Type Token Profiles | Phase 28 | Update Codex skill guidance, smoke coverage, and docs for question-specific context routing | Phase 25 explicit skill activation | High | Low | Completed |
+| M29: Summary Symbol Guardrails | Phase 29 | Remove symbol search from routine project-summary preferred routes and mark it as hard do-not-call guidance | Phase 28 question-type profiles | High | Low | Completed |
+| M29: Summary Symbol Guardrails | Phase 29 | Add smoke coverage that fails when summary routing recommends `repository.search_symbols` | Phase 29 routing update | High | Low | Completed |
 
 ## Phase Gate Rules
 
@@ -113,4 +115,4 @@ Each phase must pass the following checks before the next phase begins:
 
 ## Current Phase
 
-Phase 28 is completed. Future phases must be planned and approved before implementation.
+Phase 29 is completed. Future phases must be planned and approved before implementation.

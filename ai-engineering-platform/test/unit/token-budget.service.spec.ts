@@ -97,6 +97,7 @@ describe('TokenBudgetService', () => {
     expect(result.doNotCallTools).toEqual(
       expect.arrayContaining([
         'repository.import_graph',
+        'repository.search_symbols',
         'repository.read_file_context',
         'repository.overview',
         'platform.metadata',
@@ -107,6 +108,10 @@ describe('TokenBudgetService', () => {
     );
     expect(result.preferredTools).toEqual(
       expect.arrayContaining(['repository.project_profile', 'repository.read_file_excerpt']),
+    );
+    expect(result.preferredTools).not.toContain('repository.search_symbols');
+    expect(result.questionProfile.contextPolicy).toContain(
+      'Do not run repository.search_symbols for routine summaries; use file search and excerpts instead.',
     );
   });
 

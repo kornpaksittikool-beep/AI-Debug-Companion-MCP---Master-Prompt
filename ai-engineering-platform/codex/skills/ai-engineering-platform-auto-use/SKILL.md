@@ -68,7 +68,7 @@ Then choose the closest question profile before expanding context:
 For normal project summaries and follow-up questions, continue with only focused discovery:
 
 - Use `repository.search_files` to find important files, configs, routes, docs, package manifests, and entry points.
-- Use `repository.search_symbols` for TypeScript/JavaScript classes, functions, services, controllers, modules, and DTOs.
+- Use `repository.search_symbols` for TypeScript/JavaScript classes, functions, services, controllers, modules, and DTOs only when the question needs module, symbol, route, or implementation boundaries.
 - Use `repository.read_file_excerpt` for summary evidence from README, package manifests, entry points, or app modules.
 - Use `repository.overview` only when `repository.project_profile` is insufficient.
 - Use `git.recent_changes` and `git.impact_hints` when history or regression risk matters.
@@ -89,10 +89,12 @@ For project summaries, target this order:
 
 1. `repository.project_profile`
 2. `repository.search_files`
-3. `repository.search_symbols`
-4. `repository.read_file_excerpt` with `purpose: "summary"` and `maxBytes` 500-700 for at most 2 files that explain purpose or entry points
+3. `repository.read_file_excerpt` with `purpose: "summary"` and `maxBytes` 500-700 for at most 2 files that explain purpose or entry points
+4. `repository.search_symbols` only if the profile, file search, and excerpts still cannot identify module boundaries
 5. `repository.read_file_context` only when an excerpt is insufficient and the answer needs precise details
 6. `repository.overview` only if compact profile data is insufficient
+
+For project summaries, treat `repository.search_symbols` as expensive. Do not call it by default; if it is required, use the narrowest query and report why.
 
 For tech stack or architecture quick views, prefer package/config excerpts and symbol search before source implementation reads. Use `repository.import_graph` only when dependency flow, circular dependencies, or architecture coupling is directly requested.
 

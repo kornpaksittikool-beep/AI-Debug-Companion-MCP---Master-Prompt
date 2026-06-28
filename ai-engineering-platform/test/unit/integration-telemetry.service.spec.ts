@@ -137,9 +137,13 @@ describe('IntegrationTelemetryService', () => {
     expect(entry?.contextPolicy).toContain(
       'Use repository.project_profile as the main evidence artifact.',
     );
+    expect(entry?.contextPolicy).toContain(
+      'Do not run repository.search_symbols for routine summaries; use file search and excerpts instead.',
+    );
     expect(entry?.doNotCallTools).toEqual(
       expect.arrayContaining([
         'repository.import_graph',
+        'repository.search_symbols',
         'repository.read_file_context',
         'platform.metadata',
       ]),
@@ -147,10 +151,10 @@ describe('IntegrationTelemetryService', () => {
     expect(entry?.evidenceTools).toEqual(
       expect.arrayContaining([
         'repository.search_files',
-        'repository.search_symbols',
         'repository.read_file_excerpt',
       ]),
     );
+    expect(entry?.evidenceTools).not.toContain('repository.search_symbols');
     expect(entry?.evidenceTools).not.toContain('repository.import_graph');
     expect(entry?.avoidUntilNeeded).toEqual(
       expect.arrayContaining([

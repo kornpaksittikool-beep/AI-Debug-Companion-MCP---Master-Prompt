@@ -121,6 +121,11 @@ try {
     questionType: 'tech_stack_quick_view',
     currentTokens: tokenEstimate.estimatedTokens,
   });
+  const summaryTokenStrategy = await callTool(client, 'token_budget.recommend_strategy', {
+    objective: 'Summarize this project purpose',
+    questionType: 'project_summary',
+    currentTokens: tokenEstimate.estimatedTokens,
+  });
   const integrationReadiness = await callTool(client, 'integration.readiness', {
     configuredServerName: 'ai_engineering_platform',
     expectedTools: ['platform.health', 'token_budget.estimate'],
@@ -141,6 +146,9 @@ try {
   });
   const workflowIndex = await callTool(client, 'integration.workflow_index', {
     taskType: 'tech_stack_quick_view',
+  });
+  const summaryWorkflowIndex = await callTool(client, 'integration.workflow_index', {
+    taskType: 'project_summary',
   });
   const flushTelemetry = await callTool(client, 'integration.flush_telemetry', {
     rootPath,
@@ -179,9 +187,14 @@ try {
     tokenStrategyMaxTokens: tokenStrategy.maxTokens,
     tokenStrategyExcerptMaxBytes: tokenStrategy.questionProfile?.excerptMaxBytes,
     tokenStrategyDoNotCallTools: tokenStrategy.doNotCallTools,
+    summaryStrategyQuestionType: summaryTokenStrategy.questionProfile?.questionType,
+    summaryStrategyPreferredTools: summaryTokenStrategy.preferredTools,
+    summaryStrategyDoNotCallTools: summaryTokenStrategy.doNotCallTools,
     integrationReady: integrationReadiness.ready,
     integrationToolCalls: integrationSummary.toolCalls,
     workflowIndexEntries: workflowIndex.entries.length,
+    summaryWorkflowDoNotCallTools: summaryWorkflowIndex.entries[0]?.doNotCallTools ?? [],
+    summaryWorkflowEvidenceTools: summaryWorkflowIndex.entries[0]?.evidenceTools ?? [],
     telemetryRecordsWritten: flushTelemetry.recordsWritten,
     autoTelemetryToolCalls: autoTelemetry.toolCalls,
     autoTelemetryEstimatedTokens: autoTelemetry.estimatedTotalTokens,
@@ -191,7 +204,7 @@ try {
   if (
     summary.toolCount < 84 ||
     summary.healthStatus !== 'ok' ||
-    summary.platformPhase !== 'phase-28-question-type-token-profiles' ||
+    summary.platformPhase !== 'phase-29-summary-symbol-guardrails' ||
     !summary.metadataCompact ||
     summary.toolSummaryModules < 1 ||
     !summary.projectProfileCompact ||
@@ -212,6 +225,11 @@ try {
     summary.tokenStrategyMaxTokens !== 2500 ||
     summary.tokenStrategyExcerptMaxBytes !== 900 ||
     !summary.tokenStrategyDoNotCallTools.includes('repository.read_file_context') ||
+    summary.summaryStrategyQuestionType !== 'project_summary' ||
+    summary.summaryStrategyPreferredTools.includes('repository.search_symbols') ||
+    !summary.summaryStrategyDoNotCallTools.includes('repository.search_symbols') ||
+    summary.summaryWorkflowEvidenceTools.includes('repository.search_symbols') ||
+    !summary.summaryWorkflowDoNotCallTools.includes('repository.search_symbols') ||
     !summary.integrationReady ||
     summary.integrationToolCalls !== 1 ||
     summary.workflowIndexEntries !== 1 ||

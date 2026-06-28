@@ -32,12 +32,12 @@ const QUESTION_PROFILES: Record<TokenQuestionType, StrategyQuestionProfile> = {
     startTools: ['platform.health', 'platform.tool_summary', 'repository.project_profile'],
     evidenceTools: [
       'repository.search_files',
-      'repository.search_symbols',
       'repository.read_file_excerpt',
     ],
-    escalationTools: ['repository.overview', 'repository.read_file_context'],
+    escalationTools: ['repository.search_symbols', 'repository.overview', 'repository.read_file_context'],
     contextPolicy: [
       'Use repository.project_profile as the primary summary artifact.',
+      'Do not run repository.search_symbols for routine summaries; use file search and excerpts instead.',
       'Read at most 2 repository.read_file_excerpt results for README, manifests, or entry points.',
       'Pass maxBytes between 500 and 700 for summary excerpts.',
       'Avoid dependency graphs unless dependency flow is explicitly requested.',
@@ -45,6 +45,7 @@ const QUESTION_PROFILES: Record<TokenQuestionType, StrategyQuestionProfile> = {
     doNotCallTools: [
       'repository.import_graph',
       'repository.call_graph',
+      'repository.search_symbols',
       'repository.read_module_context',
       'repository.read_file_context',
       'repository.overview',

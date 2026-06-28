@@ -107,3 +107,5 @@
 | Hard do-not-call tool guidance | Phase 28 | Completed |
 | Telemetry over-budget status reporting | Phase 28 | Completed |
 | Codex skill guidance for summary, tech stack, debug, review, and planning budgets | Phase 28 | Completed |
+| Remove broad symbol search from routine project-summary routing | Phase 29 | Completed |
+| Add summary symbol-search regression checks to smoke coverage | Phase 29 | Completed |

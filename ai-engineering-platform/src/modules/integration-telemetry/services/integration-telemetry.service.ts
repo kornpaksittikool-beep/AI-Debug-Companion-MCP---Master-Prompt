@@ -39,7 +39,6 @@ const WORKFLOW_INDEX: readonly WorkflowIndexEntry[] = [
     startTools: ['platform.health', 'platform.tool_summary', 'repository.project_profile'],
     evidenceTools: [
       'repository.search_files',
-      'repository.search_symbols',
       'repository.read_file_excerpt',
       'git.recent_changes',
     ],
@@ -52,13 +51,14 @@ const WORKFLOW_INDEX: readonly WorkflowIndexEntry[] = [
     maxExcerptCalls: 2,
     contextPolicy: [
       'Use repository.project_profile as the main evidence artifact.',
+      'Do not run repository.search_symbols for routine summaries; use file search and excerpts instead.',
       'Read at most 2 repository.read_file_excerpt results for README, package manifests, or entry points.',
       'Pass maxBytes between 500 and 700 for summary excerpts.',
-      'Use repository.search_symbols only when purpose or module names are unclear from the profile.',
     ],
     doNotCallTools: [
       'repository.import_graph',
       'repository.call_graph',
+      'repository.search_symbols',
       'repository.read_module_context',
       'repository.read_file_context',
       'repository.overview',
@@ -68,6 +68,7 @@ const WORKFLOW_INDEX: readonly WorkflowIndexEntry[] = [
       'repository.import_graph unless dependency flow is the question',
       'repository.call_graph unless call flow is the question',
       'repository.overview unless the compact profile is insufficient',
+      'repository.search_symbols unless the project profile and excerpts cannot identify module boundaries',
       'repository.read_file_context unless a compact excerpt is insufficient',
       'repository.read_module_context for broad directories',
       'full platform.metadata',

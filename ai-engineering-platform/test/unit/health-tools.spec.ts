@@ -27,7 +27,7 @@ describe('Health tools', () => {
 
     expect(output.platform).toBeDefined();
     expect(output.platform).toMatchObject({
-      phase: 'phase-28-question-type-token-profiles',
+      phase: 'phase-29-summary-symbol-guardrails',
     });
     expect(output.tools).toEqual([]);
   });
