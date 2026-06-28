@@ -101,3 +101,9 @@
 | Compact file excerpt tool | Phase 27 | Completed |
 | Excerpt-first summary routing | Phase 27 | Completed |
 | Read-file-context escalation guidance | Phase 27 | Completed |
+| Question-type token profiles | Phase 28 | Completed |
+| Workflow target token ranges and context policies | Phase 28 | Completed |
+| Excerpt maxBytes and call limits by question type | Phase 28 | Completed |
+| Hard do-not-call tool guidance | Phase 28 | Completed |
+| Telemetry over-budget status reporting | Phase 28 | Completed |
+| Codex skill guidance for summary, tech stack, debug, review, and planning budgets | Phase 28 | Completed |

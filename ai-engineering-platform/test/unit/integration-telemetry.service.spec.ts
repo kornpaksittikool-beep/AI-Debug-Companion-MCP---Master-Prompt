@@ -43,7 +43,9 @@ describe('IntegrationTelemetryService', () => {
 
     expect(result.ready).toBe(false);
     expect(result.missingTools).toContain('repository.project_profile');
-    expect(result.recommendations).toContain('Open the session from the repository root so AGENTS.md is loaded.');
+    expect(result.recommendations).toContain(
+      'Open the session from the repository root so AGENTS.md is loaded.',
+    );
   });
 
   it('records tool usage and summarizes estimated savings', async () => {
@@ -113,18 +115,41 @@ describe('IntegrationTelemetryService', () => {
 
     expect(result.entries).toHaveLength(1);
     expect(result.entries[0]?.startTools).toEqual(
-      expect.arrayContaining(['platform.health', 'investigation.create', 'repository.overview']),
+      expect.arrayContaining(['platform.health', 'platform.tool_summary', 'investigation.create']),
     );
+    expect(result.entries[0]?.startTools).not.toContain('repository.overview');
     expect(result.entries[0]?.relevantFiles).toContain('src/modules/investigation');
+    expect(result.entries[0]?.targetTokenRange).toEqual({ min: 3000, max: 8000 });
   });
 
   it('returns low-token project summary routing without import graph by default', () => {
     const result = service.workflowIndex({ taskType: 'project_summary' });
     const entry = result.entries[0];
 
-    expect(entry?.startTools).toEqual(['platform.health', 'platform.tool_summary', 'repository.project_profile']);
+    expect(entry?.startTools).toEqual([
+      'platform.health',
+      'platform.tool_summary',
+      'repository.project_profile',
+    ]);
+    expect(entry?.targetTokenRange).toEqual({ min: 1000, max: 2000 });
+    expect(entry?.excerptMaxBytes).toBe(700);
+    expect(entry?.maxExcerptCalls).toBe(2);
+    expect(entry?.contextPolicy).toContain(
+      'Use repository.project_profile as the main evidence artifact.',
+    );
+    expect(entry?.doNotCallTools).toEqual(
+      expect.arrayContaining([
+        'repository.import_graph',
+        'repository.read_file_context',
+        'platform.metadata',
+      ]),
+    );
     expect(entry?.evidenceTools).toEqual(
-      expect.arrayContaining(['repository.search_files', 'repository.search_symbols', 'repository.read_file_excerpt']),
+      expect.arrayContaining([
+        'repository.search_files',
+        'repository.search_symbols',
+        'repository.read_file_excerpt',
+      ]),
     );
     expect(entry?.evidenceTools).not.toContain('repository.import_graph');
     expect(entry?.avoidUntilNeeded).toEqual(
@@ -134,6 +159,54 @@ describe('IntegrationTelemetryService', () => {
         'repository.read_file_context unless a compact excerpt is insufficient',
       ]),
     );
+  });
+
+  it('returns a tech stack quick view route that stays manifest and excerpt first', () => {
+    const result = service.workflowIndex({ taskType: 'tech_stack_quick_view' });
+    const entry = result.entries[0];
+
+    expect(entry?.targetTokenRange).toEqual({ min: 1500, max: 2500 });
+    expect(entry?.relevantFiles).toEqual(
+      expect.arrayContaining([
+        'package.json',
+        'nest-cli.json',
+        'tsconfig.json',
+        'src/app.module.ts',
+      ]),
+    );
+    expect(entry?.evidenceTools).toEqual(
+      expect.arrayContaining([
+        'repository.read_file_excerpt',
+        'repository.search_files',
+        'repository.search_symbols',
+      ]),
+    );
+    expect(entry?.avoidUntilNeeded).toContain(
+      'repository.import_graph unless dependency flow is the question',
+    );
+  });
+
+  it('returns a diff-scoped code review route', () => {
+    const result = service.workflowIndex({ taskType: 'code_review' });
+    const entry = result.entries[0];
+
+    expect(entry?.startTools).toEqual([
+      'platform.health',
+      'platform.tool_summary',
+      'git.impact_hints',
+    ]);
+    expect(entry?.targetTokenRange).toEqual({ min: 4000, max: 10000 });
+    expect(entry?.doNotCallTools).toContain('repository.scan');
+    expect(entry?.contextPolicy).toContain(
+      'Read diffs and impacted files first; avoid unrelated repository context.',
+    );
+    expect(entry?.avoidUntilNeeded).toContain('repository.overview for routine diff review');
+  });
+
+  it('matches workflow queries against context policy text', () => {
+    const result = service.workflowIndex({ query: 'diffs and impacted files' });
+
+    expect(result.entries.map((entry) => entry.taskType)).toContain('code_review');
   });
 });
 

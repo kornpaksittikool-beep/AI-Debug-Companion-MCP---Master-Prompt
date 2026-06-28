@@ -12,7 +12,7 @@ import type {
 const PLATFORM_DETAILS = {
   name: 'ai-engineering-platform',
   version: '0.1.0',
-  phase: 'phase-27-file-excerpt-token-reduction',
+  phase: 'phase-28-question-type-token-profiles',
 } as const;
 
 @Injectable()

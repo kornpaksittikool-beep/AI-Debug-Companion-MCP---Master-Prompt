@@ -34,13 +34,36 @@ const MANUAL_READ_AVOIDED_MULTIPLIER = 6;
 const WORKFLOW_INDEX: readonly WorkflowIndexEntry[] = [
   {
     taskType: 'project_summary',
-    description: 'Summarize project purpose, stack, modules, and key files with a compact low-token profile route.',
+    description:
+      'Summarize project purpose, stack, modules, and key files with a compact low-token profile route.',
     startTools: ['platform.health', 'platform.tool_summary', 'repository.project_profile'],
-    evidenceTools: ['repository.search_files', 'repository.search_symbols', 'repository.read_file_excerpt', 'git.recent_changes'],
+    evidenceTools: [
+      'repository.search_files',
+      'repository.search_symbols',
+      'repository.read_file_excerpt',
+      'git.recent_changes',
+    ],
     planningTools: ['token_budget.estimate'],
     verificationTools: ['integration.auto_telemetry_summary'],
     primaryModules: ['health', 'repository-intelligence', 'integration-telemetry'],
     relevantFiles: ['package.json', 'pnpm-workspace.yaml', 'README.md', 'apps', 'src'],
+    targetTokenRange: { min: 1000, max: 2000 },
+    excerptMaxBytes: 700,
+    maxExcerptCalls: 2,
+    contextPolicy: [
+      'Use repository.project_profile as the main evidence artifact.',
+      'Read at most 2 repository.read_file_excerpt results for README, package manifests, or entry points.',
+      'Pass maxBytes between 500 and 700 for summary excerpts.',
+      'Use repository.search_symbols only when purpose or module names are unclear from the profile.',
+    ],
+    doNotCallTools: [
+      'repository.import_graph',
+      'repository.call_graph',
+      'repository.read_module_context',
+      'repository.read_file_context',
+      'repository.overview',
+      'platform.metadata',
+    ],
     avoidUntilNeeded: [
       'repository.import_graph unless dependency flow is the question',
       'repository.call_graph unless call flow is the question',
@@ -51,18 +74,132 @@ const WORKFLOW_INDEX: readonly WorkflowIndexEntry[] = [
     ],
   },
   {
+    taskType: 'tech_stack_quick_view',
+    description:
+      'Identify stack, package manager, frameworks, entry points, and architecture shape with compact evidence.',
+    startTools: ['platform.health', 'platform.tool_summary', 'repository.project_profile'],
+    evidenceTools: [
+      'repository.read_file_excerpt',
+      'repository.search_files',
+      'repository.search_symbols',
+    ],
+    planningTools: ['token_budget.estimate'],
+    verificationTools: ['integration.auto_telemetry_summary'],
+    primaryModules: ['health', 'repository-intelligence', 'token-budget'],
+    relevantFiles: [
+      'package.json',
+      'pnpm-workspace.yaml',
+      'nest-cli.json',
+      'tsconfig.json',
+      'src/app.module.ts',
+      'README.md',
+    ],
+    targetTokenRange: { min: 1500, max: 2500 },
+    excerptMaxBytes: 900,
+    maxExcerptCalls: 3,
+    contextPolicy: [
+      'Start from manifests and configuration excerpts instead of broad source reads.',
+      'Use symbol search for module names and framework boundaries before reading implementation files.',
+      'Escalate to repository.import_graph only for explicit dependency-flow questions.',
+    ],
+    doNotCallTools: [
+      'repository.read_module_context',
+      'repository.read_file_context',
+      'repository.overview',
+      'platform.metadata',
+    ],
+    avoidUntilNeeded: [
+      'repository.overview unless manifests and project profile are insufficient',
+      'repository.import_graph unless dependency flow is the question',
+      'repository.read_module_context for broad src directories',
+      'full platform.metadata',
+    ],
+  },
+  {
     taskType: 'bug_investigation',
     description: 'Investigate a defect with traceable evidence before proposing fixes.',
-    startTools: ['platform.health', 'investigation.create', 'repository.overview'],
-    evidenceTools: ['repository.search_files', 'repository.search_symbols', 'git.recent_changes', 'security.audit_project'],
+    startTools: ['platform.health', 'platform.tool_summary', 'investigation.create'],
+    evidenceTools: [
+      'repository.search_files',
+      'repository.search_symbols',
+      'repository.read_file_excerpt',
+      'git.recent_changes',
+      'git.impact_hints',
+      'security.audit_project',
+    ],
     planningTools: ['planning.create_plan', 'planning.impact_report'],
     verificationTools: ['verification.run_check', 'patch.rollback_plan'],
-    primaryModules: ['investigation', 'repository-intelligence', 'git-intelligence', 'planning-impact'],
-    relevantFiles: ['src/modules/investigation', 'src/modules/repository-intelligence', 'src/modules/git-intelligence'],
+    primaryModules: [
+      'investigation',
+      'repository-intelligence',
+      'git-intelligence',
+      'planning-impact',
+    ],
+    relevantFiles: [
+      'src/modules/investigation',
+      'src/modules/repository-intelligence',
+      'src/modules/git-intelligence',
+    ],
+    targetTokenRange: { min: 3000, max: 8000 },
+    excerptMaxBytes: 1200,
+    maxExcerptCalls: 5,
+    contextPolicy: [
+      'Capture the error, stack trace, or failing command as investigation evidence first.',
+      'Search for exact error text, symbols, routes, and recently changed files before reading full context.',
+      'Read full file context only for the narrowed failing file or symbol.',
+    ],
+    doNotCallTools: [
+      'repository.overview',
+      'repository.read_module_context',
+      'repository.import_graph',
+      'repository.call_graph',
+      'platform.metadata',
+    ],
     avoidUntilNeeded: [
+      'repository.overview unless search cannot locate the failing area',
       'repository.import_graph unless the suspected defect is import/dependency related',
       'repository.read_module_context',
       'patch.apply_proposal',
+    ],
+  },
+  {
+    taskType: 'code_review',
+    description:
+      'Review only changed files, impacted symbols, and focused risk evidence before summarizing findings.',
+    startTools: ['platform.health', 'platform.tool_summary', 'git.impact_hints'],
+    evidenceTools: [
+      'git.recent_changes',
+      'repository.search_files',
+      'repository.search_symbols',
+      'repository.read_file_excerpt',
+    ],
+    planningTools: ['planning.impact_report'],
+    verificationTools: ['verification.run_check', 'integration.auto_telemetry_summary'],
+    primaryModules: ['git-intelligence', 'repository-intelligence', 'planning-impact'],
+    relevantFiles: [
+      'changed files from git diff',
+      'tests touching changed modules',
+      'package scripts',
+    ],
+    targetTokenRange: { min: 4000, max: 10000 },
+    excerptMaxBytes: 1200,
+    maxExcerptCalls: 6,
+    contextPolicy: [
+      'Read diffs and impacted files first; avoid unrelated repository context.',
+      'Use repository.read_file_excerpt for surrounding contracts and tests before full file context.',
+      'Escalate to import or call graph only when a changed symbol has non-obvious dependents.',
+    ],
+    doNotCallTools: [
+      'repository.overview',
+      'repository.read_module_context',
+      'repository.scan',
+      'platform.metadata',
+    ],
+    avoidUntilNeeded: [
+      'repository.overview for routine diff review',
+      'full repository scans after changed files are known',
+      'repository.read_module_context for unrelated modules',
+      'documentation reads unless the diff changes docs or public behavior',
     ],
   },
   {
@@ -81,18 +218,87 @@ const WORKFLOW_INDEX: readonly WorkflowIndexEntry[] = [
     verificationTools: ['security.audit_tool_permissions'],
     primaryModules: ['core', 'repository-intelligence', 'project-memory'],
     relevantFiles: ['docs/architecture.md', 'docs/adr', 'src/app.module.ts', 'src/core'],
-    avoidUntilNeeded: ['full platform.metadata', 'repository.read_file_context for broad docs', 'patch.apply_proposal'],
+    targetTokenRange: { min: 2500, max: 6000 },
+    excerptMaxBytes: 1000,
+    maxExcerptCalls: 4,
+    contextPolicy: [
+      'Use architecture docs and app module excerpts first.',
+      'Use import or call graph only for explicit coupling or dependency-flow questions.',
+      'Prefer symbol summaries over whole modules when reviewing boundaries.',
+    ],
+    doNotCallTools: ['repository.read_module_context', 'platform.metadata'],
+    avoidUntilNeeded: [
+      'full platform.metadata',
+      'repository.read_file_context for broad docs',
+      'patch.apply_proposal',
+    ],
   },
   {
     taskType: 'phase_planning',
     description: 'Plan the next iterative phase from roadmap, TODO, and completed phase reports.',
-    startTools: ['platform.health', 'platform.tool_summary', 'memory.search', 'integration.workflow_index'],
+    startTools: [
+      'platform.health',
+      'platform.tool_summary',
+      'memory.search',
+      'integration.workflow_index',
+    ],
     evidenceTools: ['repository.search_files', 'git.recent_changes'],
     planningTools: ['planning.create_plan', 'planning.impact_report'],
     verificationTools: ['token_budget.estimate'],
     primaryModules: ['planning-impact', 'project-memory', 'integration-telemetry'],
     relevantFiles: ['ROADMAP.md', 'TODO.md', 'docs/phase-*.md'],
+    targetTokenRange: { min: 2000, max: 5000 },
+    excerptMaxBytes: 1000,
+    maxExcerptCalls: 4,
+    contextPolicy: [
+      'Use roadmap, TODO, and phase report excerpts instead of full historical documents.',
+      'Use git recent changes only to validate current status or regression risk.',
+      'Create impact reports after target files and modules are known.',
+    ],
+    doNotCallTools: [
+      'repository.read_file_context for ROADMAP.md, TODO.md, or docs/phase-*.md',
+      'repository.read_module_context',
+      'repository.import_graph',
+      'repository.call_graph',
+      'platform.metadata',
+    ],
     avoidUntilNeeded: ['patch.apply_proposal'],
+  },
+  {
+    taskType: 'planning',
+    description:
+      'Plan features or refactors with roadmap, TODO, phase reports, and narrow impact evidence.',
+    startTools: ['platform.health', 'platform.tool_summary', 'integration.workflow_index'],
+    evidenceTools: [
+      'repository.search_files',
+      'repository.read_file_excerpt',
+      'repository.search_symbols',
+      'git.recent_changes',
+    ],
+    planningTools: ['planning.create_plan', 'planning.impact_report', 'token_budget.estimate'],
+    verificationTools: ['integration.auto_telemetry_summary'],
+    primaryModules: ['planning-impact', 'repository-intelligence', 'git-intelligence'],
+    relevantFiles: ['ROADMAP.md', 'TODO.md', 'docs/phase-*.md', 'target feature files'],
+    targetTokenRange: { min: 2000, max: 6000 },
+    excerptMaxBytes: 1000,
+    maxExcerptCalls: 4,
+    contextPolicy: [
+      'Use excerpts from planning artifacts and only the target implementation files.',
+      'Do not read completed phase reports fully unless the plan depends on that phase detail.',
+      'Use planning.impact_report before implementation when target files are identified.',
+    ],
+    doNotCallTools: [
+      'repository.read_file_context for ROADMAP.md, TODO.md, or docs/phase-*.md',
+      'repository.read_module_context',
+      'repository.import_graph',
+      'repository.call_graph',
+      'platform.metadata',
+    ],
+    avoidUntilNeeded: [
+      'repository.read_file_context for historical phase reports',
+      'repository.import_graph unless architecture coupling is the planning question',
+      'patch.apply_proposal before plan approval',
+    ],
   },
   {
     taskType: 'patch_execution',
@@ -103,17 +309,40 @@ const WORKFLOW_INDEX: readonly WorkflowIndexEntry[] = [
     verificationTools: ['patch.apply_proposal', 'verification.run_check', 'patch.rollback_apply'],
     primaryModules: ['patch-verification', 'planning-impact', 'git-intelligence'],
     relevantFiles: ['src/modules/patch-verification', 'src/modules/planning-impact'],
+    targetTokenRange: { min: 2000, max: 5000 },
+    excerptMaxBytes: 1200,
+    maxExcerptCalls: 4,
+    contextPolicy: [
+      'Use approved plan summaries and target files as the context boundary.',
+      'Read git impact hints before applying patches.',
+      'Keep verification output focused to failing commands and changed files.',
+    ],
+    doNotCallTools: ['repository.read_module_context', 'platform.metadata'],
     avoidUntilNeeded: ['direct file writes outside approved patch flow'],
   },
   {
     taskType: 'token_optimization',
     description: 'Reduce context usage with MCP-first evidence, estimates, and compression.',
     startTools: ['platform.health', 'token_budget.recommend_strategy'],
-    evidenceTools: ['token_budget.estimate', 'repository.search_files', 'repository.search_symbols', 'repository.read_file_excerpt'],
+    evidenceTools: [
+      'token_budget.estimate',
+      'repository.search_files',
+      'repository.search_symbols',
+      'repository.read_file_excerpt',
+    ],
     planningTools: ['token_budget.compress_context'],
     verificationTools: ['integration.telemetry_summary'],
     primaryModules: ['token-budget', 'integration-telemetry', 'repository-intelligence'],
     relevantFiles: ['src/modules/token-budget', 'src/modules/integration-telemetry', 'AGENTS.md'],
+    targetTokenRange: { min: 1000, max: 3000 },
+    excerptMaxBytes: 900,
+    maxExcerptCalls: 3,
+    contextPolicy: [
+      'Estimate before expanding context.',
+      'Replace largest context sources with project profiles, file excerpts, or symbol context.',
+      'Use telemetry to identify the largest token source and update routing guidance.',
+    ],
+    doNotCallTools: ['repository.read_module_context', 'platform.metadata'],
     avoidUntilNeeded: [
       'repository.import_graph unless it was the largest token source under investigation',
       'repository.read_module_context',
@@ -123,13 +352,27 @@ const WORKFLOW_INDEX: readonly WorkflowIndexEntry[] = [
   },
   {
     taskType: 'plugin_workflow',
-    description: 'Validate, stage, and inspect local or remote plugins without executing untrusted code.',
+    description:
+      'Validate, stage, and inspect local or remote plugins without executing untrusted code.',
     startTools: ['plugin.catalog', 'plugin.validate_manifest'],
-    evidenceTools: ['plugin.resolve_compatibility', 'plugin.remote_stage_plan', 'plugin.verify_artifact'],
+    evidenceTools: [
+      'plugin.resolve_compatibility',
+      'plugin.remote_stage_plan',
+      'plugin.verify_artifact',
+    ],
     planningTools: ['plugin.install_plan', 'plugin.update_plan', 'plugin.remove_plan'],
     verificationTools: ['plugin.inventory', 'plugin.staged_inventory'],
     primaryModules: ['plugin-marketplace', 'core/registry'],
     relevantFiles: ['src/modules/plugin-marketplace', 'src/plugins/plugin-api'],
+    targetTokenRange: { min: 2000, max: 5000 },
+    excerptMaxBytes: 1000,
+    maxExcerptCalls: 4,
+    contextPolicy: [
+      'Use manifest metadata and validation results before inspecting plugin code.',
+      'Keep remote artifact evidence as metadata only unless verification fails.',
+      'Read SDK contracts only for compatibility questions.',
+    ],
+    doNotCallTools: ['repository.read_module_context', 'platform.metadata'],
     avoidUntilNeeded: ['dynamic import of plugin code', 'network downloads'],
   },
   {
@@ -141,6 +384,19 @@ const WORKFLOW_INDEX: readonly WorkflowIndexEntry[] = [
     verificationTools: ['security.audit_project'],
     primaryModules: ['database-intelligence', 'planning-impact'],
     relevantFiles: ['src/modules/database-intelligence'],
+    targetTokenRange: { min: 2000, max: 5000 },
+    excerptMaxBytes: 1000,
+    maxExcerptCalls: 4,
+    contextPolicy: [
+      'Use connection profiles and schema summaries before query previews.',
+      'Keep query previews bounded and read-only.',
+      'Use relation summaries before reading database module internals.',
+    ],
+    doNotCallTools: [
+      'database write operations',
+      'repository.read_module_context',
+      'platform.metadata',
+    ],
     avoidUntilNeeded: ['database write operations', 'external network database execution'],
   },
   {
@@ -152,6 +408,15 @@ const WORKFLOW_INDEX: readonly WorkflowIndexEntry[] = [
     verificationTools: ['integration.record_tool_usage'],
     primaryModules: ['git-intelligence', 'planning-impact'],
     relevantFiles: ['src/modules/git-intelligence'],
+    targetTokenRange: { min: 1500, max: 4000 },
+    excerptMaxBytes: 900,
+    maxExcerptCalls: 3,
+    contextPolicy: [
+      'Start with recent changes or impact hints, then narrow to blame or file history.',
+      'Use git evidence to choose target files before repository reads.',
+      'Keep history depth bounded to the current question.',
+    ],
+    doNotCallTools: ['git write commands', 'repository.read_module_context', 'platform.metadata'],
     avoidUntilNeeded: ['git write commands', 'branch mutations'],
   },
 ];
@@ -229,7 +494,9 @@ export class IntegrationTelemetryService {
         {
           name: 'required_tools',
           status: toolsPassed ? 'passed' : 'failed',
-          reason: toolsPassed ? 'All expected tools are available.' : `Missing tools: ${missingTools.join(', ')}`,
+          reason: toolsPassed
+            ? 'All expected tools are available.'
+            : `Missing tools: ${missingTools.join(', ')}`,
         },
         {
           name: 'project_instructions',
@@ -267,15 +534,28 @@ export class IntegrationTelemetryService {
     const records = input.sessionId
       ? this.records.filter((record) => record.sessionId === input.sessionId)
       : this.records;
-    const sessions = input.sessionId ? (this.sessions.has(input.sessionId) ? 1 : 0) : this.sessions.size;
+    const sessions = input.sessionId
+      ? this.sessions.has(input.sessionId)
+        ? 1
+        : 0
+      : this.sessions.size;
     const successfulCalls = records.filter((record) => record.status === 'success').length;
     const failedCalls = records.filter((record) => record.status === 'failed').length;
     const fallbackCalls = records.filter((record) => record.fallbackUsed).length;
-    const estimatedInputTokens = records.reduce((sum, record) => sum + record.estimatedInputTokens, 0);
-    const estimatedOutputTokens = records.reduce((sum, record) => sum + record.estimatedOutputTokens, 0);
+    const estimatedInputTokens = records.reduce(
+      (sum, record) => sum + record.estimatedInputTokens,
+      0,
+    );
+    const estimatedOutputTokens = records.reduce(
+      (sum, record) => sum + record.estimatedOutputTokens,
+      0,
+    );
     const estimatedManualReadTokensAvoided = records
       .filter((record) => !record.fallbackUsed && record.status === 'success')
-      .reduce((sum, record) => sum + record.estimatedOutputTokens * MANUAL_READ_AVOIDED_MULTIPLIER, 0);
+      .reduce(
+        (sum, record) => sum + record.estimatedOutputTokens * MANUAL_READ_AVOIDED_MULTIPLIER,
+        0,
+      );
 
     return {
       sessions,
@@ -296,7 +576,18 @@ export class IntegrationTelemetryService {
     const entries = WORKFLOW_INDEX.filter((entry) => {
       const taskMatches = input.taskType ? entry.taskType === input.taskType : true;
       const queryMatches = query
-        ? `${entry.taskType}\n${entry.description}\n${entry.startTools.join('\n')}\n${entry.primaryModules.join('\n')}`
+        ? [
+            entry.taskType,
+            entry.description,
+            ...entry.startTools,
+            ...entry.evidenceTools,
+            ...entry.primaryModules,
+            ...entry.relevantFiles,
+            ...entry.contextPolicy,
+            ...entry.doNotCallTools,
+            ...entry.avoidUntilNeeded,
+          ]
+            .join('\n')
             .toLowerCase()
             .includes(query)
         : true;
@@ -307,7 +598,9 @@ export class IntegrationTelemetryService {
       entries,
       recommendations:
         entries.length > 0
-          ? ['Start with the listed startTools, then expand only through evidenceTools that answer the current question.']
+          ? [
+              'Start with the listed startTools, then expand only through evidenceTools that answer the current question.',
+            ]
           : [
               'No workflow matched. Use platform.health, platform.tool_summary, and repository.project_profile to gather a first routing signal.',
             ],
@@ -320,10 +613,14 @@ export class IntegrationTelemetryService {
     instructionsLoaded: boolean,
   ): readonly string[] {
     if (ready) {
-      return ['Use MCP-first repository analysis and record tool usage telemetry for token-saving measurement.'];
+      return [
+        'Use MCP-first repository analysis and record tool usage telemetry for token-saving measurement.',
+      ];
     }
 
-    const recommendations = ['Open a new Codex session after MCP config changes so tool namespaces refresh.'];
+    const recommendations = [
+      'Open a new Codex session after MCP config changes so tool namespaces refresh.',
+    ];
     if (missingTools.length > 0) {
       recommendations.push('Run platform.tool_summary and confirm the expected compact tool list.');
     }
@@ -339,17 +636,23 @@ export class IntegrationTelemetryService {
     failedCalls: number,
   ): readonly string[] {
     if (toolCalls === 0) {
-      return ['No telemetry recorded yet. Record tool usage after MCP calls to measure real adoption.'];
+      return [
+        'No telemetry recorded yet. Record tool usage after MCP calls to measure real adoption.',
+      ];
     }
     const recommendations = [
       'Compare estimated avoided manual-read tokens against direct file-read workflows.',
       'Exact total Codex billing is unavailable unless the Codex host provides model usage metadata.',
     ];
     if (fallbackCalls > 0) {
-      recommendations.push('Investigate fallback reasons and improve MCP availability or tool coverage.');
+      recommendations.push(
+        'Investigate fallback reasons and improve MCP availability or tool coverage.',
+      );
     }
     if (failedCalls > 0) {
-      recommendations.push('Review failed MCP tool calls and add readiness checks or clearer error guidance.');
+      recommendations.push(
+        'Review failed MCP tool calls and add readiness checks or clearer error guidance.',
+      );
     }
     return recommendations;
   }
@@ -392,6 +695,8 @@ export class IntegrationTelemetryService {
   }
 
   private toJsonLines(values: readonly unknown[]): string {
-    return values.map((value) => JSON.stringify(value)).join('\n') + (values.length > 0 ? '\n' : '');
+    return (
+      values.map((value) => JSON.stringify(value)).join('\n') + (values.length > 0 ? '\n' : '')
+    );
   }
 }

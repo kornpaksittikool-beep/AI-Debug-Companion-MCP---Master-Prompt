@@ -36,7 +36,8 @@ const resultObjectSchema: JsonSchemaObject = {
 export const INTEGRATION_START_SESSION_TOOL_DEFINITION: ToolDefinition = {
   name: 'integration.start_session',
   version: '1.0.0',
-  description: 'Starts an in-memory integration telemetry session for a Codex or other MCP client workflow.',
+  description:
+    'Starts an in-memory integration telemetry session for a Codex or other MCP client workflow.',
   module: 'integration-telemetry',
   inputSchema: {
     type: 'object',
@@ -86,13 +87,19 @@ export const INTEGRATION_RECORD_TOOL_USAGE_TOOL_DEFINITION: ToolDefinition = {
   timeoutMs: 3000,
   retryStrategy: NO_RETRY,
   sideEffects: 'write',
-  examples: [{ input: { sessionId: 's1', toolName: 'repository.overview', status: 'success' }, output: { toolName: 'repository.overview' } }],
+  examples: [
+    {
+      input: { sessionId: 's1', toolName: 'repository.overview', status: 'success' },
+      output: { toolName: 'repository.overview' },
+    },
+  ],
 };
 
 export const INTEGRATION_READINESS_TOOL_DEFINITION: ToolDefinition = {
   name: 'integration.readiness',
   version: '1.0.0',
-  description: 'Checks Codex MCP integration readiness from provided server, tool, and instruction evidence.',
+  description:
+    'Checks Codex MCP integration readiness from provided server, tool, and instruction evidence.',
   module: 'integration-telemetry',
   inputSchema: {
     type: 'object',
@@ -110,7 +117,12 @@ export const INTEGRATION_READINESS_TOOL_DEFINITION: ToolDefinition = {
   timeoutMs: 3000,
   retryStrategy: NO_RETRY,
   sideEffects: 'read',
-  examples: [{ input: { availableTools: ['platform.health'], agentsInstructionLoaded: true }, output: { ready: false } }],
+  examples: [
+    {
+      input: { availableTools: ['platform.health'], agentsInstructionLoaded: true },
+      output: { ready: false },
+    },
+  ],
 };
 
 export const INTEGRATION_TELEMETRY_SUMMARY_TOOL_DEFINITION: ToolDefinition = {
@@ -138,7 +150,8 @@ export const INTEGRATION_TELEMETRY_SUMMARY_TOOL_DEFINITION: ToolDefinition = {
 export const INTEGRATION_FLUSH_TELEMETRY_TOOL_DEFINITION: ToolDefinition = {
   name: 'integration.flush_telemetry',
   version: '1.0.0',
-  description: 'Persists in-memory integration telemetry under .ai-engineering-platform/integration-telemetry.',
+  description:
+    'Persists in-memory integration telemetry under .ai-engineering-platform/integration-telemetry.',
   module: 'integration-telemetry',
   inputSchema: {
     type: 'object',
@@ -160,7 +173,8 @@ export const INTEGRATION_FLUSH_TELEMETRY_TOOL_DEFINITION: ToolDefinition = {
 export const INTEGRATION_WORKFLOW_INDEX_TOOL_DEFINITION: ToolDefinition = {
   name: 'integration.workflow_index',
   version: '1.0.0',
-  description: 'Returns the MCP workflow index for routing task types to tools, modules, and files.',
+  description:
+    'Returns the MCP workflow index for routing task types to tools, modules, and files.',
   module: 'integration-telemetry',
   inputSchema: {
     type: 'object',
@@ -170,9 +184,12 @@ export const INTEGRATION_WORKFLOW_INDEX_TOOL_DEFINITION: ToolDefinition = {
         type: 'string',
         enum: [
           'project_summary',
+          'tech_stack_quick_view',
           'bug_investigation',
+          'code_review',
           'architecture_review',
           'phase_planning',
+          'planning',
           'patch_execution',
           'token_optimization',
           'plugin_workflow',
@@ -195,12 +212,29 @@ export const INTEGRATION_WORKFLOW_INDEX_TOOL_DEFINITION: ToolDefinition = {
 export const INTEGRATION_AUTO_TELEMETRY_SUMMARY_TOOL_DEFINITION: ToolDefinition = {
   name: 'integration.auto_telemetry_summary',
   version: '1.0.0',
-  description: 'Summarizes automatically recorded MCP execution telemetry and estimated token usage.',
+  description:
+    'Summarizes automatically recorded MCP execution telemetry and estimated token usage.',
   module: 'integration-telemetry',
   inputSchema: {
     type: 'object',
     additionalProperties: false,
-    properties: {},
+    properties: {
+      targetTokens: {
+        type: 'number',
+        description: 'Optional target token ceiling used to report within_budget or over_budget.',
+      },
+      questionType: {
+        type: 'string',
+        enum: [
+          'project_summary',
+          'tech_stack_quick_view',
+          'debugging',
+          'code_review',
+          'planning',
+          'general',
+        ],
+      },
+    },
   },
   outputSchema: resultObjectSchema,
   errorSchema: STANDARD_ERROR_SCHEMA,
@@ -208,7 +242,12 @@ export const INTEGRATION_AUTO_TELEMETRY_SUMMARY_TOOL_DEFINITION: ToolDefinition 
   timeoutMs: 3000,
   retryStrategy: NO_RETRY,
   sideEffects: 'read',
-  examples: [{ input: {}, output: { toolCalls: 1, estimatedTotalTokens: 10 } }],
+  examples: [
+    {
+      input: { questionType: 'project_summary' },
+      output: { toolCalls: 1, estimatedTotalTokens: 10, budgetStatus: { status: 'within_budget' } },
+    },
+  ],
 };
 
 export const INTEGRATION_RESET_AUTO_TELEMETRY_TOOL_DEFINITION: ToolDefinition = {

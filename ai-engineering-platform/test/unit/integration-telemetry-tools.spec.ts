@@ -35,7 +35,9 @@ describe('Integration telemetry tools', () => {
       agentsInstructionLoaded: true,
     });
     const summary = await new IntegrationTelemetrySummaryTool(service).execute({ sessionId: 's1' });
-    const index = await new IntegrationWorkflowIndexTool(service).execute({ taskType: 'token_optimization' });
+    const index = await new IntegrationWorkflowIndexTool(service).execute({
+      taskType: 'token_optimization',
+    });
     telemetry.recordSuccess({
       correlationId: 'corr_1',
       toolName: 'platform.health',
@@ -44,7 +46,9 @@ describe('Integration telemetry tools', () => {
       input: {},
       output: { status: 'ok' },
     });
-    const autoSummary = await new IntegrationAutoTelemetrySummaryTool(telemetry).execute({});
+    const autoSummary = await new IntegrationAutoTelemetrySummaryTool(telemetry).execute({
+      targetTokens: 1,
+    });
     const reset = await new IntegrationResetAutoTelemetryTool(telemetry).execute({});
 
     expect(session.id).toBe('s1');
@@ -53,6 +57,7 @@ describe('Integration telemetry tools', () => {
     expect(summary.toolCalls).toBe(1);
     expect(index.entries).toHaveLength(1);
     expect(autoSummary.toolCalls).toBe(1);
+    expect((autoSummary.budgetStatus as { status: string }).status).toBe('over_budget');
     expect(reset.clearedRecords).toBe(1);
   });
 });

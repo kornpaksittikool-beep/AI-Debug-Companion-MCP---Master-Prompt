@@ -93,9 +93,12 @@ export interface WorkflowIndexInput {
 
 export type WorkflowTaskType =
   | 'project_summary'
+  | 'tech_stack_quick_view'
   | 'bug_investigation'
+  | 'code_review'
   | 'architecture_review'
   | 'phase_planning'
+  | 'planning'
   | 'patch_execution'
   | 'token_optimization'
   | 'plugin_workflow'
@@ -111,6 +114,14 @@ export interface WorkflowIndexEntry {
   readonly verificationTools: readonly string[];
   readonly primaryModules: readonly string[];
   readonly relevantFiles: readonly string[];
+  readonly targetTokenRange: {
+    readonly min: number;
+    readonly max: number;
+  };
+  readonly excerptMaxBytes: number;
+  readonly maxExcerptCalls: number;
+  readonly contextPolicy: readonly string[];
+  readonly doNotCallTools: readonly string[];
   readonly avoidUntilNeeded: readonly string[];
 }
 

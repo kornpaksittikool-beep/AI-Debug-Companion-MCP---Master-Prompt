@@ -1,13 +1,25 @@
 import { Injectable } from '@nestjs/common';
 import type { JsonSchemaObject } from '../registry/interfaces/json-schema.interface.js';
 import type {
+  ExecutionTelemetryBudgetStatus,
   ExecutionTelemetryRecord,
   ExecutionTelemetrySummary,
+  ExecutionTelemetrySummaryOptions,
   ExecutionToolTelemetrySummary,
 } from './execution-telemetry.interface.js';
 
 const DEFAULT_CHARS_PER_TOKEN = 4;
 const MAX_RECENT_CALLS = 50;
+const QUESTION_TARGET_TOKENS: Required<
+  Record<NonNullable<ExecutionTelemetrySummaryOptions['questionType']>, number>
+> = {
+  project_summary: 2000,
+  tech_stack_quick_view: 2500,
+  debugging: 8000,
+  code_review: 10000,
+  planning: 6000,
+  general: 4000,
+};
 
 @Injectable()
 export class ExecutionTelemetryService {
@@ -52,11 +64,20 @@ export class ExecutionTelemetryService {
     });
   }
 
-  summary(): ExecutionTelemetrySummary {
+  summary(input: ExecutionTelemetrySummaryOptions = {}): ExecutionTelemetrySummary {
     const successfulCalls = this.records.filter((record) => record.status === 'success').length;
     const failedCalls = this.records.filter((record) => record.status === 'failed').length;
-    const estimatedInputTokens = this.records.reduce((sum, record) => sum + record.estimatedInputTokens, 0);
-    const estimatedOutputTokens = this.records.reduce((sum, record) => sum + record.estimatedOutputTokens, 0);
+    const estimatedInputTokens = this.records.reduce(
+      (sum, record) => sum + record.estimatedInputTokens,
+      0,
+    );
+    const estimatedOutputTokens = this.records.reduce(
+      (sum, record) => sum + record.estimatedOutputTokens,
+      0,
+    );
+
+    const estimatedTotalTokens = estimatedInputTokens + estimatedOutputTokens;
+    const budgetStatus = this.budgetStatus(input, estimatedTotalTokens);
 
     return {
       toolCalls: this.records.length,
@@ -64,9 +85,10 @@ export class ExecutionTelemetryService {
       failedCalls,
       estimatedInputTokens,
       estimatedOutputTokens,
-      estimatedTotalTokens: estimatedInputTokens + estimatedOutputTokens,
+      estimatedTotalTokens,
       topTools: this.topTools(),
       recentCalls: this.records.slice(-MAX_RECENT_CALLS),
+      ...(budgetStatus ? { budgetStatus } : {}),
     };
   }
 
@@ -102,7 +124,35 @@ export class ExecutionTelemetryService {
 
     return [...byTool.entries()]
       .map(([toolName, summary]) => ({ toolName, ...summary }))
-      .sort((a, b) => b.estimatedTotalTokens - a.estimatedTotalTokens || a.toolName.localeCompare(b.toolName))
+      .sort(
+        (a, b) =>
+          b.estimatedTotalTokens - a.estimatedTotalTokens || a.toolName.localeCompare(b.toolName),
+      )
       .slice(0, 10);
+  }
+
+  private budgetStatus(
+    input: ExecutionTelemetrySummaryOptions,
+    estimatedTotalTokens: number,
+  ): ExecutionTelemetryBudgetStatus | undefined {
+    const targetTokens =
+      input.targetTokens ??
+      (input.questionType ? QUESTION_TARGET_TOKENS[input.questionType] : undefined);
+    if (targetTokens === undefined) {
+      return undefined;
+    }
+    const overByTokens = Math.max(0, estimatedTotalTokens - targetTokens);
+    const status = overByTokens > 0 ? 'over_budget' : 'within_budget';
+    return {
+      status,
+      targetTokens,
+      ...(input.questionType ? { questionType: input.questionType } : {}),
+      estimatedTotalTokens,
+      overByTokens,
+      recommendation:
+        status === 'over_budget'
+          ? 'Reduce context immediately: stop broad reads, lower excerpt maxBytes, and replace full context with search or symbol evidence.'
+          : 'Telemetry is within the selected target range.',
+    };
   }
 }

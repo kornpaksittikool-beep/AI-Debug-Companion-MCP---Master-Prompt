@@ -18,10 +18,31 @@ export interface ExecutionTelemetrySummary {
   readonly estimatedTotalTokens: number;
   readonly topTools: readonly ExecutionToolTelemetrySummary[];
   readonly recentCalls: readonly ExecutionTelemetryRecord[];
+  readonly budgetStatus?: ExecutionTelemetryBudgetStatus;
 }
 
 export interface ExecutionToolTelemetrySummary {
   readonly toolName: string;
   readonly calls: number;
   readonly estimatedTotalTokens: number;
+}
+
+export interface ExecutionTelemetrySummaryOptions {
+  readonly targetTokens?: number;
+  readonly questionType?:
+    | 'project_summary'
+    | 'tech_stack_quick_view'
+    | 'debugging'
+    | 'code_review'
+    | 'planning'
+    | 'general';
+}
+
+export interface ExecutionTelemetryBudgetStatus {
+  readonly status: 'within_budget' | 'over_budget' | 'unknown';
+  readonly targetTokens?: number;
+  readonly questionType?: string;
+  readonly estimatedTotalTokens: number;
+  readonly overByTokens: number;
+  readonly recommendation: string;
 }

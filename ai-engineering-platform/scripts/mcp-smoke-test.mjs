@@ -33,7 +33,10 @@ async function callTool(client, name, args) {
 async function createFixture() {
   const rootPath = await mkdtemp(path.join(tmpdir(), 'aep-mcp-smoke-'));
   await mkdir(path.join(rootPath, 'src'), { recursive: true });
-  await writeFile(path.join(rootPath, 'src', 'helper.ts'), 'export function helper(): string { return "ok"; }\n');
+  await writeFile(
+    path.join(rootPath, 'src', 'helper.ts'),
+    'export function helper(): string { return "ok"; }\n',
+  );
   await writeFile(
     path.join(rootPath, 'src', 'service.ts'),
     'import { helper } from "./helper";\nexport class Service { run(): string { return helper(); } }\n',
@@ -115,8 +118,8 @@ try {
   });
   const tokenStrategy = await callTool(client, 'token_budget.recommend_strategy', {
     objective: 'Smoke verify token-aware flow',
+    questionType: 'tech_stack_quick_view',
     currentTokens: tokenEstimate.estimatedTokens,
-    maxTokens: 20,
   });
   const integrationReadiness = await callTool(client, 'integration.readiness', {
     configuredServerName: 'ai_engineering_platform',
@@ -137,7 +140,7 @@ try {
     estimatedOutputTokens: tokenEstimate.estimatedTokens,
   });
   const workflowIndex = await callTool(client, 'integration.workflow_index', {
-    taskType: 'bug_investigation',
+    taskType: 'tech_stack_quick_view',
   });
   const flushTelemetry = await callTool(client, 'integration.flush_telemetry', {
     rootPath,
@@ -146,7 +149,9 @@ try {
     rootPath,
     sessionId: integrationSession.id,
   });
-  const autoTelemetry = await callTool(client, 'integration.auto_telemetry_summary', {});
+  const autoTelemetry = await callTool(client, 'integration.auto_telemetry_summary', {
+    questionType: 'tech_stack_quick_view',
+  });
 
   const summary = {
     rootPath,
@@ -170,18 +175,23 @@ try {
     artifactValid: artifact.valid,
     tokenEstimate: tokenEstimate.estimatedTokens,
     tokenStrategyStatus: tokenStrategy.status,
+    tokenStrategyQuestionType: tokenStrategy.questionProfile?.questionType,
+    tokenStrategyMaxTokens: tokenStrategy.maxTokens,
+    tokenStrategyExcerptMaxBytes: tokenStrategy.questionProfile?.excerptMaxBytes,
+    tokenStrategyDoNotCallTools: tokenStrategy.doNotCallTools,
     integrationReady: integrationReadiness.ready,
     integrationToolCalls: integrationSummary.toolCalls,
     workflowIndexEntries: workflowIndex.entries.length,
     telemetryRecordsWritten: flushTelemetry.recordsWritten,
     autoTelemetryToolCalls: autoTelemetry.toolCalls,
     autoTelemetryEstimatedTokens: autoTelemetry.estimatedTotalTokens,
+    autoTelemetryBudgetStatus: autoTelemetry.budgetStatus?.status,
   };
 
   if (
     summary.toolCount < 84 ||
     summary.healthStatus !== 'ok' ||
-    summary.platformPhase !== 'phase-27-file-excerpt-token-reduction' ||
+    summary.platformPhase !== 'phase-28-question-type-token-profiles' ||
     !summary.metadataCompact ||
     summary.toolSummaryModules < 1 ||
     !summary.projectProfileCompact ||
@@ -198,12 +208,17 @@ try {
     !summary.artifactValid ||
     summary.tokenEstimate <= 0 ||
     summary.tokenStrategyStatus !== 'within_budget' ||
+    summary.tokenStrategyQuestionType !== 'tech_stack_quick_view' ||
+    summary.tokenStrategyMaxTokens !== 2500 ||
+    summary.tokenStrategyExcerptMaxBytes !== 900 ||
+    !summary.tokenStrategyDoNotCallTools.includes('repository.read_file_context') ||
     !summary.integrationReady ||
     summary.integrationToolCalls !== 1 ||
     summary.workflowIndexEntries !== 1 ||
     summary.telemetryRecordsWritten !== 1 ||
     summary.autoTelemetryToolCalls < 10 ||
-    summary.autoTelemetryEstimatedTokens <= 0
+    summary.autoTelemetryEstimatedTokens <= 0 ||
+    !['within_budget', 'over_budget'].includes(summary.autoTelemetryBudgetStatus)
   ) {
     throw new Error(`MCP smoke test failed: ${JSON.stringify(summary, null, 2)}`);
   }

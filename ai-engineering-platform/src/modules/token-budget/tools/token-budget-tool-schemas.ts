@@ -37,7 +37,8 @@ const resultObjectSchema: JsonSchemaObject = {
 export const TOKEN_BUDGET_ESTIMATE_TOOL_DEFINITION: ToolDefinition = {
   name: 'token_budget.estimate',
   version: '1.0.0',
-  description: 'Estimates approximate token usage for candidate context items before sending them to an AI model.',
+  description:
+    'Estimates approximate token usage for candidate context items before sending them to an AI model.',
   module: 'token-budget',
   inputSchema: estimateInputSchema,
   outputSchema: resultObjectSchema,
@@ -46,13 +47,19 @@ export const TOKEN_BUDGET_ESTIMATE_TOOL_DEFINITION: ToolDefinition = {
   timeoutMs: 3000,
   retryStrategy: NO_RETRY,
   sideEffects: 'read',
-  examples: [{ input: { items: [{ id: 'readme', content: 'hello' }], budgetTokens: 100 }, output: { estimatedTokens: 2 } }],
+  examples: [
+    {
+      input: { items: [{ id: 'readme', content: 'hello' }], budgetTokens: 100 },
+      output: { estimatedTokens: 2 },
+    },
+  ],
 };
 
 export const TOKEN_BUDGET_COMPRESS_CONTEXT_TOOL_DEFINITION: ToolDefinition = {
   name: 'token_budget.compress_context',
   version: '1.0.0',
-  description: 'Compresses candidate context items to fit an approximate token budget while preserving priority order.',
+  description:
+    'Compresses candidate context items to fit an approximate token budget while preserving priority order.',
   module: 'token-budget',
   inputSchema: {
     ...estimateInputSchema,
@@ -70,7 +77,12 @@ export const TOKEN_BUDGET_COMPRESS_CONTEXT_TOOL_DEFINITION: ToolDefinition = {
   timeoutMs: 3000,
   retryStrategy: NO_RETRY,
   sideEffects: 'read',
-  examples: [{ input: { items: [{ id: 'file', content: 'long content' }], maxTokens: 10 }, output: { truncated: false } }],
+  examples: [
+    {
+      input: { items: [{ id: 'file', content: 'long content' }], maxTokens: 10 },
+      output: { truncated: false },
+    },
+  ],
 };
 
 export const TOKEN_BUDGET_RECOMMEND_STRATEGY_TOOL_DEFINITION: ToolDefinition = {
@@ -84,6 +96,17 @@ export const TOKEN_BUDGET_RECOMMEND_STRATEGY_TOOL_DEFINITION: ToolDefinition = {
     additionalProperties: false,
     properties: {
       objective: { type: 'string' },
+      questionType: {
+        type: 'string',
+        enum: [
+          'project_summary',
+          'tech_stack_quick_view',
+          'debugging',
+          'code_review',
+          'planning',
+          'general',
+        ],
+      },
       currentTokens: { type: 'number' },
       maxTokens: { type: 'number' },
       availableTools: { type: 'array', items: { type: 'string' } },
@@ -95,5 +118,7 @@ export const TOKEN_BUDGET_RECOMMEND_STRATEGY_TOOL_DEFINITION: ToolDefinition = {
   timeoutMs: 3000,
   retryStrategy: NO_RETRY,
   sideEffects: 'read',
-  examples: [{ input: { objective: 'debug login bug', maxTokens: 4000 }, output: { status: 'unknown' } }],
+  examples: [
+    { input: { objective: 'debug login bug', maxTokens: 4000 }, output: { status: 'unknown' } },
+  ],
 };

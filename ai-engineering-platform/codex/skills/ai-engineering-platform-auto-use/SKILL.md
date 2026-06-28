@@ -55,6 +55,16 @@ Start with low-token MCP calls:
 2. `platform.tool_summary`
 3. `repository.project_profile`
 
+Then choose the closest question profile before expanding context:
+
+| Question type                        |                  Target MCP payload | Preferred route                                                                                                                         |
+| ------------------------------------ | ----------------------------------: | --------------------------------------------------------------------------------------------------------------------------------------- |
+| Summary / project purpose            |                       ~1k-2k tokens | `repository.project_profile`, focused `repository.search_files`, at most 2 `repository.read_file_excerpt` calls with `maxBytes` 500-700 |
+| Tech stack / architecture quick view |                   ~1.5k-2.5k tokens | manifests/config excerpts with `maxBytes` <= 900, `repository.search_symbols`, graph tools only for explicit dependency-flow questions  |
+| General debugging                    |                       ~3k-8k tokens | `investigation.create`, exact error search, symbol/file search, then full context only for narrowed failing files                       |
+| Code review                          | diff-scoped, usually ~4k-10k tokens | changed files, impacted symbols, related tests, `git.impact_hints`; avoid unrelated repository reads                                    |
+| Planning                             |                       ~2k-6k tokens | roadmap/TODO/phase-report excerpts with `maxBytes` <= 1000 plus `planning.impact_report` after target files are known                   |
+
 For normal project summaries and follow-up questions, continue with only focused discovery:
 
 - Use `repository.search_files` to find important files, configs, routes, docs, package manifests, and entry points.
@@ -65,6 +75,7 @@ For normal project summaries and follow-up questions, continue with only focused
 - Use `investigation.create` and evidence tools for bug reports, logs, screenshots, or unclear failures.
 - Use `planning.create_plan`, `planning.impact_report`, and `planning.approval_gate` before implementation work.
 - Use `integration.auto_telemetry_summary` at the end of MCP-heavy work.
+- Use `integration.workflow_index` or `token_budget.recommend_strategy` with `questionType` when the best route is unclear.
 
 Prefer focused manual file reads only after MCP narrows the target.
 
@@ -79,9 +90,21 @@ For project summaries, target this order:
 1. `repository.project_profile`
 2. `repository.search_files`
 3. `repository.search_symbols`
-4. `repository.read_file_excerpt` with `purpose: "summary"` for at most 2-3 files that explain purpose or entry points
+4. `repository.read_file_excerpt` with `purpose: "summary"` and `maxBytes` 500-700 for at most 2 files that explain purpose or entry points
 5. `repository.read_file_context` only when an excerpt is insufficient and the answer needs precise details
 6. `repository.overview` only if compact profile data is insufficient
+
+For tech stack or architecture quick views, prefer package/config excerpts and symbol search before source implementation reads. Use `repository.import_graph` only when dependency flow, circular dependencies, or architecture coupling is directly requested.
+
+For debugging, keep the error text, logs, stack trace, failing command, and narrowed file/symbol evidence as the core context. Use `repository.read_file_context` only after search identifies the likely failing file.
+
+For code review, read only the diff or changed files, impacted symbols, and directly related tests. Avoid full repository summaries unless the changed surface is unknown.
+
+For planning, use roadmap, TODO, and phase report excerpts instead of reading full historical docs. Create `planning.impact_report` after target files are known.
+
+Treat `doNotCallTools` from `token_budget.recommend_strategy` or `integration.workflow_index` as hard guidance. Do not call those tools unless the user explicitly expands scope or the current evidence is insufficient and you say why.
+
+When reporting telemetry, call `integration.auto_telemetry_summary` with `questionType` or `targetTokens`. If it returns `budgetStatus.status: "over_budget"`, explicitly report the over-budget state and reduce context before continuing.
 
 Avoid broad reads of `playwright-report`, `coverage`, `.next`, `dist`, `build`, `node_modules`, generated reports, and lockfile-heavy content unless the user asks about those artifacts.
 

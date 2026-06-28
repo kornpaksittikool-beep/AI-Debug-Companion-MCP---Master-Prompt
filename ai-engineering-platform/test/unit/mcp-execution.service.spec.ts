@@ -31,10 +31,7 @@ const definition: ToolDefinition = {
   examples: [{ input: {}, output: {} }],
 };
 
-const logger: Pick<
-  PlatformLoggerService,
-  'logToolStart' | 'logToolSuccess' | 'logToolFailure'
-> = {
+const logger: Pick<PlatformLoggerService, 'logToolStart' | 'logToolSuccess' | 'logToolFailure'> = {
   logToolStart: jest.fn(),
   logToolSuccess: jest.fn(),
   logToolFailure: jest.fn(),
@@ -122,5 +119,25 @@ describe('McpExecutionService', () => {
     expect(summary.successfulCalls).toBe(1);
     expect(summary.estimatedTotalTokens).toBeGreaterThan(0);
     expect(summary.topTools[0]).toMatchObject({ toolName: 'test.echo', calls: 1 });
+  });
+
+  it('reports automatic telemetry as over budget when a target is provided', () => {
+    const telemetry = new ExecutionTelemetryService();
+    telemetry.recordSuccess({
+      correlationId: 'corr_big',
+      toolName: 'repository.read_file_excerpt',
+      startedAt: new Date('2026-01-01T00:00:00.000Z'),
+      executionTimeMs: 1,
+      input: {},
+      output: { content: 'x'.repeat(80) },
+    });
+
+    const summary = telemetry.summary({ targetTokens: 5 });
+
+    expect(summary.budgetStatus).toMatchObject({
+      status: 'over_budget',
+      targetTokens: 5,
+    });
+    expect(summary.budgetStatus?.overByTokens).toBeGreaterThan(0);
   });
 });

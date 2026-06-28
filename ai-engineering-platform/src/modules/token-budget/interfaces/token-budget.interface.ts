@@ -56,19 +56,45 @@ export interface ContextCompressionResult {
   readonly recommendations: readonly string[];
 }
 
+export type TokenQuestionType =
+  | 'project_summary'
+  | 'tech_stack_quick_view'
+  | 'debugging'
+  | 'code_review'
+  | 'planning'
+  | 'general';
+
 export interface StrategyRecommendationOptions {
   readonly objective: string;
+  readonly questionType?: TokenQuestionType;
   readonly currentTokens?: number;
   readonly maxTokens?: number;
   readonly availableTools?: readonly string[];
 }
 
+export interface StrategyQuestionProfile {
+  readonly questionType: TokenQuestionType;
+  readonly targetTokenRange: {
+    readonly min: number;
+    readonly max: number;
+  };
+  readonly excerptMaxBytes: number;
+  readonly maxExcerptCalls: number;
+  readonly startTools: readonly string[];
+  readonly evidenceTools: readonly string[];
+  readonly escalationTools: readonly string[];
+  readonly contextPolicy: readonly string[];
+  readonly doNotCallTools: readonly string[];
+}
+
 export interface StrategyRecommendationResult {
   readonly objective: string;
+  readonly questionProfile: StrategyQuestionProfile;
   readonly currentTokens?: number;
   readonly maxTokens?: number;
   readonly status: 'within_budget' | 'over_budget' | 'unknown';
   readonly recommendedFlow: readonly string[];
   readonly preferredTools: readonly string[];
   readonly avoid: readonly string[];
+  readonly doNotCallTools: readonly string[];
 }

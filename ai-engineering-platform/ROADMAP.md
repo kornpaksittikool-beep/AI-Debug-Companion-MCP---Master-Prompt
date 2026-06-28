@@ -96,6 +96,9 @@ The system must be developed iteratively. Each phase must produce usable, verifi
 | M27: File Excerpt Token Reduction | Phase 27 | Add `repository.read_file_excerpt` for low-token summary evidence | Phase 26 compact profile routing | High | Medium | Completed |
 | M27: File Excerpt Token Reduction | Phase 27 | Route summary workflows away from full `repository.read_file_context` unless excerpts are insufficient | Phase 26 telemetry evidence | High | Medium | Completed |
 | M27: File Excerpt Token Reduction | Phase 27 | Update Codex skill guidance and smoke coverage for excerpt-first summaries | Codex integration installer | High | Low | Completed |
+| M28: Question-Type Token Profiles | Phase 28 | Add explicit token budget profiles for summaries, tech stack quick views, debugging, code review, and planning | Phase 27 excerpt-first routing | High | Medium | Completed |
+| M28: Question-Type Token Profiles | Phase 28 | Enforce excerpt maxBytes, excerpt call limits, hard do-not-call tools, and telemetry over-budget reporting | Phase 28 workflow profiles | High | Medium | Completed |
+| M28: Question-Type Token Profiles | Phase 28 | Update Codex skill guidance, smoke coverage, and docs for question-specific context routing | Phase 25 explicit skill activation | High | Low | Completed |
 
 ## Phase Gate Rules
 
@@ -110,4 +113,4 @@ Each phase must pass the following checks before the next phase begins:
 
 ## Current Phase
 
-Phase 27 is completed. Future phases must be planned and approved before implementation.
+Phase 28 is completed. Future phases must be planned and approved before implementation.
