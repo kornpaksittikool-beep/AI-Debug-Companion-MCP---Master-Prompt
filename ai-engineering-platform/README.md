@@ -2,7 +2,7 @@
 
 AI Engineering Platform is a production-oriented MCP foundation for evidence-driven software engineering workflows.
 
-Phase 20 provides the Core MCP Framework, Investigation Engine, bounded Repository Intelligence, TypeScript/JavaScript symbol intelligence, bounded import and call graphs, persistent repository graph indexing, cross-repository search, read-only SQLite Database Intelligence, PostgreSQL/MySQL connection profile validation, read-only Git Intelligence, Planning and Impact Engine, patch proposal workflow, deterministic approved patch application, rollback execution, allow-listed verification execution, versioned Project Memory, cache foundation, cache invalidation, read-only security audits, plugin marketplace readiness, semantic plugin compatibility resolution, approved local plugin state loading, remote plugin staging metadata, provider-neutral AI routing contracts, token-aware context budgeting tools, client integration telemetry, durable telemetry flush/load, and workflow routing index. It does not include automatic unapproved patch application, dynamic remote plugin installation, external plugin code execution, external database network execution, AI API execution, exact provider tokenizer integration, distributed telemetry storage, distributed cache, vector memory, cloud sync, or remote Git hosting integration.
+Phase 21 provides the Core MCP Framework, Investigation Engine, bounded Repository Intelligence, TypeScript/JavaScript symbol intelligence, bounded import and call graphs, persistent repository graph indexing, cross-repository search, read-only SQLite Database Intelligence, PostgreSQL/MySQL connection profile validation, read-only Git Intelligence, Planning and Impact Engine, patch proposal workflow, deterministic approved patch application, rollback execution, allow-listed verification execution, versioned Project Memory, cache foundation, cache invalidation, read-only security audits, plugin marketplace readiness, semantic plugin compatibility resolution, approved local plugin state loading, remote plugin staging metadata, provider-neutral AI routing contracts, token-aware context budgeting tools, client integration telemetry, durable telemetry flush/load, workflow routing index, and automatic MCP execution token telemetry. It does not include automatic unapproved patch application, dynamic remote plugin installation, external plugin code execution, external database network execution, AI API execution, exact provider tokenizer integration, distributed telemetry storage, distributed cache, vector memory, cloud sync, or remote Git hosting integration.
 
 ## Requirements
 
@@ -108,6 +108,8 @@ The Phase 1 server uses stdio transport through the official Model Context Proto
 - Estimated manual-read token avoidance summaries.
 - Durable local telemetry flush and reload under `.ai-engineering-platform/integration-telemetry`.
 - Workflow index for routing task types to MCP tools, modules, and relevant files.
+- Automatic MCP tool execution telemetry with approximate input and output token estimates.
+- Automatic execution telemetry summary and reset tools.
 - Jest unit and integration test baseline.
 
 ## Registered Tools
@@ -427,6 +429,14 @@ Persists in-memory integration telemetry under `.ai-engineering-platform/integra
 ### `integration.workflow_index`
 
 Returns the MCP workflow index for routing task types to tools, modules, and files.
+
+### `integration.auto_telemetry_summary`
+
+Summarizes automatically recorded MCP execution telemetry and estimated token usage.
+
+### `integration.reset_auto_telemetry`
+
+Clears automatically recorded in-memory MCP execution telemetry.
 
 ## Architecture Boundary
 

@@ -6,6 +6,7 @@ import { McpStdioServerService } from './mcp/services/mcp-stdio-server.service.j
 import { ToolRegistryService } from './registry/services/tool-registry.service.js';
 import { CommandPolicyService } from './security/command-policy.service.js';
 import { PathPolicyService } from './security/path-policy.service.js';
+import { ExecutionTelemetryService } from './telemetry/execution-telemetry.service.js';
 
 @Module({
   providers: [
@@ -16,6 +17,7 @@ import { PathPolicyService } from './security/path-policy.service.js';
     McpStdioServerService,
     PathPolicyService,
     CommandPolicyService,
+    ExecutionTelemetryService,
   ],
   exports: [
     ToolRegistryService,
@@ -24,6 +26,7 @@ import { PathPolicyService } from './security/path-policy.service.js';
     McpExecutionService,
     PathPolicyService,
     CommandPolicyService,
+    ExecutionTelemetryService,
   ],
 })
 export class CoreModule {}

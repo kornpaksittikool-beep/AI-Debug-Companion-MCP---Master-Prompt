@@ -190,3 +190,41 @@ export const INTEGRATION_WORKFLOW_INDEX_TOOL_DEFINITION: ToolDefinition = {
   sideEffects: 'read',
   examples: [{ input: { taskType: 'bug_investigation' }, output: { entries: [] } }],
 };
+
+export const INTEGRATION_AUTO_TELEMETRY_SUMMARY_TOOL_DEFINITION: ToolDefinition = {
+  name: 'integration.auto_telemetry_summary',
+  version: '1.0.0',
+  description: 'Summarizes automatically recorded MCP execution telemetry and estimated token usage.',
+  module: 'integration-telemetry',
+  inputSchema: {
+    type: 'object',
+    additionalProperties: false,
+    properties: {},
+  },
+  outputSchema: resultObjectSchema,
+  errorSchema: STANDARD_ERROR_SCHEMA,
+  permissions: NO_PERMISSION,
+  timeoutMs: 3000,
+  retryStrategy: NO_RETRY,
+  sideEffects: 'read',
+  examples: [{ input: {}, output: { toolCalls: 1, estimatedTotalTokens: 10 } }],
+};
+
+export const INTEGRATION_RESET_AUTO_TELEMETRY_TOOL_DEFINITION: ToolDefinition = {
+  name: 'integration.reset_auto_telemetry',
+  version: '1.0.0',
+  description: 'Clears automatically recorded in-memory MCP execution telemetry.',
+  module: 'integration-telemetry',
+  inputSchema: {
+    type: 'object',
+    additionalProperties: false,
+    properties: {},
+  },
+  outputSchema: resultObjectSchema,
+  errorSchema: STANDARD_ERROR_SCHEMA,
+  permissions: NO_PERMISSION,
+  timeoutMs: 3000,
+  retryStrategy: NO_RETRY,
+  sideEffects: 'write',
+  examples: [{ input: {}, output: { clearedRecords: 1 } }],
+};

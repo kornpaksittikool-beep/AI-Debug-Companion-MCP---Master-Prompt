@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import type { JsonSchemaObject } from '../../../core/registry/interfaces/json-schema.interface.js';
 import type { ToolHandler } from '../../../core/registry/interfaces/tool-handler.interface.js';
+import { ExecutionTelemetryService } from '../../../core/telemetry/execution-telemetry.service.js';
 import type {
   IntegrationReadinessInputDto,
   IntegrationSessionInputDto,
@@ -70,5 +71,25 @@ export class IntegrationWorkflowIndexTool implements ToolHandler {
     return Promise.resolve(
       this.service.workflowIndex(input as unknown as WorkflowIndexInputDto) as unknown as JsonSchemaObject,
     );
+  }
+}
+
+@Injectable()
+export class IntegrationAutoTelemetrySummaryTool implements ToolHandler {
+  constructor(private readonly telemetry: ExecutionTelemetryService) {}
+
+  execute(input: JsonSchemaObject): Promise<JsonSchemaObject> {
+    void input;
+    return Promise.resolve(this.telemetry.summary() as unknown as JsonSchemaObject);
+  }
+}
+
+@Injectable()
+export class IntegrationResetAutoTelemetryTool implements ToolHandler {
+  constructor(private readonly telemetry: ExecutionTelemetryService) {}
+
+  execute(input: JsonSchemaObject): Promise<JsonSchemaObject> {
+    void input;
+    return Promise.resolve(this.telemetry.reset() as unknown as JsonSchemaObject);
   }
 }

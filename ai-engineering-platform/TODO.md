@@ -81,3 +81,6 @@
 | Durable local telemetry flush/load | Phase 20 | Completed |
 | Workflow routing index | Phase 20 | Completed |
 | Workflow index MCP smoke coverage | Phase 20 | Completed |
+| Automatic MCP execution telemetry | Phase 21 | Completed |
+| Automatic token telemetry summary tool | Phase 21 | Completed |
+| Automatic telemetry smoke coverage | Phase 21 | Completed |

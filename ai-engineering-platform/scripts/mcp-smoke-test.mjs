@@ -139,6 +139,7 @@ try {
     rootPath,
     sessionId: integrationSession.id,
   });
+  const autoTelemetry = await callTool(client, 'integration.auto_telemetry_summary', {});
 
   const summary = {
     rootPath,
@@ -161,12 +162,14 @@ try {
     integrationToolCalls: integrationSummary.toolCalls,
     workflowIndexEntries: workflowIndex.entries.length,
     telemetryRecordsWritten: flushTelemetry.recordsWritten,
+    autoTelemetryToolCalls: autoTelemetry.toolCalls,
+    autoTelemetryEstimatedTokens: autoTelemetry.estimatedTotalTokens,
   };
 
   if (
     summary.toolCount < 70 ||
     summary.healthStatus !== 'ok' ||
-    summary.platformPhase !== 'phase-20-durable-telemetry-workflow-index' ||
+    summary.platformPhase !== 'phase-21-automatic-token-telemetry-reporting' ||
     !summary.importResolved ||
     summary.approvalStatus !== 'approved' ||
     summary.proposalStatus !== 'ready_for_review' ||
@@ -181,7 +184,9 @@ try {
     !summary.integrationReady ||
     summary.integrationToolCalls !== 1 ||
     summary.workflowIndexEntries !== 1 ||
-    summary.telemetryRecordsWritten !== 1
+    summary.telemetryRecordsWritten !== 1 ||
+    summary.autoTelemetryToolCalls < 10 ||
+    summary.autoTelemetryEstimatedTokens <= 0
   ) {
     throw new Error(`MCP smoke test failed: ${JSON.stringify(summary, null, 2)}`);
   }

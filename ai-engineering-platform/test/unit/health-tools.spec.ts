@@ -24,7 +24,7 @@ describe('Health tools', () => {
 
     expect(output.platform).toBeDefined();
     expect(output.platform).toMatchObject({
-      phase: 'phase-20-durable-telemetry-workflow-index',
+      phase: 'phase-21-automatic-token-telemetry-reporting',
     });
     expect(output.tools).toEqual([]);
   });

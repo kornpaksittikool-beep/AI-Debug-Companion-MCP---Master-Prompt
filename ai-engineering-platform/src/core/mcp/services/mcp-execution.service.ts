@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { ErrorMapperService } from '../../errors/error-mapper.service.js';
 import { PlatformLoggerService } from '../../logging/platform-logger.service.js';
 import { ToolRegistryService } from '../../registry/services/tool-registry.service.js';
+import { ExecutionTelemetryService } from '../../telemetry/execution-telemetry.service.js';
 import { createCorrelationId } from '../../../shared/utils/correlation-id.js';
 import type { McpToolExecutionRequest } from '../interfaces/mcp-request.interface.js';
 import type { McpToolExecutionResponse } from '../interfaces/mcp-response.interface.js';
@@ -12,6 +13,7 @@ export class McpExecutionService {
     private readonly registry: ToolRegistryService,
     private readonly logger: PlatformLoggerService,
     private readonly errorMapper: ErrorMapperService,
+    private readonly telemetry: ExecutionTelemetryService,
   ) {}
 
   async execute(request: McpToolExecutionRequest): Promise<McpToolExecutionResponse> {
@@ -29,6 +31,14 @@ export class McpExecutionService {
       });
       const executionTimeMs = Math.round(performance.now() - startedMs);
       this.logger.logToolSuccess({ toolName: request.toolName, correlationId, executionTimeMs });
+      this.telemetry.recordSuccess({
+        correlationId,
+        toolName: request.toolName,
+        startedAt,
+        executionTimeMs,
+        input: request.input,
+        output,
+      });
 
       return {
         ok: true,
@@ -43,10 +53,19 @@ export class McpExecutionService {
         executionTimeMs,
         error,
       });
+      const errorEnvelope = this.errorMapper.toEnvelope(error, correlationId);
+      this.telemetry.recordFailure({
+        correlationId,
+        toolName: request.toolName,
+        startedAt,
+        executionTimeMs,
+        input: request.input,
+        errorCode: errorEnvelope.code,
+      });
 
       return {
         ok: false,
-        error: this.errorMapper.toEnvelope(error, correlationId),
+        error: errorEnvelope,
         correlationId,
       };
     }

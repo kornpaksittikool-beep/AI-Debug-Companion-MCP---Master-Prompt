@@ -76,6 +76,9 @@ The system must be developed iteratively. Each phase must produce usable, verifi
 | M20: Durable Telemetry and Workflow Index | Phase 20 | Durable local telemetry flush and reload under project state | Phase 19 telemetry | High | Medium | Completed |
 | M20: Durable Telemetry and Workflow Index | Phase 20 | Workflow routing index from task type to tools, modules, and files | Phase 19 readiness and tool metadata | High | Medium | Completed |
 | M20: Durable Telemetry and Workflow Index | Phase 20 | MCP smoke coverage for workflow index and telemetry persistence | Durable telemetry tools | High | Low | Completed |
+| M21: Automatic Token Telemetry Reporting | Phase 21 | Core execution telemetry for every MCP tool call | Core MCP execution boundary | High | Medium | Completed |
+| M21: Automatic Token Telemetry Reporting | Phase 21 | Automatic token telemetry summary and reset tools | Core execution telemetry | High | Medium | Completed |
+| M21: Automatic Token Telemetry Reporting | Phase 21 | MCP smoke coverage proving automatic telemetry population | Summary tool | High | Low | Completed |
 
 ## Phase Gate Rules
 
@@ -90,4 +93,4 @@ Each phase must pass the following checks before the next phase begins:
 
 ## Current Phase
 
-Phase 20 is completed. Future phases must be planned and approved before implementation.
+Phase 21 is completed. Future phases must be planned and approved before implementation.

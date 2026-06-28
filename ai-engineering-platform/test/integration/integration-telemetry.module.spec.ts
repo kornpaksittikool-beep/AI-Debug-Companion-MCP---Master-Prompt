@@ -19,6 +19,8 @@ describe('IntegrationTelemetryModule integration', () => {
         'integration.telemetry_summary',
         'integration.flush_telemetry',
         'integration.workflow_index',
+        'integration.auto_telemetry_summary',
+        'integration.reset_auto_telemetry',
       ]),
     );
 
@@ -63,6 +65,31 @@ describe('IntegrationTelemetryModule integration', () => {
     expect(result.ok).toBe(true);
     if (result.ok) {
       expect(result.output.entries).toHaveLength(1);
+    }
+
+    await moduleRef.close();
+  });
+
+  it('summarizes automatic execution telemetry through core execution', async () => {
+    const moduleRef = await Test.createTestingModule({ imports: [AppModule] }).compile();
+    await moduleRef.init();
+
+    const execution = moduleRef.get(McpExecutionService);
+    await execution.execute({
+      toolName: 'platform.health',
+      input: {},
+      correlationId: 'corr_auto_health',
+    });
+    const result = await execution.execute({
+      toolName: 'integration.auto_telemetry_summary',
+      input: {},
+      correlationId: 'corr_auto_summary',
+    });
+
+    expect(result.ok).toBe(true);
+    if (result.ok) {
+      expect(result.output.toolCalls).toBeGreaterThanOrEqual(1);
+      expect(result.output.estimatedTotalTokens).toBeGreaterThan(0);
     }
 
     await moduleRef.close();

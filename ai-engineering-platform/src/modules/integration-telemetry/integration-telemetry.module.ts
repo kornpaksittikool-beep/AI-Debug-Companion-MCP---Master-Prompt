@@ -5,17 +5,21 @@ import { RepositoryIntelligenceModule } from '../repository-intelligence/reposit
 import { IntegrationTelemetryPathService } from './services/integration-telemetry-path.service.js';
 import { IntegrationTelemetryService } from './services/integration-telemetry.service.js';
 import {
+  INTEGRATION_AUTO_TELEMETRY_SUMMARY_TOOL_DEFINITION,
   INTEGRATION_FLUSH_TELEMETRY_TOOL_DEFINITION,
   INTEGRATION_READINESS_TOOL_DEFINITION,
   INTEGRATION_RECORD_TOOL_USAGE_TOOL_DEFINITION,
+  INTEGRATION_RESET_AUTO_TELEMETRY_TOOL_DEFINITION,
   INTEGRATION_START_SESSION_TOOL_DEFINITION,
   INTEGRATION_TELEMETRY_SUMMARY_TOOL_DEFINITION,
   INTEGRATION_WORKFLOW_INDEX_TOOL_DEFINITION,
 } from './tools/integration-telemetry-tool-schemas.js';
 import {
+  IntegrationAutoTelemetrySummaryTool,
   IntegrationFlushTelemetryTool,
   IntegrationReadinessTool,
   IntegrationRecordToolUsageTool,
+  IntegrationResetAutoTelemetryTool,
   IntegrationStartSessionTool,
   IntegrationTelemetrySummaryTool,
   IntegrationWorkflowIndexTool,
@@ -32,6 +36,8 @@ import {
     IntegrationTelemetrySummaryTool,
     IntegrationFlushTelemetryTool,
     IntegrationWorkflowIndexTool,
+    IntegrationAutoTelemetrySummaryTool,
+    IntegrationResetAutoTelemetryTool,
   ],
   exports: [IntegrationTelemetryService],
 })
@@ -44,6 +50,8 @@ export class IntegrationTelemetryModule implements OnModuleInit {
     private readonly telemetrySummaryTool: IntegrationTelemetrySummaryTool,
     private readonly flushTelemetryTool: IntegrationFlushTelemetryTool,
     private readonly workflowIndexTool: IntegrationWorkflowIndexTool,
+    private readonly autoTelemetrySummaryTool: IntegrationAutoTelemetrySummaryTool,
+    private readonly resetAutoTelemetryTool: IntegrationResetAutoTelemetryTool,
   ) {}
 
   onModuleInit(): void {
@@ -53,5 +61,7 @@ export class IntegrationTelemetryModule implements OnModuleInit {
     this.registry.register(INTEGRATION_TELEMETRY_SUMMARY_TOOL_DEFINITION, this.telemetrySummaryTool);
     this.registry.register(INTEGRATION_FLUSH_TELEMETRY_TOOL_DEFINITION, this.flushTelemetryTool);
     this.registry.register(INTEGRATION_WORKFLOW_INDEX_TOOL_DEFINITION, this.workflowIndexTool);
+    this.registry.register(INTEGRATION_AUTO_TELEMETRY_SUMMARY_TOOL_DEFINITION, this.autoTelemetrySummaryTool);
+    this.registry.register(INTEGRATION_RESET_AUTO_TELEMETRY_TOOL_DEFINITION, this.resetAutoTelemetryTool);
   }
 }

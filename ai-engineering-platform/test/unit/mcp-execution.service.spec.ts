@@ -6,6 +6,7 @@ import { ToolRegistryService } from '../../src/core/registry/services/tool-regis
 import { NO_PERMISSION } from '../../src/core/security/permission.interface.js';
 import { STANDARD_ERROR_SCHEMA } from '../../src/core/errors/error-envelope.interface.js';
 import type { PlatformLoggerService } from '../../src/core/logging/platform-logger.service.js';
+import { ExecutionTelemetryService } from '../../src/core/telemetry/execution-telemetry.service.js';
 
 const definition: ToolDefinition = {
   name: 'test.echo',
@@ -53,6 +54,7 @@ describe('McpExecutionService', () => {
       registry,
       logger as PlatformLoggerService,
       new ErrorMapperService(),
+      new ExecutionTelemetryService(),
     );
 
     const result = await service.execute({
@@ -71,10 +73,12 @@ describe('McpExecutionService', () => {
   });
 
   it('normalizes missing tool errors and logs failure', async () => {
+    const telemetry = new ExecutionTelemetryService();
     const service = new McpExecutionService(
       new ToolRegistryService(),
       logger as PlatformLoggerService,
       new ErrorMapperService(),
+      telemetry,
     );
 
     const result = await service.execute({
@@ -85,5 +89,35 @@ describe('McpExecutionService', () => {
 
     expect(result.ok).toBe(false);
     expect(logger.logToolFailure).toHaveBeenCalled();
+    expect(telemetry.summary()).toMatchObject({
+      toolCalls: 1,
+      failedCalls: 1,
+    });
+  });
+
+  it('records automatic token telemetry for successful tool calls', async () => {
+    const registry = new ToolRegistryService();
+    const telemetry = new ExecutionTelemetryService();
+    registry.register(definition, {
+      execute: (input) => Promise.resolve({ received: String(input.message) }),
+    });
+    const service = new McpExecutionService(
+      registry,
+      logger as PlatformLoggerService,
+      new ErrorMapperService(),
+      telemetry,
+    );
+
+    await service.execute({
+      toolName: 'test.echo',
+      input: { message: 'hello' },
+      correlationId: 'corr_123',
+    });
+
+    const summary = telemetry.summary();
+    expect(summary.toolCalls).toBe(1);
+    expect(summary.successfulCalls).toBe(1);
+    expect(summary.estimatedTotalTokens).toBeGreaterThan(0);
+    expect(summary.topTools[0]).toMatchObject({ toolName: 'test.echo', calls: 1 });
   });
 });
