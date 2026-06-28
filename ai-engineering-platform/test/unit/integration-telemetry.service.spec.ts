@@ -127,11 +127,15 @@ describe('IntegrationTelemetryService', () => {
     const entry = result.entries[0];
 
     expect(entry?.startTools).toEqual(['platform.health', 'repository.project_profile']);
+    expect(entry?.gateMode).toBe('compact_read_only');
     expect(entry?.targetTokenRange).toEqual({ min: 1000, max: 2000 });
     expect(entry?.excerptMaxBytes).toBe(700);
     expect(entry?.maxExcerptCalls).toBe(2);
     expect(entry?.contextPolicy).toContain(
-      'Start every explicit skill response with a compact Workflow Gate containing Objective, Investigation Plan, Evidence Target, Impact, Approval, Verification, and MCP Usage Plan.',
+      'Start every explicit skill response with a Workflow Gate; use compact_read_only mode for routine summaries.',
+    );
+    expect(entry?.contextPolicy).toContain(
+      'For compact_read_only mode, keep the gate to 4-5 short lines while preserving objective, evidence, impact, approval, verification, and MCP route.',
     );
     expect(entry?.contextPolicy).toContain(
       'For read-only project summaries, set Impact to "No file changes", Approval to "Not required: read-only", and Verification to evidence/tool output plus the telemetry footer.',
@@ -218,6 +222,7 @@ describe('IntegrationTelemetryService', () => {
       'git.impact_hints',
     ]);
     expect(entry?.targetTokenRange).toEqual({ min: 4000, max: 10000 });
+    expect(entry?.gateMode).toBe('expanded_execution');
     expect(entry?.doNotCallTools).toContain('repository.scan');
     expect(entry?.contextPolicy).toContain(
       'Read diffs and impacted files first; avoid unrelated repository context.',

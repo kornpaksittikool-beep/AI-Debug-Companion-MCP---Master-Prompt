@@ -21,7 +21,7 @@ When the user writes `$ai-engineering-platform-auto-use` anywhere in the message
 
 - Always start with MCP unless the MCP server is unavailable.
 - Do not answer from memory alone.
-- Start every response with the compact Workflow Gate before giving the substantive answer.
+- Start every response with the adaptive Workflow Gate before giving the substantive answer.
 - Use the default low-token workflow first.
 - End with the MCP footer.
 
@@ -32,11 +32,24 @@ Examples:
 - `$ai-engineering-platform-auto-use debug this error`
 - `$ai-engineering-platform-auto-use review this code`
 
-## Mandatory Lightweight Planning Gate
+## Adaptive Workflow Gate
 
-Every response after this skill is invoked must begin with a compact `Workflow Gate:` block before the answer, even for read-only requests such as summaries, tech stack questions, project-purpose questions, or token checks.
+Every response after this skill is invoked must begin with a `Workflow Gate:` block before the answer, even for read-only requests such as summaries, tech stack questions, project-purpose questions, or token checks.
 
-The gate must include exactly these fields:
+Choose the smallest gate that satisfies planning-first:
+
+- Use `compact_read_only` gate mode for routine summaries, tech stack checks, project-purpose questions, token checks, database reads, and git reads when no file change is requested.
+- Use `expanded_execution` gate mode for implementation, refactoring, debugging that may modify files, code review, patch execution, security review, and planning that can lead to writes.
+
+For compact read-only requests, the gate must be 4-5 short lines and may combine fields:
+
+- `Workflow Gate: read-only`
+- `Objective: ...`
+- `Evidence: ...`
+- `Impact/Approval: No file changes; Not required: read-only`
+- `Verification/MCP: ...`
+
+For expanded execution requests, the gate must include these fields:
 
 - Objective
 - Investigation Plan
@@ -46,7 +59,7 @@ The gate must include exactly these fields:
 - Verification
 - MCP Usage Plan
 
-Keep the gate short. For routine summaries, keep the full answer near the summary target of ~1k-2k MCP payload tokens and do not expand context just to make the gate longer.
+Keep every gate short. For routine summaries, keep the full answer near the summary target of ~1k-2k MCP payload tokens and do not expand context just to make the gate longer.
 
 For read-only requests:
 
@@ -62,17 +75,27 @@ For write or change requests:
 - Include a verification plan and rollback plan before implementation.
 - Use `planning.create_plan`, `planning.impact_report`, and `planning.approval_gate` when MCP planning state is needed.
 
-Example read-only summary gate:
+Example compact read-only summary gate:
 
 ```text
-Workflow Gate:
+Workflow Gate: read-only
 - Objective: summarize project purpose from repo evidence
-- Investigation Plan: health check, project profile, targeted excerpt only if needed
-- Evidence Target: README/package/profile
-- Impact: No file changes
-- Approval: Not required: read-only
-- Verification: cite MCP evidence and telemetry footer
-- MCP Usage Plan: use MCP with low-token summary route
+- Evidence: health + project_profile, excerpt only if needed
+- Impact/Approval: No file changes; Not required: read-only
+- Verification/MCP: cite evidence and telemetry footer; use low-token summary route
+```
+
+Example expanded execution gate:
+
+```text
+Workflow Gate: execution
+- Objective: implement the approved change
+- Investigation Plan: inspect target files and current tests
+- Evidence Target: target modules, tests, docs, git status
+- Impact: expected files and regression risk
+- Approval: required before edits unless already approved in the same request
+- Verification: build, lint, tests, smoke, rollback where relevant
+- MCP Usage Plan: use planning/impact tools and focused repository evidence
 ```
 
 ## Intent Routing
@@ -103,11 +126,11 @@ Then choose the closest question profile before expanding context:
 
 | Question type                        |                  Target MCP payload | Preferred route                                                                                                                                              |
 | ------------------------------------ | ----------------------------------: | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Summary / project purpose            |                       ~1k-2k tokens | `platform.health`, `repository.project_profile` with `mode: "summary"`, then README/package excerpts only if needed; skip `platform.tool_summary` by default |
-| Tech stack / architecture quick view |                   ~1.5k-2.5k tokens | manifests/config excerpts with `maxBytes` <= 900, `repository.search_symbols`, graph tools only for explicit dependency-flow questions                       |
-| General debugging                    |                       ~3k-8k tokens | `investigation.create`, exact error search, symbol/file search, then full context only for narrowed failing files                                            |
-| Code review                          | diff-scoped, usually ~4k-10k tokens | changed files, impacted symbols, related tests, `git.impact_hints`; avoid unrelated repository reads                                                         |
-| Planning                             |                       ~2k-6k tokens | roadmap/TODO/phase-report excerpts with `maxBytes` <= 1000 plus `planning.impact_report` after target files are known                                        |
+| Summary / project purpose            |                       ~1k-2k tokens | compact read-only gate; `platform.health`, `repository.project_profile` with `mode: "summary"`, then README/package excerpts only if needed; skip `platform.tool_summary` by default |
+| Tech stack / architecture quick view |                   ~1.5k-2.5k tokens | compact read-only gate unless changes are requested; manifests/config excerpts with `maxBytes` <= 900, `repository.search_symbols`, graph tools only for explicit dependency-flow questions |
+| General debugging                    |                       ~3k-8k tokens | expanded execution gate if fixes may follow; `investigation.create`, exact error search, symbol/file search, then full context only for narrowed failing files |
+| Code review                          | diff-scoped, usually ~4k-10k tokens | expanded execution gate; changed files, impacted symbols, related tests, `git.impact_hints`; avoid unrelated repository reads |
+| Planning                             |                       ~2k-6k tokens | expanded execution gate; roadmap/TODO/phase-report excerpts with `maxBytes` <= 1000 plus `planning.impact_report` after target files are known |
 
 For normal project summaries and follow-up questions, continue with only focused discovery:
 

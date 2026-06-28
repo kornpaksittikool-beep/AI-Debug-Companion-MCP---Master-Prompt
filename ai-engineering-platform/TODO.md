@@ -127,3 +127,6 @@
 | Add mandatory lightweight Workflow Gate to explicit Codex skill responses                                            | Phase 35 | Completed |
 | Add read-only gate wording for summaries, tech stack, project-purpose, and token checks                              | Phase 35 | Completed |
 | Add project-summary workflow and token-strategy gate policy coverage without routine `platform.tool_summary` startup | Phase 35 | Completed |
+| Add adaptive compact read-only and expanded execution gate modes                                                     | Phase 36 | Completed |
+| Keep routine summary gates to 4-5 short lines without dropping planning evidence                                     | Phase 36 | Completed |
+| Add unit and smoke coverage for `compact_read_only` summary gate routing                                             | Phase 36 | Completed |

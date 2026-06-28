@@ -74,6 +74,7 @@ export interface StrategyRecommendationOptions {
 
 export interface StrategyQuestionProfile {
   readonly questionType: TokenQuestionType;
+  readonly gateMode: 'compact_read_only' | 'expanded_execution';
   readonly targetTokenRange: {
     readonly min: number;
     readonly max: number;

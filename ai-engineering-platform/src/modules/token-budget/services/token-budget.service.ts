@@ -26,6 +26,7 @@ const PRIORITY_WEIGHT: Record<ContextPriority, number> = {
 const QUESTION_PROFILES: Record<TokenQuestionType, StrategyQuestionProfile> = {
   project_summary: {
     questionType: 'project_summary',
+    gateMode: 'compact_read_only',
     targetTokenRange: { min: 1000, max: 2000 },
     excerptMaxBytes: 700,
     maxExcerptCalls: 2,
@@ -38,7 +39,8 @@ const QUESTION_PROFILES: Record<TokenQuestionType, StrategyQuestionProfile> = {
       'repository.read_file_context',
     ],
     contextPolicy: [
-      'Start every explicit skill response with a compact Workflow Gate containing Objective, Investigation Plan, Evidence Target, Impact, Approval, Verification, and MCP Usage Plan.',
+      'Start every explicit skill response with a Workflow Gate; use compact_read_only mode for routine summaries.',
+      'For compact_read_only mode, keep the gate to 4-5 short lines while preserving objective, evidence, impact, approval, verification, and MCP route.',
       'For read-only project summaries, set Impact to "No file changes", Approval to "Not required: read-only", and Verification to evidence/tool output plus the telemetry footer.',
       'Use repository.project_profile with mode=summary as the primary summary artifact.',
       'Skip platform.tool_summary for explicit project summaries unless tool availability is unclear.',
@@ -65,6 +67,7 @@ const QUESTION_PROFILES: Record<TokenQuestionType, StrategyQuestionProfile> = {
   },
   tech_stack_quick_view: {
     questionType: 'tech_stack_quick_view',
+    gateMode: 'compact_read_only',
     targetTokenRange: { min: 1500, max: 2500 },
     excerptMaxBytes: 900,
     maxExcerptCalls: 3,
@@ -89,6 +92,7 @@ const QUESTION_PROFILES: Record<TokenQuestionType, StrategyQuestionProfile> = {
   },
   debugging: {
     questionType: 'debugging',
+    gateMode: 'expanded_execution',
     targetTokenRange: { min: 3000, max: 8000 },
     excerptMaxBytes: 1200,
     maxExcerptCalls: 5,
@@ -119,6 +123,7 @@ const QUESTION_PROFILES: Record<TokenQuestionType, StrategyQuestionProfile> = {
   },
   code_review: {
     questionType: 'code_review',
+    gateMode: 'expanded_execution',
     targetTokenRange: { min: 4000, max: 10000 },
     excerptMaxBytes: 1200,
     maxExcerptCalls: 6,
@@ -148,6 +153,7 @@ const QUESTION_PROFILES: Record<TokenQuestionType, StrategyQuestionProfile> = {
   },
   planning: {
     questionType: 'planning',
+    gateMode: 'expanded_execution',
     targetTokenRange: { min: 2000, max: 6000 },
     excerptMaxBytes: 1000,
     maxExcerptCalls: 4,
@@ -178,6 +184,7 @@ const QUESTION_PROFILES: Record<TokenQuestionType, StrategyQuestionProfile> = {
   },
   general: {
     questionType: 'general',
+    gateMode: 'compact_read_only',
     targetTokenRange: { min: 1500, max: 4000 },
     excerptMaxBytes: 900,
     maxExcerptCalls: 3,
@@ -517,6 +524,7 @@ export class TokenBudgetService {
     const base = [
       'Verify MCP health before gathering broad context.',
       `Use the ${questionProfile.questionType} profile target of ${questionProfile.targetTokenRange.min}-${questionProfile.targetTokenRange.max} estimated MCP payload tokens.`,
+      `Use ${questionProfile.gateMode} Workflow Gate formatting for this question profile.`,
       `Limit repository.read_file_excerpt to maxBytes <= ${questionProfile.excerptMaxBytes} and no more than ${questionProfile.maxExcerptCalls} call(s) for this question.`,
       ...questionProfile.contextPolicy,
       `Do not call these tools in this profile unless the user explicitly changes scope: ${questionProfile.doNotCallTools.join(', ')}.`,

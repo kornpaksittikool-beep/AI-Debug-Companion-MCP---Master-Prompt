@@ -119,6 +119,9 @@ The system must be developed iteratively. Each phase must produce usable, verifi
 | M35: Mandatory Lightweight Planning Gate     | Phase 35 | Require every explicit Codex skill response to start with a compact Workflow Gate                                               | Phase 34 startup routing                         | High     | Low                  | Completed |
 | M35: Mandatory Lightweight Planning Gate     | Phase 35 | Add read-only gate wording for no-impact summaries and token checks                                                             | Phase 35 skill policy                            | High     | Low                  | Completed |
 | M35: Mandatory Lightweight Planning Gate     | Phase 35 | Add project-summary workflow and token-strategy coverage for planning gate policy without reintroducing `platform.tool_summary` | Phase 35 workflow policy                         | High     | Low                  | Completed |
+| M36: Adaptive Gate Compactness               | Phase 36 | Add compact read-only and expanded execution gate modes to skill, token strategy, and workflow index                            | Phase 35 mandatory gate policy                   | High     | Low                  | Completed |
+| M36: Adaptive Gate Compactness               | Phase 36 | Keep routine summary gates to 4-5 short lines while preserving planning-first evidence and approval semantics                   | Phase 36 gate modes                              | High     | Low                  | Completed |
+| M36: Adaptive Gate Compactness               | Phase 36 | Add smoke and unit coverage for `compact_read_only` summary routing                                                             | Phase 36 gate modes                              | High     | Low                  | Completed |
 
 ## Phase Gate Rules
 
@@ -133,4 +136,4 @@ Each phase must pass the following checks before the next phase begins:
 
 ## Current Phase
 
-Phase 35 is completed. Future phases must be planned and approved before implementation.
+Phase 36 is completed. Future phases must be planned and approved before implementation.

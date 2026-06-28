@@ -108,6 +108,7 @@ export type WorkflowTaskType =
 export interface WorkflowIndexEntry {
   readonly taskType: WorkflowTaskType;
   readonly description: string;
+  readonly gateMode: 'compact_read_only' | 'expanded_execution';
   readonly startTools: readonly string[];
   readonly evidenceTools: readonly string[];
   readonly planningTools: readonly string[];

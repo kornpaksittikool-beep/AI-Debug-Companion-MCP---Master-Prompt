@@ -59,7 +59,7 @@ export const PLATFORM_METADATA_TOOL_DEFINITION: ToolDefinition = {
         platform: {
           name: 'ai-engineering-platform',
           version: '0.1.0',
-          phase: 'phase-35-mandatory-lightweight-planning-gate',
+          phase: 'phase-36-adaptive-gate-compactness',
         },
         tools: [],
       },
@@ -70,13 +70,13 @@ export const PLATFORM_METADATA_TOOL_DEFINITION: ToolDefinition = {
         platform: {
           name: 'ai-engineering-platform',
           version: '0.1.0',
-          phase: 'phase-35-mandatory-lightweight-planning-gate',
+          phase: 'phase-36-adaptive-gate-compactness',
         },
         toolSummary: {
           platform: {
             name: 'ai-engineering-platform',
             version: '0.1.0',
-            phase: 'phase-35-mandatory-lightweight-planning-gate',
+            phase: 'phase-36-adaptive-gate-compactness',
           },
           totalTools: 0,
           modules: [],

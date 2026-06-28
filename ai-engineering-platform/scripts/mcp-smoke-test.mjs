@@ -205,6 +205,7 @@ try {
     tokenStrategyExcerptMaxBytes: tokenStrategy.questionProfile?.excerptMaxBytes,
     tokenStrategyDoNotCallTools: tokenStrategy.doNotCallTools,
     summaryStrategyQuestionType: summaryTokenStrategy.questionProfile?.questionType,
+    summaryStrategyGateMode: summaryTokenStrategy.questionProfile?.gateMode,
     summaryStrategyPreferredTools: summaryTokenStrategy.preferredTools,
     summaryStrategyDoNotCallTools: summaryTokenStrategy.doNotCallTools,
     integrationReady: integrationReadiness.ready,
@@ -212,6 +213,7 @@ try {
     workflowIndexEntries: workflowIndex.entries.length,
     summaryWorkflowDoNotCallTools: summaryWorkflowIndex.entries[0]?.doNotCallTools ?? [],
     summaryWorkflowEvidenceTools: summaryWorkflowIndex.entries[0]?.evidenceTools ?? [],
+    summaryWorkflowGateMode: summaryWorkflowIndex.entries[0]?.gateMode,
     telemetryRecordsWritten: flushTelemetry.recordsWritten,
     autoTelemetryToolCalls: autoTelemetry.toolCalls,
     autoTelemetryEstimatedTokens: autoTelemetry.estimatedTotalTokens,
@@ -221,7 +223,7 @@ try {
   if (
     summary.toolCount < 84 ||
     summary.healthStatus !== 'ok' ||
-    summary.platformPhase !== 'phase-35-mandatory-lightweight-planning-gate' ||
+    summary.platformPhase !== 'phase-36-adaptive-gate-compactness' ||
     !summary.metadataCompact ||
     summary.toolSummaryModules < 1 ||
     !summary.projectProfileSummary ||
@@ -251,6 +253,7 @@ try {
     summary.tokenStrategyExcerptMaxBytes !== 900 ||
     !summary.tokenStrategyDoNotCallTools.includes('repository.read_file_context') ||
     summary.summaryStrategyQuestionType !== 'project_summary' ||
+    summary.summaryStrategyGateMode !== 'compact_read_only' ||
     summary.summaryStrategyPreferredTools.includes('platform.tool_summary') ||
     summary.summaryStrategyPreferredTools.includes('repository.search_files') ||
     summary.summaryStrategyPreferredTools.includes('repository.search_symbols') ||
@@ -260,6 +263,7 @@ try {
     ) ||
     !summary.summaryStrategyDoNotCallTools.includes('repository.search_symbols') ||
     summary.summaryWorkflowEvidenceTools.includes('platform.tool_summary') ||
+    summary.summaryWorkflowGateMode !== 'compact_read_only' ||
     summary.summaryWorkflowEvidenceTools.includes('repository.search_files') ||
     summary.summaryWorkflowEvidenceTools.includes('repository.search_symbols') ||
     !summary.summaryWorkflowDoNotCallTools.some((tool) => tool.includes('platform.tool_summary')) ||

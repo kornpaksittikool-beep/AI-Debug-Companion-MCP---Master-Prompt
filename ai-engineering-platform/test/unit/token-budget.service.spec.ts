@@ -95,6 +95,7 @@ describe('TokenBudgetService', () => {
 
     expect(result.questionProfile).toMatchObject({
       questionType: 'project_summary',
+      gateMode: 'compact_read_only',
       targetTokenRange: { min: 1000, max: 2000 },
       excerptMaxBytes: 700,
       maxExcerptCalls: 2,
@@ -122,7 +123,10 @@ describe('TokenBudgetService', () => {
     expect(result.preferredTools).not.toContain('repository.search_files');
     expect(result.preferredTools).not.toContain('repository.search_symbols');
     expect(result.questionProfile.contextPolicy).toContain(
-      'Start every explicit skill response with a compact Workflow Gate containing Objective, Investigation Plan, Evidence Target, Impact, Approval, Verification, and MCP Usage Plan.',
+      'Start every explicit skill response with a Workflow Gate; use compact_read_only mode for routine summaries.',
+    );
+    expect(result.questionProfile.contextPolicy).toContain(
+      'For compact_read_only mode, keep the gate to 4-5 short lines while preserving objective, evidence, impact, approval, verification, and MCP route.',
     );
     expect(result.questionProfile.contextPolicy).toContain(
       'For read-only project summaries, set Impact to "No file changes", Approval to "Not required: read-only", and Verification to evidence/tool output plus the telemetry footer.',
@@ -166,6 +170,8 @@ describe('TokenBudgetService', () => {
     expect(techStack.questionProfile.targetTokenRange).toEqual({ min: 1500, max: 2500 });
     expect(techStack.preferredTools).toEqual(['platform.health', 'repository.project_profile']);
     expect(review.questionProfile.questionType).toBe('code_review');
+    expect(techStack.questionProfile.gateMode).toBe('compact_read_only');
+    expect(review.questionProfile.gateMode).toBe('expanded_execution');
     expect(review.doNotCallTools).toContain('repository.scan');
     expect(review.questionProfile.contextPolicy).toContain(
       'Read only diffs, changed files, impacted symbols, and directly related tests.',
@@ -178,6 +184,7 @@ describe('TokenBudgetService', () => {
     });
 
     expect(result.questionProfile.questionType).toBe('planning');
+    expect(result.questionProfile.gateMode).toBe('expanded_execution');
     expect(result.questionProfile.targetTokenRange).toEqual({ min: 2000, max: 6000 });
     expect(result.recommendedFlow).toContain(
       'Use roadmap, TODO, phase-report excerpts, and target file excerpts instead of full historical reads.',

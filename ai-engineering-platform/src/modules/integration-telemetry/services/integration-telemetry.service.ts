@@ -36,6 +36,7 @@ const WORKFLOW_INDEX: readonly WorkflowIndexEntry[] = [
     taskType: 'project_summary',
     description:
       'Summarize project purpose, stack, modules, and key files with a compact low-token profile route.',
+    gateMode: 'compact_read_only',
     startTools: ['platform.health', 'repository.project_profile'],
     evidenceTools: ['repository.read_file_excerpt', 'git.recent_changes'],
     planningTools: ['token_budget.estimate'],
@@ -46,7 +47,8 @@ const WORKFLOW_INDEX: readonly WorkflowIndexEntry[] = [
     excerptMaxBytes: 700,
     maxExcerptCalls: 2,
     contextPolicy: [
-      'Start every explicit skill response with a compact Workflow Gate containing Objective, Investigation Plan, Evidence Target, Impact, Approval, Verification, and MCP Usage Plan.',
+      'Start every explicit skill response with a Workflow Gate; use compact_read_only mode for routine summaries.',
+      'For compact_read_only mode, keep the gate to 4-5 short lines while preserving objective, evidence, impact, approval, verification, and MCP route.',
       'For read-only project summaries, set Impact to "No file changes", Approval to "Not required: read-only", and Verification to evidence/tool output plus the telemetry footer.',
       'Use repository.project_profile with mode=summary as the main evidence artifact.',
       'Skip platform.tool_summary for explicit project summaries unless tool availability is unclear.',
@@ -87,6 +89,7 @@ const WORKFLOW_INDEX: readonly WorkflowIndexEntry[] = [
     taskType: 'tech_stack_quick_view',
     description:
       'Identify stack, package manager, frameworks, entry points, and architecture shape with compact evidence.',
+    gateMode: 'compact_read_only',
     startTools: ['platform.health', 'platform.tool_summary', 'repository.project_profile'],
     evidenceTools: [
       'repository.read_file_excerpt',
@@ -128,6 +131,7 @@ const WORKFLOW_INDEX: readonly WorkflowIndexEntry[] = [
   {
     taskType: 'bug_investigation',
     description: 'Investigate a defect with traceable evidence before proposing fixes.',
+    gateMode: 'expanded_execution',
     startTools: ['platform.health', 'platform.tool_summary', 'investigation.create'],
     evidenceTools: [
       'repository.search_files',
@@ -176,6 +180,7 @@ const WORKFLOW_INDEX: readonly WorkflowIndexEntry[] = [
     taskType: 'code_review',
     description:
       'Review only changed files, impacted symbols, and focused risk evidence before summarizing findings.',
+    gateMode: 'expanded_execution',
     startTools: ['platform.health', 'platform.tool_summary', 'git.impact_hints'],
     evidenceTools: [
       'git.recent_changes',
@@ -215,6 +220,7 @@ const WORKFLOW_INDEX: readonly WorkflowIndexEntry[] = [
   {
     taskType: 'architecture_review',
     description: 'Review module boundaries, dependency flow, and phase architecture decisions.',
+    gateMode: 'expanded_execution',
     startTools: ['platform.health', 'platform.tool_summary', 'repository.overview'],
     evidenceTools: [
       'repository.search_files',
@@ -246,6 +252,7 @@ const WORKFLOW_INDEX: readonly WorkflowIndexEntry[] = [
   {
     taskType: 'phase_planning',
     description: 'Plan the next iterative phase from roadmap, TODO, and completed phase reports.',
+    gateMode: 'expanded_execution',
     startTools: [
       'platform.health',
       'platform.tool_summary',
@@ -278,6 +285,7 @@ const WORKFLOW_INDEX: readonly WorkflowIndexEntry[] = [
     taskType: 'planning',
     description:
       'Plan features or refactors with roadmap, TODO, phase reports, and narrow impact evidence.',
+    gateMode: 'expanded_execution',
     startTools: ['platform.health', 'platform.tool_summary', 'integration.workflow_index'],
     evidenceTools: [
       'repository.search_files',
@@ -313,6 +321,7 @@ const WORKFLOW_INDEX: readonly WorkflowIndexEntry[] = [
   {
     taskType: 'patch_execution',
     description: 'Create, apply, verify, and roll back approved deterministic patches.',
+    gateMode: 'expanded_execution',
     startTools: ['planning.summarize_plan', 'planning.approval_gate'],
     evidenceTools: ['repository.read_file_context', 'git.impact_hints'],
     planningTools: ['patch.create_proposal', 'patch.rollback_plan'],
@@ -333,6 +342,7 @@ const WORKFLOW_INDEX: readonly WorkflowIndexEntry[] = [
   {
     taskType: 'token_optimization',
     description: 'Reduce context usage with MCP-first evidence, estimates, and compression.',
+    gateMode: 'expanded_execution',
     startTools: ['platform.health', 'token_budget.recommend_strategy'],
     evidenceTools: [
       'token_budget.estimate',
@@ -364,6 +374,7 @@ const WORKFLOW_INDEX: readonly WorkflowIndexEntry[] = [
     taskType: 'plugin_workflow',
     description:
       'Validate, stage, and inspect local or remote plugins without executing untrusted code.',
+    gateMode: 'expanded_execution',
     startTools: ['plugin.catalog', 'plugin.validate_manifest'],
     evidenceTools: [
       'plugin.resolve_compatibility',
@@ -388,6 +399,7 @@ const WORKFLOW_INDEX: readonly WorkflowIndexEntry[] = [
   {
     taskType: 'database_analysis',
     description: 'Inspect database capabilities and schema through read-only tools.',
+    gateMode: 'compact_read_only',
     startTools: ['database.supported_dialects', 'database.connection_profile'],
     evidenceTools: ['database.schema', 'database.relations', 'database.query_preview'],
     planningTools: ['planning.impact_report'],
@@ -412,6 +424,7 @@ const WORKFLOW_INDEX: readonly WorkflowIndexEntry[] = [
   {
     taskType: 'git_analysis',
     description: 'Use read-only git history to understand risk, ownership, and change frequency.',
+    gateMode: 'compact_read_only',
     startTools: ['git.recent_changes'],
     evidenceTools: ['git.blame', 'git.find_commit_by_file', 'git.impact_hints'],
     planningTools: ['planning.impact_report'],
