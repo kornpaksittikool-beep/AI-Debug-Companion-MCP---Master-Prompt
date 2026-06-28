@@ -122,6 +122,12 @@ describe('TokenBudgetService', () => {
     expect(result.questionProfile.contextPolicy).toContain(
       'Do not run repository.search_symbols for routine summaries; use file search and excerpts instead.',
     );
+    expect(result.questionProfile.contextPolicy).toContain(
+      'Read 1 repository.read_file_excerpt result when possible, and at most 2 for README, manifests, or entry points.',
+    );
+    expect(result.questionProfile.contextPolicy).toContain(
+      'Pass purpose=summary and maxBytes <= 700 for summary excerpts.',
+    );
   });
 
   it('supports tech stack quick view and code review profiles', () => {

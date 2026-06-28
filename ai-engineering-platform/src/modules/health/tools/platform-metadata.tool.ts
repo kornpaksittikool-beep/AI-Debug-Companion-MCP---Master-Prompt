@@ -58,7 +58,7 @@ export const PLATFORM_METADATA_TOOL_DEFINITION: ToolDefinition = {
         platform: {
           name: 'ai-engineering-platform',
           version: '0.1.0',
-          phase: 'phase-31-summary-project-profile-mode',
+          phase: 'phase-32-summary-excerpt-byte-caps',
         },
         tools: [],
       },
@@ -69,13 +69,13 @@ export const PLATFORM_METADATA_TOOL_DEFINITION: ToolDefinition = {
         platform: {
           name: 'ai-engineering-platform',
           version: '0.1.0',
-          phase: 'phase-31-summary-project-profile-mode',
+          phase: 'phase-32-summary-excerpt-byte-caps',
         },
         toolSummary: {
           platform: {
             name: 'ai-engineering-platform',
             version: '0.1.0',
-            phase: 'phase-31-summary-project-profile-mode',
+            phase: 'phase-32-summary-excerpt-byte-caps',
           },
           totalTools: 0,
           modules: [],

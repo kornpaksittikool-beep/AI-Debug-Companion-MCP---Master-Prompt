@@ -143,6 +143,12 @@ describe('IntegrationTelemetryService', () => {
     expect(entry?.contextPolicy).toContain(
       'Do not run repository.search_symbols for routine summaries; use file search and excerpts instead.',
     );
+    expect(entry?.contextPolicy).toContain(
+      'Read 1 repository.read_file_excerpt result when possible, and at most 2 for README, package manifests, or entry points.',
+    );
+    expect(entry?.contextPolicy).toContain(
+      'Pass purpose=summary and maxBytes <= 700 for summary excerpts.',
+    );
     expect(entry?.doNotCallTools).toEqual(
       expect.arrayContaining([
         'repository.import_graph',

@@ -2,7 +2,7 @@
 
 AI Engineering Platform is a production-oriented MCP foundation for evidence-driven software engineering workflows.
 
-Phase 31 provides the Core MCP Framework, Investigation Engine, bounded Repository Intelligence, summary project profile mode, compact project profile routing, low-token file excerpts, question-type token profiles, summary symbol-search guardrails, summary search result caps, TypeScript/JavaScript symbol intelligence, bounded import and call graphs, persistent repository graph indexing, cross-repository search, read-only SQLite Database Intelligence, PostgreSQL/MySQL connection profile validation, read-only Git Intelligence, Planning and Impact Engine, patch proposal workflow, deterministic approved patch application, rollback execution, allow-listed verification execution, versioned Project Memory, cache foundation, cache invalidation, read-only security audits, plugin marketplace readiness, semantic plugin compatibility resolution, approved local plugin state loading, remote plugin staging metadata, provider-neutral AI routing contracts, token-aware context budgeting tools, client integration telemetry, durable telemetry flush/load, workflow routing index, automatic MCP execution token telemetry, compact metadata routing, token-aware MCP routing, and an explicit Codex skill command for MCP-assisted work. It does not include automatic unapproved patch application, dynamic remote plugin installation, external plugin code execution, external database network execution, AI API execution, exact provider tokenizer integration, exact total Codex billing telemetry without host usage metadata, distributed telemetry storage, distributed cache, vector memory, cloud sync, remote Git hosting integration, automatic skill activation for ordinary prompts, or guaranteed host-level forced tool use.
+Phase 32 provides the Core MCP Framework, Investigation Engine, bounded Repository Intelligence, summary project profile mode, compact project profile routing, summary excerpt byte caps, low-token file excerpts, question-type token profiles, summary symbol-search guardrails, summary search result caps, TypeScript/JavaScript symbol intelligence, bounded import and call graphs, persistent repository graph indexing, cross-repository search, read-only SQLite Database Intelligence, PostgreSQL/MySQL connection profile validation, read-only Git Intelligence, Planning and Impact Engine, patch proposal workflow, deterministic approved patch application, rollback execution, allow-listed verification execution, versioned Project Memory, cache foundation, cache invalidation, read-only security audits, plugin marketplace readiness, semantic plugin compatibility resolution, approved local plugin state loading, remote plugin staging metadata, provider-neutral AI routing contracts, token-aware context budgeting tools, client integration telemetry, durable telemetry flush/load, workflow routing index, automatic MCP execution token telemetry, compact metadata routing, token-aware MCP routing, and an explicit Codex skill command for MCP-assisted work. It does not include automatic unapproved patch application, dynamic remote plugin installation, external plugin code execution, external database network execution, AI API execution, exact provider tokenizer integration, exact total Codex billing telemetry without host usage metadata, distributed telemetry storage, distributed cache, vector memory, cloud sync, remote Git hosting integration, automatic skill activation for ordinary prompts, or guaranteed host-level forced tool use.
 
 ## Requirements
 
@@ -56,7 +56,7 @@ The Phase 1 server uses stdio transport through the official Model Context Proto
 - Safe bounded repository overview.
 - Safe bounded repository scan.
 - File search by path, extension, and text preview.
-- Compact file excerpts for low-token summaries.
+- Compact file excerpts for low-token summaries, with summary default capped at 700 bytes.
 - Bounded file context reads.
 - Bounded module context reads.
 - TypeScript and JavaScript AST-backed symbol search.
@@ -185,7 +185,7 @@ Reads bounded content for one file inside the repository root.
 
 ### `repository.read_file_excerpt`
 
-Reads a compact excerpt for one file, optimized for project summaries and routing. Use this before `repository.read_file_context` when only a short product or architecture summary is needed.
+Reads a compact excerpt for one file, optimized for project summaries and routing. `purpose: "summary"` defaults to `maxBytes: 700`; routing defaults to a larger bounded excerpt, and debug/review excerpts default larger still. Use this before `repository.read_file_context` when only a short product or architecture summary is needed.
 
 ### `repository.read_module_context`
 
@@ -425,7 +425,7 @@ Compresses candidate context items to fit an approximate token budget while pres
 
 ### `token_budget.recommend_strategy`
 
-Recommends a token-aware MCP evidence gathering flow for a repository task. It accepts an optional `questionType` (`project_summary`, `tech_stack_quick_view`, `debugging`, `code_review`, `planning`, or `general`) and returns a target token range, excerpt `maxBytes`, excerpt call limits, start/evidence/escalation tools, and hard `doNotCallTools` guidance. For `project_summary`, symbol search is excluded from the preferred route and appears in `doNotCallTools` because broad symbol output can exceed the summary token target.
+Recommends a token-aware MCP evidence gathering flow for a repository task. It accepts an optional `questionType` (`project_summary`, `tech_stack_quick_view`, `debugging`, `code_review`, `planning`, or `general`) and returns a target token range, excerpt `maxBytes`, excerpt call limits, start/evidence/escalation tools, and hard `doNotCallTools` guidance. For `project_summary`, symbol search is excluded from the preferred route and appears in `doNotCallTools` because broad symbol output can exceed the summary token target. Summary routing should use `repository.read_file_excerpt` with `purpose=summary`, `maxBytes <= 700`, and no more than 1-2 files.
 
 ### `integration.start_session`
 

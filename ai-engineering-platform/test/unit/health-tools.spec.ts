@@ -27,7 +27,7 @@ describe('Health tools', () => {
 
     expect(output.platform).toBeDefined();
     expect(output.platform).toMatchObject({
-      phase: 'phase-31-summary-project-profile-mode',
+      phase: 'phase-32-summary-excerpt-byte-caps',
     });
     expect(output.tools).toEqual([]);
   });

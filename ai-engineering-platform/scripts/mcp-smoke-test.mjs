@@ -186,6 +186,7 @@ try {
     summarySearchProfile: summaryFileSearch.tokenPolicy?.profile,
     summarySearchHasPreview: summaryFileSearch.matches.some((match) => Boolean(match.textPreview)),
     fileExcerptProfile: fileExcerpt.tokenPolicy?.profile,
+    fileExcerptMaxBytes: fileExcerpt.maxBytes,
     exactCodexBillingAvailable: projectProfile.tokenPolicy?.exactCodexBillingAvailable === true,
     importResolved: importGraph.edges.some((edge) => edge.resolvedRelativePath === 'src/helper.ts'),
     planStatus: plan.status,
@@ -220,7 +221,7 @@ try {
   if (
     summary.toolCount < 84 ||
     summary.healthStatus !== 'ok' ||
-    summary.platformPhase !== 'phase-31-summary-project-profile-mode' ||
+    summary.platformPhase !== 'phase-32-summary-excerpt-byte-caps' ||
     !summary.metadataCompact ||
     summary.toolSummaryModules < 1 ||
     !summary.projectProfileSummary ||
@@ -232,6 +233,7 @@ try {
     summary.summarySearchReturnedMatches > 8 ||
     summary.summarySearchHasPreview ||
     summary.fileExcerptProfile !== 'excerpt' ||
+    summary.fileExcerptMaxBytes !== 700 ||
     summary.exactCodexBillingAvailable ||
     !summary.importResolved ||
     summary.approvalStatus !== 'approved' ||

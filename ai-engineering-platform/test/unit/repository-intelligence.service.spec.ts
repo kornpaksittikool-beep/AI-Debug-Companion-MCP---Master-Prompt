@@ -146,9 +146,36 @@ describe('RepositoryIntelligenceService', () => {
     });
 
     expect(excerpt.relativePath).toBe('LONG.md');
-    expect(excerpt.excerpt.length).toBeLessThanOrEqual(1200);
+    expect(excerpt.maxBytes).toBe(700);
+    expect(excerpt.excerpt.length).toBeLessThanOrEqual(700);
     expect(excerpt.truncated).toBe(true);
     expect(excerpt.tokenPolicy.escalationTool).toBe('repository.read_file_context');
+  });
+
+  it('keeps routing excerpts larger and debug/review excerpts larger than summary by default', async () => {
+    const root = await createFixture();
+    await fs.writeFile(path.join(root, 'LONG.md'), '# Long\n' + 'x'.repeat(3000));
+    const service = createService();
+
+    const routing = await service.readFileExcerpt({
+      rootPath: root,
+      filePath: 'LONG.md',
+      purpose: 'routing',
+    });
+    const debug = await service.readFileExcerpt({
+      rootPath: root,
+      filePath: 'LONG.md',
+      purpose: 'debug',
+    });
+    const review = await service.readFileExcerpt({
+      rootPath: root,
+      filePath: 'LONG.md',
+      purpose: 'review',
+    });
+
+    expect(routing.maxBytes).toBe(1200);
+    expect(debug.maxBytes).toBe(2400);
+    expect(review.maxBytes).toBe(2400);
   });
 
   it('reads bounded module context', async () => {

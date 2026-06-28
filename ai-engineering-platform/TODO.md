@@ -115,3 +115,6 @@
 | Add summary mode to repository.project_profile | Phase 31 | Completed |
 | Route summaries through project_profile mode=summary | Phase 31 | Completed |
 | Add smoke coverage for summary project profile payload shape | Phase 31 | Completed |
+| Cap summary read_file_excerpt default maxBytes at 700 | Phase 32 | Completed |
+| Update summary strategy and workflow excerpt guidance | Phase 32 | Completed |
+| Add smoke and unit coverage for summary excerpt caps | Phase 32 | Completed |

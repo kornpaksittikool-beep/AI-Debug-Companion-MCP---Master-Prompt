@@ -107,6 +107,9 @@ The system must be developed iteratively. Each phase must produce usable, verifi
 | M31: Summary Project Profile Mode | Phase 31 | Add `repository.project_profile` summary mode with smaller key-file, manifest, entrypoint, extension, and largest-file payloads | Phase 30 search caps | High | Medium | Completed |
 | M31: Summary Project Profile Mode | Phase 31 | Route project-summary workflows and Codex skill guidance through `mode=summary` | Phase 31 profile mode | High | Low | Completed |
 | M31: Summary Project Profile Mode | Phase 31 | Add smoke coverage for summary profile mode and capped profile payload shape | Phase 31 routing update | High | Low | Completed |
+| M32: Summary Excerpt Byte Caps | Phase 32 | Cap `repository.read_file_excerpt` summary defaults at 700 bytes while keeping routing/debug/review larger | Phase 31 profile mode | High | Medium | Completed |
+| M32: Summary Excerpt Byte Caps | Phase 32 | Route summary strategy and workflow guidance through `purpose=summary`, `maxBytes<=700`, and no more than 1-2 files | Phase 32 excerpt caps | High | Low | Completed |
+| M32: Summary Excerpt Byte Caps | Phase 32 | Add smoke and unit coverage for summary excerpt byte caps | Phase 32 routing update | High | Low | Completed |
 
 ## Phase Gate Rules
 
@@ -121,4 +124,4 @@ Each phase must pass the following checks before the next phase begins:
 
 ## Current Phase
 
-Phase 31 is completed. Future phases must be planned and approved before implementation.
+Phase 32 is completed. Future phases must be planned and approved before implementation.

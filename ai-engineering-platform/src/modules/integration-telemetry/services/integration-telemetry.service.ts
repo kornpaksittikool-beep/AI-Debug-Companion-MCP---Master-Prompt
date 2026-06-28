@@ -53,8 +53,8 @@ const WORKFLOW_INDEX: readonly WorkflowIndexEntry[] = [
       'Use repository.project_profile with mode=summary as the main evidence artifact.',
       'Call repository.search_files with mode=summary and maxMatches<=8 for routine summaries.',
       'Do not run repository.search_symbols for routine summaries; use file search and excerpts instead.',
-      'Read at most 2 repository.read_file_excerpt results for README, package manifests, or entry points.',
-      'Pass maxBytes between 500 and 700 for summary excerpts.',
+      'Read 1 repository.read_file_excerpt result when possible, and at most 2 for README, package manifests, or entry points.',
+      'Pass purpose=summary and maxBytes <= 700 for summary excerpts.',
     ],
     doNotCallTools: [
       'repository.import_graph',

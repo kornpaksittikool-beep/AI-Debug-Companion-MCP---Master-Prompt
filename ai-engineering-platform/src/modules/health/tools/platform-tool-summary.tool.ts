@@ -53,7 +53,7 @@ export const PLATFORM_TOOL_SUMMARY_TOOL_DEFINITION: ToolDefinition = {
         platform: {
           name: 'ai-engineering-platform',
           version: '0.1.0',
-          phase: 'phase-31-summary-project-profile-mode',
+          phase: 'phase-32-summary-excerpt-byte-caps',
         },
         totalTools: 0,
         modules: [],

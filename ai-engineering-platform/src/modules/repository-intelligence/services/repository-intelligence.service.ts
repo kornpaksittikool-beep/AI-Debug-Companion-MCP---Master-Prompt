@@ -19,7 +19,8 @@ import { RepositoryScannerService } from './repository-scanner.service.js';
 import { RepositorySafetyService } from './repository-safety.service.js';
 
 const DEFAULT_CONTEXT_MAX_BYTES = 16 * 1024;
-const DEFAULT_EXCERPT_MAX_BYTES = 1200;
+const SUMMARY_EXCERPT_MAX_BYTES = 700;
+const ROUTING_EXCERPT_MAX_BYTES = 1200;
 const DEBUG_EXCERPT_MAX_BYTES = 2400;
 const DEFAULT_MODULE_MAX_FILES = 25;
 const DEFAULT_PROFILE_MAX_FILES = 200;
@@ -207,7 +208,7 @@ export class RepositoryIntelligenceService {
     const rootPath = this.safety.resolveRoot(options.rootPath);
     const filePath = this.safety.resolveInsideRoot(rootPath, options.filePath);
     const stat = await fs.stat(filePath);
-    const defaultMaxBytes = options.purpose === 'debug' || options.purpose === 'review' ? DEBUG_EXCERPT_MAX_BYTES : DEFAULT_EXCERPT_MAX_BYTES;
+    const defaultMaxBytes = this.defaultExcerptMaxBytes(options.purpose);
     const maxBytes = options.maxBytes ?? defaultMaxBytes;
     const excerpt = await this.readBounded(filePath, maxBytes);
 
@@ -265,6 +266,16 @@ export class RepositoryIntelligenceService {
     } finally {
       await handle.close();
     }
+  }
+
+  private defaultExcerptMaxBytes(purpose: FileExcerptOptions['purpose']): number {
+    if (purpose === 'summary') {
+      return SUMMARY_EXCERPT_MAX_BYTES;
+    }
+    if (purpose === 'debug' || purpose === 'review') {
+      return DEBUG_EXCERPT_MAX_BYTES;
+    }
+    return ROUTING_EXCERPT_MAX_BYTES;
   }
 
   private extensionCounts(files: readonly RepositoryScanResult['files'][number][]): readonly { extension: string; count: number }[] {
