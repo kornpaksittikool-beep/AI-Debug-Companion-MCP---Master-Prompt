@@ -37,6 +37,7 @@ const QUESTION_PROFILES: Record<TokenQuestionType, StrategyQuestionProfile> = {
     escalationTools: ['repository.search_symbols', 'repository.overview', 'repository.read_file_context'],
     contextPolicy: [
       'Use repository.project_profile as the primary summary artifact.',
+      'Call repository.search_files with mode=summary and maxMatches<=8 for routine summaries.',
       'Do not run repository.search_symbols for routine summaries; use file search and excerpts instead.',
       'Read at most 2 repository.read_file_excerpt results for README, manifests, or entry points.',
       'Pass maxBytes between 500 and 700 for summary excerpts.',
@@ -280,7 +281,8 @@ export class TokenBudgetService {
       avoid: [
         'Avoid reading the whole repository into model context.',
         'Avoid repository.overview unless repository.project_profile is insufficient.',
-        'Avoid repository.read_file_context for summaries; use repository.read_file_excerpt first.',
+        'Avoid repository.read_file_context for summaries; use repository.read_file_excerpt first and stop if the summary is already answerable.',
+        'Avoid unbounded repository.search_files; use mode=summary and maxMatches<=8 for project summaries.',
         'Avoid repository.import_graph unless dependency flow is the current question.',
         'Avoid reading unrelated files during code review; use changed files, impacted symbols, and tests.',
         'Avoid full roadmap or phase-report reads for planning; use excerpts and impact reports.',

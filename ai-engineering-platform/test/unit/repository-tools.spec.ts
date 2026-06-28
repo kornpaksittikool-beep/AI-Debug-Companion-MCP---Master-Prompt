@@ -88,8 +88,10 @@ describe('Repository tools', () => {
     const searchResult = await new RepositorySearchFilesTool(service).execute({
       rootPath,
       query: 'Service',
+      mode: 'summary',
     });
     expect(Array.isArray(searchResult.matches)).toBe(true);
+    expect(searchResult.tokenPolicy).toMatchObject({ profile: 'summary' });
     await expect(
       new RepositoryReadFileContextTool(service).execute({ rootPath, filePath: 'README.md' }),
     ).resolves.toMatchObject({

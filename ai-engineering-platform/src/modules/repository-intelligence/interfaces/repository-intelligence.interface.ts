@@ -65,12 +65,21 @@ export interface ExtensionCount {
 export interface RepositorySearchOptions extends RepositoryScanOptions {
   readonly query?: string;
   readonly extension?: string;
+  readonly maxMatches?: number;
+  readonly mode?: 'full' | 'compact' | 'summary';
 }
 
 export interface RepositorySearchResult {
   readonly rootPath: string;
   readonly matches: readonly RepositoryFile[];
+  readonly totalMatches: number;
+  readonly returnedMatches: number;
   readonly truncated: boolean;
+  readonly tokenPolicy: {
+    readonly profile: 'full' | 'compact' | 'summary';
+    readonly maxMatches: number;
+    readonly recommendedUse: string;
+  };
 }
 
 export interface FileContextOptions {

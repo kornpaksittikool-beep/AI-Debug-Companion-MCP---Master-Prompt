@@ -101,6 +101,9 @@ The system must be developed iteratively. Each phase must produce usable, verifi
 | M28: Question-Type Token Profiles | Phase 28 | Update Codex skill guidance, smoke coverage, and docs for question-specific context routing | Phase 25 explicit skill activation | High | Low | Completed |
 | M29: Summary Symbol Guardrails | Phase 29 | Remove symbol search from routine project-summary preferred routes and mark it as hard do-not-call guidance | Phase 28 question-type profiles | High | Low | Completed |
 | M29: Summary Symbol Guardrails | Phase 29 | Add smoke coverage that fails when summary routing recommends `repository.search_symbols` | Phase 29 routing update | High | Low | Completed |
+| M30: Summary Search Result Caps | Phase 30 | Add `repository.search_files` summary mode with max 8 returned matches and no preview payload | Phase 29 summary guardrails | High | Medium | Completed |
+| M30: Summary Search Result Caps | Phase 30 | Route summary workflows through `mode=summary` and `maxMatches<=8` | Phase 30 search mode | High | Low | Completed |
+| M30: Summary Search Result Caps | Phase 30 | Add smoke coverage for capped summary search and compact project-profile next tools | Phase 30 routing update | High | Low | Completed |
 
 ## Phase Gate Rules
 
@@ -115,4 +118,4 @@ Each phase must pass the following checks before the next phase begins:
 
 ## Current Phase
 
-Phase 29 is completed. Future phases must be planned and approved before implementation.
+Phase 30 is completed. Future phases must be planned and approved before implementation.

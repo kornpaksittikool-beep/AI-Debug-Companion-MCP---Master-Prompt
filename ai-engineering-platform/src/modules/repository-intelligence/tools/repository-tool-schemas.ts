@@ -115,6 +115,8 @@ export const REPOSITORY_SEARCH_FILES_TOOL_DEFINITION: ToolDefinition = {
       ...(boundedScanSchema.properties as JsonSchemaObject),
       query: { type: 'string' },
       extension: { type: 'string' },
+      maxMatches: { type: 'number' },
+      mode: { type: 'string', enum: ['full', 'compact', 'summary'] },
     },
   },
   outputSchema: resultObjectSchema,
@@ -123,7 +125,7 @@ export const REPOSITORY_SEARCH_FILES_TOOL_DEFINITION: ToolDefinition = {
   timeoutMs: 5000,
   retryStrategy: NO_RETRY,
   sideEffects: 'read',
-  examples: [{ input: { rootPath: '/repo', query: 'service' }, output: { matches: [] } }],
+  examples: [{ input: { rootPath: '/repo', query: 'service', mode: 'summary', maxMatches: 8 }, output: { matches: [] } }],
 };
 
 export const REPOSITORY_READ_FILE_CONTEXT_TOOL_DEFINITION: ToolDefinition = {

@@ -66,6 +66,12 @@ try {
   const metadata = await callTool(client, 'platform.metadata', { includeTools: false });
   const toolSummary = await callTool(client, 'platform.tool_summary', {});
   const projectProfile = await callTool(client, 'repository.project_profile', { rootPath });
+  const summaryFileSearch = await callTool(client, 'repository.search_files', {
+    rootPath,
+    query: 'src',
+    mode: 'summary',
+    maxMatches: 50,
+  });
   const fileExcerpt = await callTool(client, 'repository.read_file_excerpt', {
     rootPath,
     filePath: 'README.md',
@@ -169,6 +175,11 @@ try {
     metadataCompact: !metadata.tools && metadata.toolSummary?.totalTools === tools.tools.length,
     toolSummaryModules: toolSummary.modules.length,
     projectProfileCompact: projectProfile.tokenPolicy?.profile === 'compact',
+    projectProfileSummaryNextTools: projectProfile.tokenPolicy?.recommendedNextTools ?? [],
+    summarySearchReturnedMatches: summaryFileSearch.returnedMatches,
+    summarySearchMaxMatches: summaryFileSearch.tokenPolicy?.maxMatches,
+    summarySearchProfile: summaryFileSearch.tokenPolicy?.profile,
+    summarySearchHasPreview: summaryFileSearch.matches.some((match) => Boolean(match.textPreview)),
     fileExcerptProfile: fileExcerpt.tokenPolicy?.profile,
     exactCodexBillingAvailable: projectProfile.tokenPolicy?.exactCodexBillingAvailable === true,
     importResolved: importGraph.edges.some((edge) => edge.resolvedRelativePath === 'src/helper.ts'),
@@ -204,10 +215,15 @@ try {
   if (
     summary.toolCount < 84 ||
     summary.healthStatus !== 'ok' ||
-    summary.platformPhase !== 'phase-29-summary-symbol-guardrails' ||
+    summary.platformPhase !== 'phase-30-summary-search-result-caps' ||
     !summary.metadataCompact ||
     summary.toolSummaryModules < 1 ||
     !summary.projectProfileCompact ||
+    summary.projectProfileSummaryNextTools.some((tool) => tool === 'repository.search_symbols') ||
+    summary.summarySearchProfile !== 'summary' ||
+    summary.summarySearchMaxMatches !== 8 ||
+    summary.summarySearchReturnedMatches > 8 ||
+    summary.summarySearchHasPreview ||
     summary.fileExcerptProfile !== 'excerpt' ||
     summary.exactCodexBillingAvailable ||
     !summary.importResolved ||

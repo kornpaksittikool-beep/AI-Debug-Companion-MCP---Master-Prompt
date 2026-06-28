@@ -79,6 +79,27 @@ describe('RepositoryIntelligenceService', () => {
     expect(result.matches.map((file) => file.relativePath)).toEqual(['src/module/service.ts']);
   });
 
+  it('caps summary file search results and omits preview text', async () => {
+    const root = await createFixture();
+    for (let index = 0; index < 20; index += 1) {
+      await fs.writeFile(path.join(root, `feature-${index}.md`), `# feature ${index}\n${'x'.repeat(500)}`);
+    }
+    const service = createService();
+
+    const result = await service.searchFiles({
+      rootPath: root,
+      query: 'feature',
+      mode: 'summary',
+      maxMatches: 20,
+    });
+
+    expect(result.totalMatches).toBe(20);
+    expect(result.returnedMatches).toBe(8);
+    expect(result.truncated).toBe(true);
+    expect(result.tokenPolicy).toMatchObject({ profile: 'summary', maxMatches: 8 });
+    expect(result.matches.every((file) => file.textPreview === undefined)).toBe(true);
+  });
+
   it('reads bounded file context', async () => {
     const root = await createFixture();
     const service = createService();

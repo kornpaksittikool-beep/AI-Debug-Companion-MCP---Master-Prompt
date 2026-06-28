@@ -138,6 +138,9 @@ describe('IntegrationTelemetryService', () => {
       'Use repository.project_profile as the main evidence artifact.',
     );
     expect(entry?.contextPolicy).toContain(
+      'Call repository.search_files with mode=summary and maxMatches<=8 for routine summaries.',
+    );
+    expect(entry?.contextPolicy).toContain(
       'Do not run repository.search_symbols for routine summaries; use file search and excerpts instead.',
     );
     expect(entry?.doNotCallTools).toEqual(

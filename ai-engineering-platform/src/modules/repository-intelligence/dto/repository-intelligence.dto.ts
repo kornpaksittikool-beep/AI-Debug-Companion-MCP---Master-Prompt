@@ -20,6 +20,8 @@ export interface RepositoryScanInputDto extends RepositoryOverviewInputDto {
 export interface RepositorySearchFilesInputDto extends RepositoryScanInputDto {
   readonly query?: string;
   readonly extension?: string;
+  readonly maxMatches?: number;
+  readonly mode?: 'full' | 'compact' | 'summary';
 }
 
 export interface RepositorySearchSymbolsInputDto extends RepositoryScanInputDto {

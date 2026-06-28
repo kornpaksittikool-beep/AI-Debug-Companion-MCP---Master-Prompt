@@ -109,3 +109,6 @@
 | Codex skill guidance for summary, tech stack, debug, review, and planning budgets | Phase 28 | Completed |
 | Remove broad symbol search from routine project-summary routing | Phase 29 | Completed |
 | Add summary symbol-search regression checks to smoke coverage | Phase 29 | Completed |
+| Add capped summary mode to repository.search_files | Phase 30 | Completed |
+| Route summaries through mode=summary and maxMatches<=8 | Phase 30 | Completed |
+| Add smoke coverage for summary search caps | Phase 30 | Completed |

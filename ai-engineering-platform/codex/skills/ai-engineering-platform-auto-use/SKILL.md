@@ -59,7 +59,7 @@ Then choose the closest question profile before expanding context:
 
 | Question type                        |                  Target MCP payload | Preferred route                                                                                                                         |
 | ------------------------------------ | ----------------------------------: | --------------------------------------------------------------------------------------------------------------------------------------- |
-| Summary / project purpose            |                       ~1k-2k tokens | `repository.project_profile`, focused `repository.search_files`, at most 2 `repository.read_file_excerpt` calls with `maxBytes` 500-700 |
+| Summary / project purpose            |                       ~1k-2k tokens | `repository.project_profile`, `repository.search_files` with `mode: "summary"` and `maxMatches` <= 8, at most 2 `repository.read_file_excerpt` calls with `maxBytes` 500-700 |
 | Tech stack / architecture quick view |                   ~1.5k-2.5k tokens | manifests/config excerpts with `maxBytes` <= 900, `repository.search_symbols`, graph tools only for explicit dependency-flow questions  |
 | General debugging                    |                       ~3k-8k tokens | `investigation.create`, exact error search, symbol/file search, then full context only for narrowed failing files                       |
 | Code review                          | diff-scoped, usually ~4k-10k tokens | changed files, impacted symbols, related tests, `git.impact_hints`; avoid unrelated repository reads                                    |
@@ -67,7 +67,7 @@ Then choose the closest question profile before expanding context:
 
 For normal project summaries and follow-up questions, continue with only focused discovery:
 
-- Use `repository.search_files` to find important files, configs, routes, docs, package manifests, and entry points.
+- Use `repository.search_files` to find important files, configs, routes, docs, package manifests, and entry points. For summaries, always pass `mode: "summary"` and `maxMatches` <= 8.
 - Use `repository.search_symbols` for TypeScript/JavaScript classes, functions, services, controllers, modules, and DTOs only when the question needs module, symbol, route, or implementation boundaries.
 - Use `repository.read_file_excerpt` for summary evidence from README, package manifests, entry points, or app modules.
 - Use `repository.overview` only when `repository.project_profile` is insufficient.
@@ -88,13 +88,13 @@ Do not call `repository.import_graph` for ordinary project summaries, project-pu
 For project summaries, target this order:
 
 1. `repository.project_profile`
-2. `repository.search_files`
+2. `repository.search_files` with `mode: "summary"` and `maxMatches` <= 8
 3. `repository.read_file_excerpt` with `purpose: "summary"` and `maxBytes` 500-700 for at most 2 files that explain purpose or entry points
 4. `repository.search_symbols` only if the profile, file search, and excerpts still cannot identify module boundaries
-5. `repository.read_file_context` only when an excerpt is insufficient and the answer needs precise details
+5. `repository.read_file_context` only when the user asks for exact implementation detail; do not use it for routine summaries
 6. `repository.overview` only if compact profile data is insufficient
 
-For project summaries, treat `repository.search_symbols` as expensive. Do not call it by default; if it is required, use the narrowest query and report why.
+For project summaries, treat `repository.search_symbols`, unbounded `repository.search_files`, and `repository.read_file_context` as expensive. Do not call them by default; if one is required, use the narrowest query/limit and report why.
 
 For tech stack or architecture quick views, prefer package/config excerpts and symbol search before source implementation reads. Use `repository.import_graph` only when dependency flow, circular dependencies, or architecture coupling is directly requested.
 

@@ -71,7 +71,10 @@ describe('TokenBudgetService', () => {
       'Avoid repository.overview unless repository.project_profile is insufficient.',
     );
     expect(result.avoid).toContain(
-      'Avoid repository.read_file_context for summaries; use repository.read_file_excerpt first.',
+      'Avoid repository.read_file_context for summaries; use repository.read_file_excerpt first and stop if the summary is already answerable.',
+    );
+    expect(result.avoid).toContain(
+      'Avoid unbounded repository.search_files; use mode=summary and maxMatches<=8 for project summaries.',
     );
     expect(result.avoid).toContain(
       'Avoid repository.import_graph unless dependency flow is the current question.',
@@ -110,6 +113,9 @@ describe('TokenBudgetService', () => {
       expect.arrayContaining(['repository.project_profile', 'repository.read_file_excerpt']),
     );
     expect(result.preferredTools).not.toContain('repository.search_symbols');
+    expect(result.questionProfile.contextPolicy).toContain(
+      'Call repository.search_files with mode=summary and maxMatches<=8 for routine summaries.',
+    );
     expect(result.questionProfile.contextPolicy).toContain(
       'Do not run repository.search_symbols for routine summaries; use file search and excerpts instead.',
     );
