@@ -128,6 +128,9 @@ The system must be developed iteratively. Each phase must produce usable, verifi
 | M38: Summary Fallback Discipline             | Phase 38 | Add no-broad-file-context fallback policy to project-summary strategy, workflow index, skill guidance, and telemetry             | Phase 37 compact reporting                       | High     | Low                  | Completed |
 | M38: Summary Fallback Discipline             | Phase 38 | Report `summary fallback violation` when project-summary telemetry is dominated by `repository.read_file_context`                | Automatic telemetry                              | High     | Low                  | Completed |
 | M38: Summary Fallback Discipline             | Phase 38 | Add unit and smoke coverage for project-summary fallback policy                                                                 | Phase 38 fallback policy                         | High     | Low                  | Completed |
+| M39: Documentation Consistency                | Phase 39 | Align README current-phase summary with completed Phase 38 and planned Phase 39 status                                           | Phase 38 fallback policy                         | High     | Low                  | Planned   |
+| M39: Documentation Consistency                | Phase 39 | Add a Phase 39 plan with scope, acceptance criteria, verification, rollback, and non-goals                                       | Phase 38 fallback policy                         | High     | Low                  | Planned   |
+| M39: Documentation Consistency                | Phase 39 | Add documentation consistency checks for phase numbers, status labels, and smoke-test phase metadata                             | Phase 39 plan                                    | Medium   | Medium               | Planned   |
 
 ## Phase Gate Rules
 
@@ -142,4 +145,4 @@ Each phase must pass the following checks before the next phase begins:
 
 ## Current Phase
 
-Phase 38 is completed. Future phases must be planned and approved before implementation.
+Phase 38 is completed. Phase 39 is planned for documentation consistency and must be approved before implementation.

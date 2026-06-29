@@ -137,3 +137,6 @@
 | Forbid `repository.read_file_context` as routine summary fallback in Codex skill guidance                            | Phase 38 | Completed |
 | Report `summary fallback violation` when project-summary telemetry is dominated by broad file context                 | Phase 38 | Completed |
 | Add unit and smoke coverage for no-broad-context summary fallback policy                                             | Phase 38 | Completed |
+| Align README current-phase summary with completed Phase 38 and planned Phase 39 status                               | Phase 39 | Planned   |
+| Add Phase 39 plan with scope, acceptance criteria, verification, rollback, risks, and non-goals                      | Phase 39 | Planned   |
+| Add documentation consistency checks for phase numbers, status labels, and smoke-test phase metadata                  | Phase 39 | Planned   |
