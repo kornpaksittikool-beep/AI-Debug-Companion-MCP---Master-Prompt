@@ -119,6 +119,7 @@ The Phase 1 server uses stdio transport through the official Model Context Proto
 - Explicit Codex skill command through `$ai-engineering-platform-auto-use`.
 - Adaptive `Workflow Gate` policy for explicit skill responses: compact read-only gates for summaries and expanded execution gates for change workflows.
 - User-facing compact reporting policy with `normal_user_summary` as the default and `debug_telemetry` available for tools-used, telemetry, token-detail, evidence-detail, and debug-MCP requests.
+- Summary fallback discipline that forbids broad `repository.read_file_context` fallback for routine project summaries, project-purpose answers, and `normal_user_summary`.
 - Codex integration installer for MCP config and skill installation.
 - Token-aware routing policy that keeps `repository.import_graph` on-demand for project summaries and follow-ups.
 - Jest unit and integration test baseline.
@@ -427,7 +428,7 @@ Compresses candidate context items to fit an approximate token budget while pres
 
 ### `token_budget.recommend_strategy`
 
-Recommends a token-aware MCP evidence gathering flow for a repository task. It accepts an optional `questionType` (`project_summary`, `tech_stack_quick_view`, `debugging`, `code_review`, `planning`, or `general`) and returns a target token range, `gateMode`, `defaultReportMode`, `debugReportTriggers`, excerpt `maxBytes`, excerpt call limits, start/evidence/escalation tools, and hard `doNotCallTools` guidance. For `project_summary`, startup mode skips `platform.tool_summary` when `repository.project_profile` is available, strict mode excludes broad search, symbol search, architecture docs, source tree summaries, app module excerpts, and full context reads from the preferred route, and the context policy tells clients to use a 1-2 line read-only gate plus compact footer in `normal_user_summary`.
+Recommends a token-aware MCP evidence gathering flow for a repository task. It accepts an optional `questionType` (`project_summary`, `tech_stack_quick_view`, `debugging`, `code_review`, `planning`, or `general`) and returns a target token range, `gateMode`, `defaultReportMode`, `debugReportTriggers`, excerpt `maxBytes`, excerpt call limits, start/evidence/escalation tools, `fallbackPolicy`, and hard `doNotCallTools` guidance. For `project_summary`, startup mode skips `platform.tool_summary` when `repository.project_profile` is available, strict mode excludes broad search, symbol search, architecture docs, source tree summaries, app module excerpts, and full context reads from the preferred route, and the context policy tells clients to use a 1-2 line read-only gate plus compact footer in `normal_user_summary`. The summary fallback policy sets `neverUseBroadFileContext=true` and uses `project_profile -> read_file_excerpt -> answer_with_limited_evidence -> ask_for_debug_detail`.
 
 ### `integration.start_session`
 
@@ -451,11 +452,11 @@ Persists in-memory integration telemetry under `.ai-engineering-platform/integra
 
 ### `integration.workflow_index`
 
-Returns the MCP workflow index for routing task types to tools, modules, and files. Each entry includes a target token range, `gateMode`, `defaultReportMode`, `debugReportTriggers`, excerpt limits, hard do-not-call tools, and context policy so clients can keep summary, tech stack, debug, review, and planning workflows narrow. The `project_summary` entry uses `compact_read_only` gate mode with `normal_user_summary` output, short evidence labels, one-line token reporting, `No file changes` impact, and `Not required: read-only` approval wording.
+Returns the MCP workflow index for routing task types to tools, modules, and files. Each entry includes a target token range, `gateMode`, `defaultReportMode`, `debugReportTriggers`, excerpt limits, optional `fallbackPolicy`, hard do-not-call tools, and context policy so clients can keep summary, tech stack, debug, review, and planning workflows narrow. The `project_summary` entry uses `compact_read_only` gate mode with `normal_user_summary` output, short evidence labels, one-line token reporting, `No file changes` impact, `Not required: read-only` approval wording, and no broad file context fallback.
 
 ### `integration.auto_telemetry_summary`
 
-Summarizes automatically recorded MCP execution telemetry and estimated token usage. When called with `questionType` or `targetTokens`, it returns `budgetStatus` so clients can report and correct over-budget workflows.
+Summarizes automatically recorded MCP execution telemetry and estimated token usage. When called with `questionType` or `targetTokens`, it returns `budgetStatus` so clients can report and correct over-budget workflows. For `project_summary`, if `repository.read_file_context` is the largest token source, the recommendation reports a `summary fallback violation` and points clients back to profile/excerpt-only evidence.
 
 ### `integration.reset_auto_telemetry`
 

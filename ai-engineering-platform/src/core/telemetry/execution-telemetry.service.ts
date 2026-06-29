@@ -181,6 +181,14 @@ export class ExecutionTelemetryService {
       return status;
     }
 
+    if (largestTool === 'repository.read_file_context') {
+      return {
+        ...status,
+        recommendation:
+          'Summary fallback violation: repository.read_file_context became the largest token source. Use repository.project_profile mode=summary and repository.read_file_excerpt only; if excerpts are unavailable, answer with limited evidence or ask for debug detail.',
+      };
+    }
+
     return {
       ...status,
       recommendation: `Summary strict mode was likely violated: ${largestTool} became the largest token source. Stop after repository.project_profile mode=summary plus README/package excerpts unless the user asks for deeper architecture, module, or source-tree detail.`,

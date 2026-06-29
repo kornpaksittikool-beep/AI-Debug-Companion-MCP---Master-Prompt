@@ -128,7 +128,7 @@ Then choose the closest question profile before expanding context:
 
 | Question type                        |                  Target MCP payload | Preferred route                                                                                                                                              |
 | ------------------------------------ | ----------------------------------: | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Summary / project purpose            |                       ~1k-2k tokens | compact read-only gate; `platform.health`, `repository.project_profile` with `mode: "summary"`, then README/package excerpts only if needed; skip `platform.tool_summary` by default |
+| Summary / project purpose            |                       ~1k-2k tokens | compact read-only gate; `platform.health`, `repository.project_profile` with `mode: "summary"`, then README/package excerpts only if needed; never fallback to broad file context; skip `platform.tool_summary` by default |
 | Tech stack / architecture quick view |                   ~1.5k-2.5k tokens | compact read-only gate unless changes are requested; manifests/config excerpts with `maxBytes` <= 900, `repository.search_symbols`, graph tools only for explicit dependency-flow questions |
 | General debugging                    |                       ~3k-8k tokens | expanded execution gate if fixes may follow; `investigation.create`, exact error search, symbol/file search, then full context only for narrowed failing files |
 | Code review                          | diff-scoped, usually ~4k-10k tokens | expanded execution gate; changed files, impacted symbols, related tests, `git.impact_hints`; avoid unrelated repository reads |
@@ -139,6 +139,7 @@ For normal project summaries and follow-up questions, continue with only focused
 - Use `repository.search_files` to find important files, configs, routes, docs, package manifests, and entry points only when the summary profile cannot locate README/package evidence. For summaries, always pass `mode: "summary"` and `maxMatches` <= 8.
 - Use `repository.search_symbols` for TypeScript/JavaScript classes, functions, services, controllers, modules, and DTOs only when the question needs module, symbol, route, or implementation boundaries.
 - Use `repository.read_file_excerpt` for summary evidence from README, package manifests, or entry points. For summaries, pass `purpose: "summary"` and `maxBytes` <= 700, read no more than 1-2 files, and do not read app module excerpts when README/package evidence is sufficient.
+- For project summary, project purpose, and `normal_user_summary`, do not fallback to `repository.read_file_context`. If `repository.read_file_excerpt` is unavailable, answer from `repository.project_profile` plus evidence already gathered. If that evidence is insufficient, say briefly that evidence is limited and offer debug telemetry or an excerpt retry.
 - Use `repository.overview` only when `repository.project_profile` is insufficient.
 - Use `git.recent_changes` and `git.impact_hints` when history or regression risk matters.
 - Use `investigation.create` and evidence tools for bug reports, logs, screenshots, or unclear failures.
@@ -163,10 +164,10 @@ For project summaries, target this order:
 5. `platform.tool_summary` only if the tool list is unavailable, stale, or needed for a non-summary workflow
 6. `repository.search_files` with `mode: "summary"` and `maxMatches` <= 8 only if README/package are missing from the summary profile
 7. `repository.search_symbols` only if the profile, file search, and excerpts still cannot identify module boundaries
-8. `repository.read_file_context` only when the user asks for exact implementation detail; do not use it for routine summaries
+8. Never call `repository.read_file_context` for routine project summaries, project-purpose answers, `normal_user_summary`, or summary fallback; use it only when the user explicitly asks for exact implementation detail outside summary mode
 9. `repository.overview` only if compact profile data is insufficient
 
-For project summaries, treat `platform.tool_summary`, `repository.search_files`, `repository.search_symbols`, architecture docs, source tree summaries, app module excerpts, and `repository.read_file_context` as expensive. Do not call them by default; if one is required, use the narrowest query/limit and report why.
+For project summaries, treat `platform.tool_summary`, `repository.search_files`, `repository.search_symbols`, architecture docs, source tree summaries, app module excerpts, and `repository.read_file_context` as hard do-not-call fallback tools when `repository.project_profile` is enough. Do not call them by default. Do not call `repository.read_file_context` at all for routine summary fallback; if evidence remains insufficient after profile/excerpt evidence, answer with limited evidence or ask for debug detail.
 
 Do not read `docs/architecture.md`, `src/app.module.ts`, source tree summaries, module lists, symbol search, import graph, or call graph for routine summaries unless the user explicitly asks for architecture, modules, dependencies, or source structure.
 
@@ -188,7 +189,7 @@ If `integration.auto_telemetry_summary` for `project_summary` reports `platform.
 
 Avoid broad reads of `playwright-report`, `coverage`, `.next`, `dist`, `build`, `node_modules`, generated reports, and lockfile-heavy content unless the user asks about those artifacts.
 
-For routine project summaries, avoid using `repository.read_file_context` as the largest token source. If `integration.auto_telemetry_summary` reports `repository.read_file_context` as the largest source, recommend replacing it with `repository.read_file_excerpt` next time.
+For routine project summaries, `repository.read_file_context` must not appear as the largest token source. If `integration.auto_telemetry_summary` for `project_summary` reports `repository.read_file_context` as the largest source, report `summary fallback violation` and recommend using only `repository.project_profile` and `repository.read_file_excerpt`; if excerpts are unavailable, answer with limited evidence or ask for debug detail.
 
 Call `platform.metadata` only when full tool descriptions or schemas are actually required. If metadata is needed, prefer compact input such as `{ "includeTools": false }`.
 
@@ -206,6 +207,7 @@ This is the default. Optimize for a regular user who wants the answer, not tool 
 - Do not show absolute paths unless they are necessary to disambiguate evidence or the user asked for detail.
 - Summarize evidence as short labels, for example `README`, `package`, `production checklist`, `ROADMAP`, or `TODO`.
 - Summarize token status in one line, for example `Token: ~1.6k MCP payload, within target`.
+- If summary fallback used broad context, keep the warning to one line: `Token: over target; summary fallback used broad context, next run should stay profile/excerpt only`.
 - Still say whether MCP was used.
 - Still say when the work was read-only/no file changes.
 - For write/change tasks, keep the expanded execution gate and verification/rollback plan.

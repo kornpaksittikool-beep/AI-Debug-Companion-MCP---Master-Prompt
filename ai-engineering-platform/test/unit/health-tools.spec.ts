@@ -27,7 +27,7 @@ describe('Health tools', () => {
 
     expect(output.platform).toBeDefined();
     expect(output.platform).toMatchObject({
-      phase: 'phase-37-user-facing-compact-reporting',
+      phase: 'phase-38-summary-fallback-discipline',
     });
     expect(output.tools).toEqual([]);
   });

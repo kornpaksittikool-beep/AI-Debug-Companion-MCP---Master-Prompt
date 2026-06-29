@@ -178,6 +178,24 @@ describe('IntegrationTelemetryService', () => {
     expect(entry?.contextPolicy).toContain(
       'Pass purpose=summary and maxBytes <= 700 for summary excerpts.',
     );
+    expect(entry?.contextPolicy).toContain(
+      'If repository.read_file_excerpt is unavailable, answer from repository.project_profile plus evidence already gathered.',
+    );
+    expect(entry?.contextPolicy).toContain(
+      'If evidence is insufficient, stop and say evidence is limited instead of reading broad file context.',
+    );
+    expect(entry?.contextPolicy).toContain(
+      'Never fallback to repository.read_file_context for project_summary, project purpose, or normal_user_summary.',
+    );
+    expect(entry?.fallbackPolicy).toEqual({
+      neverUseBroadFileContext: true,
+      fallbackOrder: [
+        'project_profile',
+        'read_file_excerpt',
+        'answer_with_limited_evidence',
+        'ask_for_debug_detail',
+      ],
+    });
     expect(entry?.doNotCallTools).toEqual(
       expect.arrayContaining([
         'repository.import_graph',
@@ -199,6 +217,7 @@ describe('IntegrationTelemetryService', () => {
         'repository.overview unless the compact profile is insufficient',
         'platform.tool_summary unless tool availability is unclear',
         'repository.search_files unless README/package cannot be found from the summary profile',
+        'repository.read_file_context for summary fallback',
         'docs/architecture.md and source tree summaries unless architecture is the question',
       ]),
     );

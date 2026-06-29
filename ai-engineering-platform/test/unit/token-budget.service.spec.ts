@@ -74,6 +74,9 @@ describe('TokenBudgetService', () => {
       'Avoid repository.read_file_context for summaries; use repository.read_file_excerpt first and stop if the summary is already answerable.',
     );
     expect(result.avoid).toContain(
+      'For project_summary fallback, never use repository.read_file_context; answer with repository.project_profile plus limited evidence or ask for debug detail.',
+    );
+    expect(result.avoid).toContain(
       'Avoid repository.search_files for routine summaries when repository.project_profile already identifies README/package evidence.',
     );
     expect(result.avoid).toContain(
@@ -171,6 +174,27 @@ describe('TokenBudgetService', () => {
     );
     expect(result.questionProfile.contextPolicy).toContain(
       'Pass purpose=summary and maxBytes <= 700 for summary excerpts.',
+    );
+    expect(result.questionProfile.contextPolicy).toContain(
+      'If repository.read_file_excerpt is unavailable, answer from repository.project_profile plus evidence already gathered.',
+    );
+    expect(result.questionProfile.contextPolicy).toContain(
+      'If evidence is insufficient, say evidence is limited and offer debug telemetry or an excerpt retry.',
+    );
+    expect(result.questionProfile.contextPolicy).toContain(
+      'Never fallback to repository.read_file_context for project_summary, project purpose, or normal_user_summary.',
+    );
+    expect(result.questionProfile.fallbackPolicy).toEqual({
+      neverUseBroadFileContext: true,
+      fallbackOrder: [
+        'project_profile',
+        'read_file_excerpt',
+        'answer_with_limited_evidence',
+        'ask_for_debug_detail',
+      ],
+    });
+    expect(result.recommendedFlow).toContain(
+      'Fallback policy: never use broad file context; fallback order is project_profile -> read_file_excerpt -> answer_with_limited_evidence -> ask_for_debug_detail.',
     );
   });
 

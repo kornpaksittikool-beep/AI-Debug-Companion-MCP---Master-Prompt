@@ -174,4 +174,22 @@ describe('McpExecutionService', () => {
     expect(summary.budgetStatus?.recommendation).toContain('Summary strict mode was likely violated');
     expect(summary.budgetStatus?.recommendation).toContain('platform.tool_summary');
   });
+
+  it('reports a summary fallback violation when broad file context dominates', () => {
+    const telemetry = new ExecutionTelemetryService();
+    telemetry.recordSuccess({
+      correlationId: 'corr_context',
+      toolName: 'repository.read_file_context',
+      startedAt: new Date('2026-01-01T00:00:00.000Z'),
+      executionTimeMs: 1,
+      input: { filePath: 'src/app.module.ts' },
+      output: { content: 'x'.repeat(120) },
+    });
+
+    const summary = telemetry.summary({ questionType: 'project_summary', targetTokens: 5 });
+
+    expect(summary.budgetStatus?.recommendation).toContain('Summary fallback violation');
+    expect(summary.budgetStatus?.recommendation).toContain('repository.project_profile');
+    expect(summary.budgetStatus?.recommendation).toContain('repository.read_file_excerpt only');
+  });
 });

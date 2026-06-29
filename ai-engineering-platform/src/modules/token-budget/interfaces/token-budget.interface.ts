@@ -66,6 +66,11 @@ export type TokenQuestionType =
 
 export type ReportMode = 'normal_user_summary' | 'debug_telemetry';
 
+export interface SummaryFallbackPolicy {
+  readonly neverUseBroadFileContext: boolean;
+  readonly fallbackOrder: readonly string[];
+}
+
 export interface StrategyRecommendationOptions {
   readonly objective: string;
   readonly questionType?: TokenQuestionType;
@@ -89,6 +94,7 @@ export interface StrategyQuestionProfile {
   readonly evidenceTools: readonly string[];
   readonly escalationTools: readonly string[];
   readonly contextPolicy: readonly string[];
+  readonly fallbackPolicy?: SummaryFallbackPolicy;
   readonly doNotCallTools: readonly string[];
 }
 

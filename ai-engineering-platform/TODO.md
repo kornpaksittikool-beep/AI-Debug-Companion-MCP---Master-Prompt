@@ -133,3 +133,7 @@
 | Add `normal_user_summary` and `debug_telemetry` reporting metadata to summary strategy and workflow routing          | Phase 37 | Completed |
 | Compact default read-only gates, footers, evidence labels, and token lines for user-facing summaries                 | Phase 37 | Completed |
 | Add unit and smoke coverage for compact reporting metadata                                                           | Phase 37 | Completed |
+| Add `neverUseBroadFileContext` fallback policy to project-summary token strategy and workflow routing                 | Phase 38 | Completed |
+| Forbid `repository.read_file_context` as routine summary fallback in Codex skill guidance                            | Phase 38 | Completed |
+| Report `summary fallback violation` when project-summary telemetry is dominated by broad file context                 | Phase 38 | Completed |
+| Add unit and smoke coverage for no-broad-context summary fallback policy                                             | Phase 38 | Completed |

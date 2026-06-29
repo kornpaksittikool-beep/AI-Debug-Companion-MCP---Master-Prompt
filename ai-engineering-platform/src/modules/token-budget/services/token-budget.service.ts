@@ -46,7 +46,6 @@ const QUESTION_PROFILES: Record<TokenQuestionType, StrategyQuestionProfile> = {
       'repository.search_files',
       'repository.search_symbols',
       'repository.overview',
-      'repository.read_file_context',
     ],
     contextPolicy: [
       'Start every explicit skill response with a Workflow Gate; use compact_read_only mode for routine summaries.',
@@ -62,9 +61,21 @@ const QUESTION_PROFILES: Record<TokenQuestionType, StrategyQuestionProfile> = {
       'Do not run repository.search_symbols for routine summaries; use file search and excerpts instead.',
       'Read 1 repository.read_file_excerpt result when possible, and at most 2 for README, manifests, or entry points.',
       'Pass purpose=summary and maxBytes <= 700 for summary excerpts.',
+      'If repository.read_file_excerpt is unavailable, answer from repository.project_profile plus evidence already gathered.',
+      'If evidence is insufficient, say evidence is limited and offer debug telemetry or an excerpt retry.',
+      'Never fallback to repository.read_file_context for project_summary, project purpose, or normal_user_summary.',
       'Do not read docs/architecture.md, source tree summaries, or app module excerpts unless the user explicitly asks for architecture or module details.',
       'Avoid dependency graphs unless dependency flow is explicitly requested.',
     ],
+    fallbackPolicy: {
+      neverUseBroadFileContext: true,
+      fallbackOrder: [
+        'project_profile',
+        'read_file_excerpt',
+        'answer_with_limited_evidence',
+        'ask_for_debug_detail',
+      ],
+    },
     doNotCallTools: [
       'repository.import_graph',
       'repository.call_graph',
@@ -322,6 +333,7 @@ export class TokenBudgetService {
         'Avoid reading the whole repository into model context.',
         'Avoid repository.overview unless repository.project_profile is insufficient.',
         'Avoid repository.read_file_context for summaries; use repository.read_file_excerpt first and stop if the summary is already answerable.',
+        'For project_summary fallback, never use repository.read_file_context; answer with repository.project_profile plus limited evidence or ask for debug detail.',
         'Avoid repository.search_files for routine summaries when repository.project_profile already identifies README/package evidence.',
         'Avoid compact/full repository.project_profile for summaries; use mode=summary first.',
         'Avoid platform.tool_summary for explicit project summaries unless tool availability is unclear.',
@@ -551,6 +563,11 @@ export class TokenBudgetService {
       `Limit repository.read_file_excerpt to maxBytes <= ${questionProfile.excerptMaxBytes} and no more than ${questionProfile.maxExcerptCalls} call(s) for this question.`,
       ...questionProfile.contextPolicy,
       `Do not call these tools in this profile unless the user explicitly changes scope: ${questionProfile.doNotCallTools.join(', ')}.`,
+      ...(questionProfile.fallbackPolicy?.neverUseBroadFileContext
+        ? [
+            `Fallback policy: never use broad file context; fallback order is ${questionProfile.fallbackPolicy.fallbackOrder.join(' -> ')}.`,
+          ]
+        : []),
       'Estimate token cost before expanding context.',
     ];
 

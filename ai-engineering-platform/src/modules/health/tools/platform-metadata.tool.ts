@@ -59,7 +59,7 @@ export const PLATFORM_METADATA_TOOL_DEFINITION: ToolDefinition = {
         platform: {
           name: 'ai-engineering-platform',
           version: '0.1.0',
-          phase: 'phase-37-user-facing-compact-reporting',
+          phase: 'phase-38-summary-fallback-discipline',
         },
         tools: [],
       },
@@ -70,13 +70,13 @@ export const PLATFORM_METADATA_TOOL_DEFINITION: ToolDefinition = {
         platform: {
           name: 'ai-engineering-platform',
           version: '0.1.0',
-          phase: 'phase-37-user-facing-compact-reporting',
+          phase: 'phase-38-summary-fallback-discipline',
         },
         toolSummary: {
           platform: {
             name: 'ai-engineering-platform',
             version: '0.1.0',
-            phase: 'phase-37-user-facing-compact-reporting',
+            phase: 'phase-38-summary-fallback-discipline',
           },
           totalTools: 0,
           modules: [],

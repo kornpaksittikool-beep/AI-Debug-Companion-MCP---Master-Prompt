@@ -209,6 +209,7 @@ try {
     summaryStrategyDefaultReportMode: summaryTokenStrategy.questionProfile?.defaultReportMode,
     summaryStrategyDebugReportTriggers:
       summaryTokenStrategy.questionProfile?.debugReportTriggers ?? [],
+    summaryStrategyFallbackPolicy: summaryTokenStrategy.questionProfile?.fallbackPolicy,
     summaryStrategyPreferredTools: summaryTokenStrategy.preferredTools,
     summaryStrategyDoNotCallTools: summaryTokenStrategy.doNotCallTools,
     integrationReady: integrationReadiness.ready,
@@ -220,6 +221,7 @@ try {
     summaryWorkflowDefaultReportMode: summaryWorkflowIndex.entries[0]?.defaultReportMode,
     summaryWorkflowDebugReportTriggers:
       summaryWorkflowIndex.entries[0]?.debugReportTriggers ?? [],
+    summaryWorkflowFallbackPolicy: summaryWorkflowIndex.entries[0]?.fallbackPolicy,
     telemetryRecordsWritten: flushTelemetry.recordsWritten,
     autoTelemetryToolCalls: autoTelemetry.toolCalls,
     autoTelemetryEstimatedTokens: autoTelemetry.estimatedTotalTokens,
@@ -229,7 +231,7 @@ try {
   if (
     summary.toolCount < 84 ||
     summary.healthStatus !== 'ok' ||
-    summary.platformPhase !== 'phase-37-user-facing-compact-reporting' ||
+    summary.platformPhase !== 'phase-38-summary-fallback-discipline' ||
     !summary.metadataCompact ||
     summary.toolSummaryModules < 1 ||
     !summary.projectProfileSummary ||
@@ -261,6 +263,9 @@ try {
     summary.summaryStrategyQuestionType !== 'project_summary' ||
     summary.summaryStrategyGateMode !== 'compact_read_only' ||
     summary.summaryStrategyDefaultReportMode !== 'normal_user_summary' ||
+    summary.summaryStrategyFallbackPolicy?.neverUseBroadFileContext !== true ||
+    summary.summaryStrategyFallbackPolicy?.fallbackOrder?.join(' -> ') !==
+      'project_profile -> read_file_excerpt -> answer_with_limited_evidence -> ask_for_debug_detail' ||
     !summary.summaryStrategyDebugReportTriggers.includes('tools used') ||
     !summary.summaryStrategyDebugReportTriggers.includes('debug MCP') ||
     summary.summaryStrategyPreferredTools.includes('platform.tool_summary') ||
@@ -271,9 +276,13 @@ try {
       tool.includes('repository.search_files'),
     ) ||
     !summary.summaryStrategyDoNotCallTools.includes('repository.search_symbols') ||
+    !summary.summaryStrategyDoNotCallTools.includes('repository.read_file_context') ||
     summary.summaryWorkflowEvidenceTools.includes('platform.tool_summary') ||
     summary.summaryWorkflowGateMode !== 'compact_read_only' ||
     summary.summaryWorkflowDefaultReportMode !== 'normal_user_summary' ||
+    summary.summaryWorkflowFallbackPolicy?.neverUseBroadFileContext !== true ||
+    summary.summaryWorkflowFallbackPolicy?.fallbackOrder?.join(' -> ') !==
+      'project_profile -> read_file_excerpt -> answer_with_limited_evidence -> ask_for_debug_detail' ||
     !summary.summaryWorkflowDebugReportTriggers.includes('telemetry') ||
     !summary.summaryWorkflowDebugReportTriggers.includes('evidence detail') ||
     summary.summaryWorkflowEvidenceTools.includes('repository.search_files') ||
@@ -283,6 +292,7 @@ try {
       tool.includes('repository.search_files'),
     ) ||
     !summary.summaryWorkflowDoNotCallTools.includes('repository.search_symbols') ||
+    !summary.summaryWorkflowDoNotCallTools.includes('repository.read_file_context') ||
     !summary.integrationReady ||
     summary.integrationToolCalls !== 1 ||
     summary.workflowIndexEntries !== 1 ||

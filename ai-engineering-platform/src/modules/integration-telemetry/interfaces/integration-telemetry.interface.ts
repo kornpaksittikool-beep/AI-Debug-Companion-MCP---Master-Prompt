@@ -107,6 +107,11 @@ export type WorkflowTaskType =
 
 export type ReportMode = 'normal_user_summary' | 'debug_telemetry';
 
+export interface WorkflowFallbackPolicy {
+  readonly neverUseBroadFileContext: boolean;
+  readonly fallbackOrder: readonly string[];
+}
+
 export interface WorkflowIndexEntry {
   readonly taskType: WorkflowTaskType;
   readonly description: string;
@@ -126,6 +131,7 @@ export interface WorkflowIndexEntry {
   readonly excerptMaxBytes: number;
   readonly maxExcerptCalls: number;
   readonly contextPolicy: readonly string[];
+  readonly fallbackPolicy?: WorkflowFallbackPolicy;
   readonly doNotCallTools: readonly string[];
   readonly avoidUntilNeeded: readonly string[];
 }
