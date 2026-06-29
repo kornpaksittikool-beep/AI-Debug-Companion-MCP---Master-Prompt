@@ -10,11 +10,11 @@ Make the public project status consistent across README, roadmap, TODO, phase re
 
 | Work Item | Status | Acceptance Criteria |
 | --- | --- | --- |
-| README current status alignment | Planned | README identifies Phase 38 as completed and Phase 39 as the next planned phase without stale Phase 37 wording. |
-| Roadmap and TODO alignment | Planned | ROADMAP and TODO contain matching Phase 39 entries, dependencies, priorities, complexity, and status labels. |
-| Phase metadata consistency checks | Planned | A lightweight check catches mismatched phase numbers or stale current-phase labels in README, ROADMAP, TODO, phase reports, and smoke output. |
-| Codex skill guidance review | Planned | Installed and repository skill guidance remains consistent with the explicit activation and compact reporting rules. |
-| Completion report | Planned | `docs/phase-39-report.md` records deliverables, verification output, risks, and approval status. |
+| README current status alignment | Completed | README identifies Phase 39 as completed without stale Phase 37 current-status wording. |
+| Roadmap and TODO alignment | Completed | ROADMAP and TODO contain matching Phase 39 entries, dependencies, priorities, complexity, and status labels. |
+| Phase metadata consistency checks | Completed | A lightweight check catches mismatched phase numbers or stale current-phase labels in README, ROADMAP, TODO, phase reports, and smoke output. |
+| Codex skill guidance review | Completed | Installed and repository skill guidance remains consistent with the explicit activation and compact reporting rules. |
+| Completion report | Completed | `docs/phase-39-report.md` records deliverables, verification output, risks, and approval status. |
 
 ## Non-Goals
 

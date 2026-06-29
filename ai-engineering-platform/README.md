@@ -4,7 +4,7 @@ AI Engineering Platform is a production-oriented MCP foundation for evidence-dri
 
 Phase 38 provides the Core MCP Framework, Investigation Engine, bounded Repository Intelligence, summary startup mode, summary strict mode, summary project profile mode, compact project profile routing, adaptive planning gates for explicit Codex skill responses, user-facing compact reporting modes, summary excerpt byte caps, low-token file excerpts, question-type token profiles, summary symbol-search guardrails, summary search result caps, summary fallback discipline, TypeScript/JavaScript symbol intelligence, bounded import and call graphs, persistent repository graph indexing, cross-repository search, read-only SQLite Database Intelligence, PostgreSQL/MySQL connection profile validation, read-only Git Intelligence, Planning and Impact Engine, patch proposal workflow, deterministic approved patch application, rollback execution, allow-listed verification execution, versioned Project Memory, cache foundation, cache invalidation, read-only security audits, plugin marketplace readiness, semantic plugin compatibility resolution, approved local plugin state loading, remote plugin staging metadata, provider-neutral AI routing contracts, token-aware context budgeting tools, client integration telemetry, durable telemetry flush/load, workflow routing index, automatic MCP execution token telemetry, compact metadata routing, token-aware MCP routing, and an explicit Codex skill command for MCP-assisted work. It does not include automatic unapproved patch application, dynamic remote plugin installation, external plugin code execution, external database network execution, AI API execution, exact provider tokenizer integration, exact total Codex billing telemetry without host usage metadata, distributed telemetry storage, distributed cache, vector memory, cloud sync, remote Git hosting integration, automatic skill activation for ordinary prompts, or guaranteed host-level forced tool use.
 
-Phase 39 is planned to align documentation status across README, roadmap, TODO, phase reports, and smoke-test metadata before new runtime capability work starts.
+Phase 39 completes documentation consistency across README, roadmap, TODO, phase reports, smoke-test metadata, and Codex skill guidance before new runtime capability work starts.
 
 ## Requirements
 
@@ -122,6 +122,7 @@ The Phase 1 server uses stdio transport through the official Model Context Proto
 - Adaptive `Workflow Gate` policy for explicit skill responses: compact read-only gates for summaries and expanded execution gates for change workflows.
 - User-facing compact reporting policy with `normal_user_summary` as the default and `debug_telemetry` available for tools-used, telemetry, token-detail, evidence-detail, and debug-MCP requests.
 - Summary fallback discipline that forbids broad `repository.read_file_context` fallback for routine project summaries, project-purpose answers, and `normal_user_summary`.
+- Documentation consistency check for current phase status, roadmap/TODO alignment, Phase 39 report coverage, and smoke-test platform metadata.
 - Codex integration installer for MCP config and skill installation.
 - Token-aware routing policy that keeps `repository.import_graph` on-demand for project summaries and follow-ups.
 - Jest unit and integration test baseline.

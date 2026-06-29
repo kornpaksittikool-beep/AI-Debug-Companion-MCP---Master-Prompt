@@ -231,7 +231,7 @@ try {
   if (
     summary.toolCount < 84 ||
     summary.healthStatus !== 'ok' ||
-    summary.platformPhase !== 'phase-38-summary-fallback-discipline' ||
+    summary.platformPhase !== 'phase-39-documentation-consistency' ||
     !summary.metadataCompact ||
     summary.toolSummaryModules < 1 ||
     !summary.projectProfileSummary ||

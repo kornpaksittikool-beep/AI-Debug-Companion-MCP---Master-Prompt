@@ -12,6 +12,7 @@
     "lint": "eslint \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "node dist/main.js",
     "start:dev": "nest start --watch",
+    "check:docs": "node scripts/check-documentation-consistency.mjs",
     "codex:install": "node scripts/install-codex-integration.mjs",
     "smoke:mcp": "pnpm build && node scripts/mcp-smoke-test.mjs",
     "test": "jest --config jest.config.cjs --runInBand",
