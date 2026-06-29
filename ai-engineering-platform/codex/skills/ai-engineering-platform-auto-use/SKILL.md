@@ -134,6 +134,8 @@ Then choose the closest question profile before expanding context:
 | Code review                          | diff-scoped, usually ~4k-10k tokens | expanded execution gate; changed files, impacted symbols, related tests, `git.impact_hints`; avoid unrelated repository reads |
 | Planning                             |                       ~2k-6k tokens | expanded execution gate; roadmap/TODO/phase-report excerpts with `maxBytes` <= 1000 plus `planning.impact_report` after target files are known |
 
+For summary, debugging, code review, and planning workflows, treat `workflowAcceptanceCriteria` returned by `token_budget.recommend_strategy` or `integration.workflow_index` as the completion contract. Use those criteria to decide whether the workflow has enough evidence, a bounded scope, the right report shape, and verification coverage before answering.
+
 For normal project summaries and follow-up questions, continue with only focused discovery:
 
 - Use `repository.search_files` to find important files, configs, routes, docs, package manifests, and entry points only when the summary profile cannot locate README/package evidence. For summaries, always pass `mode: "summary"` and `maxMatches` <= 8.

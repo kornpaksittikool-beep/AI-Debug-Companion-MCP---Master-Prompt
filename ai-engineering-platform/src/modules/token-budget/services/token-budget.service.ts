@@ -67,6 +67,12 @@ const QUESTION_PROFILES: Record<TokenQuestionType, StrategyQuestionProfile> = {
       'Do not read docs/architecture.md, source tree summaries, or app module excerpts unless the user explicitly asks for architecture or module details.',
       'Avoid dependency graphs unless dependency flow is explicitly requested.',
     ],
+    workflowAcceptanceCriteria: [
+      'Starts with platform.health and repository.project_profile in summary mode.',
+      'Uses no more than two summary excerpts before answering or reporting limited evidence.',
+      'Reports evidence labels, no file changes, and budget status in the final response.',
+      'Never uses repository.read_file_context as a summary fallback.',
+    ],
     fallbackPolicy: {
       neverUseBroadFileContext: true,
       fallbackOrder: [
@@ -141,6 +147,12 @@ const QUESTION_PROFILES: Record<TokenQuestionType, StrategyQuestionProfile> = {
       'Search exact error text, symbols, routes, and recent changes before reading full files.',
       'Read full context only for the narrowed failing file, symbol, or test.',
     ],
+    workflowAcceptanceCriteria: [
+      'Creates an investigation session before proposing a fix.',
+      'Records the error, log, stack trace, or failing command as traceable evidence.',
+      'Narrows to exact error text, symbols, routes, or recent changes before full context reads.',
+      'Ends with root cause, confidence, fix direction, and verification commands.',
+    ],
     doNotCallTools: [
       'repository.overview',
       'repository.read_module_context',
@@ -174,6 +186,12 @@ const QUESTION_PROFILES: Record<TokenQuestionType, StrategyQuestionProfile> = {
       'Use excerpts for contracts and neighboring tests before full file reads.',
       'Escalate to graphs only when changed-symbol dependents are unclear.',
     ],
+    workflowAcceptanceCriteria: [
+      'Starts from changed files, diffs, or git impact hints.',
+      'Keeps evidence scoped to impacted symbols, contracts, and directly related tests.',
+      'Reports findings first with severity and file references.',
+      'Calls out missing tests or residual risk when no findings are present.',
+    ],
     doNotCallTools: [
       'repository.overview',
       'repository.read_module_context',
@@ -205,6 +223,12 @@ const QUESTION_PROFILES: Record<TokenQuestionType, StrategyQuestionProfile> = {
       'Use roadmap, TODO, phase-report excerpts, and target file excerpts instead of full historical reads.',
       'Create impact reports after target files and modules are known.',
       'Keep implementation context separate from planning evidence until the plan is approved.',
+    ],
+    workflowAcceptanceCriteria: [
+      'Uses roadmap, TODO, phase-report excerpts, and focused target-file evidence.',
+      'Creates or references an impact report after target files are known.',
+      'Defines approval, verification, rollback, risks, and non-goals before edits.',
+      'Keeps implementation context separate until the plan is approved.',
     ],
     doNotCallTools: [
       'repository.read_file_context for ROADMAP.md, TODO.md, or docs/phase-*.md',
@@ -562,6 +586,11 @@ export class TokenBudgetService {
       `Use ${questionProfile.gateMode} Workflow Gate formatting for this question profile.`,
       `Limit repository.read_file_excerpt to maxBytes <= ${questionProfile.excerptMaxBytes} and no more than ${questionProfile.maxExcerptCalls} call(s) for this question.`,
       ...questionProfile.contextPolicy,
+      ...(questionProfile.workflowAcceptanceCriteria
+        ? [
+            `Workflow acceptance criteria: ${questionProfile.workflowAcceptanceCriteria.join(' | ')}.`,
+          ]
+        : []),
       `Do not call these tools in this profile unless the user explicitly changes scope: ${questionProfile.doNotCallTools.join(', ')}.`,
       ...(questionProfile.fallbackPolicy?.neverUseBroadFileContext
         ? [

@@ -131,6 +131,9 @@ The system must be developed iteratively. Each phase must produce usable, verifi
 | M39: Documentation Consistency                | Phase 39 | Align README current-phase summary with completed Phase 38 and completed Phase 39 status                                         | Phase 38 fallback policy                         | High     | Low                  | Completed |
 | M39: Documentation Consistency                | Phase 39 | Add a Phase 39 plan with scope, acceptance criteria, verification, rollback, and non-goals                                       | Phase 38 fallback policy                         | High     | Low                  | Completed |
 | M39: Documentation Consistency                | Phase 39 | Add documentation consistency checks for phase numbers, status labels, and smoke-test phase metadata                             | Phase 39 plan                                    | Medium   | Medium               | Completed |
+| M40: Real Integration Workflows               | Phase 40 | Add explicit workflow acceptance criteria for summary, debugging, code review, and planning                                      | Phase 39 documentation consistency               | High     | Medium               | Completed |
+| M40: Real Integration Workflows               | Phase 40 | Expose workflow acceptance criteria through token strategy and workflow index metadata                                           | Phase 40 plan                                    | High     | Medium               | Completed |
+| M40: Real Integration Workflows               | Phase 40 | Add unit and MCP smoke coverage proving real workflow contracts remain narrow and verifiable                                     | Phase 40 workflow metadata                       | High     | Medium               | Completed |
 
 ## Phase Gate Rules
 
@@ -145,4 +148,4 @@ Each phase must pass the following checks before the next phase begins:
 
 ## Current Phase
 
-Phase 39 is completed. The next runtime capability phase is not started and must be planned and approved before implementation.
+Phase 40 is completed. The next runtime capability phase is not started and must be planned and approved before implementation.

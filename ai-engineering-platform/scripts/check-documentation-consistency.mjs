@@ -2,7 +2,7 @@ import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 
 const rootPath = process.cwd();
-const phaseLabel = 'phase-39-documentation-consistency';
+const phaseLabel = 'phase-40-real-integration-workflows';
 
 const files = new Map(
   await Promise.all(
@@ -10,6 +10,8 @@ const files = new Map(
       'README.md',
       'ROADMAP.md',
       'TODO.md',
+      'docs/phase-40-plan.md',
+      'docs/phase-40-report.md',
       'docs/phase-39-plan.md',
       'docs/phase-39-report.md',
       'docs/platform-capabilities-th.md',
@@ -52,44 +54,46 @@ for (const filePath of [
 
 requireIncludes(
   'README.md',
-  'Phase 39 completes documentation consistency across README, roadmap, TODO, phase reports, smoke-test metadata, and Codex skill guidance before new runtime capability work starts.',
+  'Phase 40 completes real integration workflow contracts for summary, debugging, code review, and planning by exposing workflow acceptance criteria through token strategy and workflow index metadata, adding regression coverage, and validating those contracts in the MCP smoke test.',
 );
 requireIncludes(
   'README.md',
-  'Documentation consistency check for current phase status, roadmap/TODO alignment, Phase 39 report coverage, and smoke-test platform metadata.',
+  'Real integration workflow acceptance criteria for project summary, debugging, code review, and planning workflows.',
 );
 requireIncludes(
   'ROADMAP.md',
-  '| M39: Documentation Consistency                | Phase 39 | Align README current-phase summary with completed Phase 38 and completed Phase 39 status                                         | Phase 38 fallback policy                         | High     | Low                  | Completed |',
+  '| M40: Real Integration Workflows               | Phase 40 | Add explicit workflow acceptance criteria for summary, debugging, code review, and planning                                      | Phase 39 documentation consistency               | High     | Medium               | Completed |',
 );
 requireIncludes(
   'ROADMAP.md',
-  'Phase 39 is completed. The next runtime capability phase is not started and must be planned and approved before implementation.',
+  'Phase 40 is completed. The next runtime capability phase is not started and must be planned and approved before implementation.',
 );
 requireIncludes(
   'TODO.md',
-  '| Add documentation consistency checks for phase numbers, status labels, and smoke-test phase metadata                  | Phase 39 | Completed |',
+  '| Add unit and MCP smoke coverage for real workflow contracts                                                           | Phase 40 | Completed |',
 );
 requireIncludes(
-  'docs/phase-39-plan.md',
-  '| Completion report | Completed | `docs/phase-39-report.md` records deliverables, verification output, risks, and approval status. |',
+  'docs/phase-40-plan.md',
+  '| Workflow acceptance criteria | Completed | Summary, debugging, code review, and planning profiles each define observable criteria for start tools, evidence boundaries, reporting, and verification. |',
 );
 requireIncludes(
-  'docs/phase-39-report.md',
-  '| Documentation consistency check | Completed | `scripts/check-documentation-consistency.mjs` verifies Phase 39 status, phase metadata, and stale current-phase wording. |',
+  'docs/phase-40-report.md',
+  '| Workflow acceptance criteria | Completed | `token_budget.recommend_strategy` and `integration.workflow_index` expose acceptance criteria for summary, debugging, code review, and planning. |',
 );
 
 for (const [filePath, content] of files) {
-  if (filePath === 'docs/phase-39-plan.md') {
+  if (filePath === 'docs/phase-40-plan.md') {
     continue;
   }
-  if (/Phase 39 is planned|Phase 39 \| Planned|Phase 39 as the next planned phase/.test(content)) {
-    failures.push(`${filePath} contains stale Phase 39 planned wording.`);
+  if (/Phase 40 is planned|Phase 40 \| Planned|Phase 40 as the next planned phase/.test(content)) {
+    failures.push(`${filePath} contains stale Phase 40 planned wording.`);
   }
 }
 
 requireNotIncludes('scripts/mcp-smoke-test.mjs', 'phase-38-summary-fallback-discipline');
 requireNotIncludes('test/unit/health-tools.spec.ts', 'phase-38-summary-fallback-discipline');
+requireNotIncludes('scripts/mcp-smoke-test.mjs', 'phase-39-documentation-consistency');
+requireNotIncludes('test/unit/health-tools.spec.ts', 'phase-39-documentation-consistency');
 
 if (failures.length > 0) {
   throw new Error(`Documentation consistency check failed:\n- ${failures.join('\n- ')}`);

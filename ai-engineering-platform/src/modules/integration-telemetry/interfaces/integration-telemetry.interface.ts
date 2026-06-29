@@ -131,6 +131,7 @@ export interface WorkflowIndexEntry {
   readonly excerptMaxBytes: number;
   readonly maxExcerptCalls: number;
   readonly contextPolicy: readonly string[];
+  readonly workflowAcceptanceCriteria?: readonly string[];
   readonly fallbackPolicy?: WorkflowFallbackPolicy;
   readonly doNotCallTools: readonly string[];
   readonly avoidUntilNeeded: readonly string[];

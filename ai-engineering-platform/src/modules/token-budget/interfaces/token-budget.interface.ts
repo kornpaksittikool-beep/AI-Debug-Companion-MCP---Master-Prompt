@@ -94,6 +94,7 @@ export interface StrategyQuestionProfile {
   readonly evidenceTools: readonly string[];
   readonly escalationTools: readonly string[];
   readonly contextPolicy: readonly string[];
+  readonly workflowAcceptanceCriteria?: readonly string[];
   readonly fallbackPolicy?: SummaryFallbackPolicy;
   readonly doNotCallTools: readonly string[];
 }

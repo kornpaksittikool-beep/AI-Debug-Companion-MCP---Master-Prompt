@@ -140,3 +140,6 @@
 | Align README current-phase summary with completed Phase 38 and completed Phase 39 status                             | Phase 39 | Completed |
 | Add Phase 39 plan with scope, acceptance criteria, verification, rollback, risks, and non-goals                      | Phase 39 | Completed |
 | Add documentation consistency checks for phase numbers, status labels, and smoke-test phase metadata                  | Phase 39 | Completed |
+| Add explicit workflow acceptance criteria for summary, debugging, code review, and planning                          | Phase 40 | Completed |
+| Expose workflow acceptance criteria through token strategy and workflow index metadata                                | Phase 40 | Completed |
+| Add unit and MCP smoke coverage for real workflow contracts                                                           | Phase 40 | Completed |

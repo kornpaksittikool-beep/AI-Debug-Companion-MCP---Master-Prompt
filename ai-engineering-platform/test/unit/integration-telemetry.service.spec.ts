@@ -2,6 +2,7 @@ import * as fs from 'node:fs/promises';
 import * as os from 'node:os';
 import * as path from 'node:path';
 import { PathPolicyService } from '../../src/core/security/path-policy.service.js';
+import type { WorkflowTaskType } from '../../src/modules/integration-telemetry/interfaces/integration-telemetry.interface.js';
 import { IntegrationTelemetryPathService } from '../../src/modules/integration-telemetry/services/integration-telemetry-path.service.js';
 import { IntegrationTelemetryService } from '../../src/modules/integration-telemetry/services/integration-telemetry.service.js';
 import { RepositorySafetyService } from '../../src/modules/repository-intelligence/services/repository-safety.service.js';
@@ -196,6 +197,12 @@ describe('IntegrationTelemetryService', () => {
         'ask_for_debug_detail',
       ],
     });
+    expect(entry?.workflowAcceptanceCriteria).toEqual(
+      expect.arrayContaining([
+        'Starts with platform.health and repository.project_profile in summary mode.',
+        'Never uses repository.read_file_context as a summary fallback.',
+      ]),
+    );
     expect(entry?.doNotCallTools).toEqual(
       expect.arrayContaining([
         'repository.import_graph',
@@ -263,13 +270,45 @@ describe('IntegrationTelemetryService', () => {
     expect(entry?.contextPolicy).toContain(
       'Read diffs and impacted files first; avoid unrelated repository context.',
     );
+    expect(entry?.workflowAcceptanceCriteria).toEqual(
+      expect.arrayContaining([
+        'Starts from changed files, diffs, or git impact hints.',
+        'Reports findings first with severity and file references.',
+      ]),
+    );
     expect(entry?.avoidUntilNeeded).toContain('repository.overview for routine diff review');
+  });
+
+  it('returns real workflow acceptance criteria for Phase 40 workflows', () => {
+    const workflowTypes: WorkflowTaskType[] = [
+      'project_summary',
+      'bug_investigation',
+      'code_review',
+      'planning',
+    ];
+
+    for (const taskType of workflowTypes) {
+      const result = service.workflowIndex({ taskType });
+      const entry = result.entries[0];
+
+      expect(entry?.workflowAcceptanceCriteria?.length).toBeGreaterThanOrEqual(4);
+      expect(entry?.verificationTools.length).toBeGreaterThan(0);
+      expect(entry?.gateMode).toBe(
+        taskType === 'project_summary' ? 'compact_read_only' : 'expanded_execution',
+      );
+    }
   });
 
   it('matches workflow queries against context policy text', () => {
     const result = service.workflowIndex({ query: 'diffs and impacted files' });
 
     expect(result.entries.map((entry) => entry.taskType)).toContain('code_review');
+  });
+
+  it('matches workflow queries against acceptance criteria text', () => {
+    const result = service.workflowIndex({ query: 'root cause, confidence' });
+
+    expect(result.entries.map((entry) => entry.taskType)).toContain('bug_investigation');
   });
 });
 

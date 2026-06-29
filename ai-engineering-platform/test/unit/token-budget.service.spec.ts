@@ -193,6 +193,12 @@ describe('TokenBudgetService', () => {
         'ask_for_debug_detail',
       ],
     });
+    expect(result.questionProfile.workflowAcceptanceCriteria).toEqual(
+      expect.arrayContaining([
+        'Starts with platform.health and repository.project_profile in summary mode.',
+        'Never uses repository.read_file_context as a summary fallback.',
+      ]),
+    );
     expect(result.recommendedFlow).toContain(
       'Fallback policy: never use broad file context; fallback order is project_profile -> read_file_excerpt -> answer_with_limited_evidence -> ask_for_debug_detail.',
     );
@@ -217,6 +223,9 @@ describe('TokenBudgetService', () => {
     expect(review.questionProfile.contextPolicy).toContain(
       'Read only diffs, changed files, impacted symbols, and directly related tests.',
     );
+    expect(review.questionProfile.workflowAcceptanceCriteria).toEqual(
+      expect.arrayContaining(['Reports findings first with severity and file references.']),
+    );
   });
 
   it('uses planning profile for roadmap and phase planning objectives', () => {
@@ -229,6 +238,11 @@ describe('TokenBudgetService', () => {
     expect(result.questionProfile.targetTokenRange).toEqual({ min: 2000, max: 6000 });
     expect(result.recommendedFlow).toContain(
       'Use roadmap, TODO, phase-report excerpts, and target file excerpts instead of full historical reads.',
+    );
+    expect(result.questionProfile.workflowAcceptanceCriteria).toEqual(
+      expect.arrayContaining([
+        'Defines approval, verification, rollback, risks, and non-goals before edits.',
+      ]),
     );
   });
 });

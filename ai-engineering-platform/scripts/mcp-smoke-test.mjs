@@ -1,4 +1,4 @@
-﻿import { Client } from '@modelcontextprotocol/sdk/client/index.js';
+import { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio.js';
 import { createHash } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
@@ -159,6 +159,15 @@ try {
   const summaryWorkflowIndex = await callTool(client, 'integration.workflow_index', {
     taskType: 'project_summary',
   });
+  const debugWorkflowIndex = await callTool(client, 'integration.workflow_index', {
+    taskType: 'bug_investigation',
+  });
+  const reviewWorkflowIndex = await callTool(client, 'integration.workflow_index', {
+    taskType: 'code_review',
+  });
+  const planningWorkflowIndex = await callTool(client, 'integration.workflow_index', {
+    taskType: 'planning',
+  });
   const flushTelemetry = await callTool(client, 'integration.flush_telemetry', {
     rootPath,
   });
@@ -222,6 +231,14 @@ try {
     summaryWorkflowDebugReportTriggers:
       summaryWorkflowIndex.entries[0]?.debugReportTriggers ?? [],
     summaryWorkflowFallbackPolicy: summaryWorkflowIndex.entries[0]?.fallbackPolicy,
+    summaryWorkflowAcceptanceCriteria:
+      summaryWorkflowIndex.entries[0]?.workflowAcceptanceCriteria ?? [],
+    debugWorkflowAcceptanceCriteria:
+      debugWorkflowIndex.entries[0]?.workflowAcceptanceCriteria ?? [],
+    reviewWorkflowAcceptanceCriteria:
+      reviewWorkflowIndex.entries[0]?.workflowAcceptanceCriteria ?? [],
+    planningWorkflowAcceptanceCriteria:
+      planningWorkflowIndex.entries[0]?.workflowAcceptanceCriteria ?? [],
     telemetryRecordsWritten: flushTelemetry.recordsWritten,
     autoTelemetryToolCalls: autoTelemetry.toolCalls,
     autoTelemetryEstimatedTokens: autoTelemetry.estimatedTotalTokens,
@@ -231,7 +248,7 @@ try {
   if (
     summary.toolCount < 84 ||
     summary.healthStatus !== 'ok' ||
-    summary.platformPhase !== 'phase-39-documentation-consistency' ||
+    summary.platformPhase !== 'phase-40-real-integration-workflows' ||
     !summary.metadataCompact ||
     summary.toolSummaryModules < 1 ||
     !summary.projectProfileSummary ||
@@ -293,6 +310,18 @@ try {
     ) ||
     !summary.summaryWorkflowDoNotCallTools.includes('repository.search_symbols') ||
     !summary.summaryWorkflowDoNotCallTools.includes('repository.read_file_context') ||
+    !summary.summaryWorkflowAcceptanceCriteria.includes(
+      'Never uses repository.read_file_context as a summary fallback.',
+    ) ||
+    !summary.debugWorkflowAcceptanceCriteria.includes(
+      'Creates an investigation session before proposing a fix.',
+    ) ||
+    !summary.reviewWorkflowAcceptanceCriteria.includes(
+      'Reports findings first with severity and file references.',
+    ) ||
+    !summary.planningWorkflowAcceptanceCriteria.includes(
+      'Defines approval, verification, rollback, risks, and non-goals before edits.',
+    ) ||
     !summary.integrationReady ||
     summary.integrationToolCalls !== 1 ||
     summary.workflowIndexEntries !== 1 ||

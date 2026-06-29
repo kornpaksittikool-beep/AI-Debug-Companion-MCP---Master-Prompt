@@ -75,6 +75,12 @@ const WORKFLOW_INDEX: readonly WorkflowIndexEntry[] = [
       'Never fallback to repository.read_file_context for project_summary, project purpose, or normal_user_summary.',
       'Do not read docs/architecture.md, source tree summaries, or app module excerpts unless the user explicitly asks for architecture or module details.',
     ],
+    workflowAcceptanceCriteria: [
+      'Starts with platform.health and repository.project_profile in summary mode.',
+      'Uses no more than two summary excerpts before answering or reporting limited evidence.',
+      'Reports evidence labels, no file changes, and budget status in the final response.',
+      'Never uses repository.read_file_context as a summary fallback.',
+    ],
     fallbackPolicy: {
       neverUseBroadFileContext: true,
       fallbackOrder: [
@@ -191,6 +197,12 @@ const WORKFLOW_INDEX: readonly WorkflowIndexEntry[] = [
       'Search for exact error text, symbols, routes, and recently changed files before reading full context.',
       'Read full file context only for the narrowed failing file or symbol.',
     ],
+    workflowAcceptanceCriteria: [
+      'Creates an investigation session before proposing a fix.',
+      'Records the error, log, stack trace, or failing command as traceable evidence.',
+      'Narrows to exact error text, symbols, routes, or recent changes before full context reads.',
+      'Ends with root cause, confidence, fix direction, and verification commands.',
+    ],
     doNotCallTools: [
       'repository.overview',
       'repository.read_module_context',
@@ -234,6 +246,12 @@ const WORKFLOW_INDEX: readonly WorkflowIndexEntry[] = [
       'Read diffs and impacted files first; avoid unrelated repository context.',
       'Use repository.read_file_excerpt for surrounding contracts and tests before full file context.',
       'Escalate to import or call graph only when a changed symbol has non-obvious dependents.',
+    ],
+    workflowAcceptanceCriteria: [
+      'Starts from changed files, diffs, or git impact hints.',
+      'Keeps evidence scoped to impacted symbols, contracts, and directly related tests.',
+      'Reports findings first with severity and file references.',
+      'Calls out missing tests or residual risk when no findings are present.',
     ],
     doNotCallTools: [
       'repository.overview',
@@ -341,6 +359,12 @@ const WORKFLOW_INDEX: readonly WorkflowIndexEntry[] = [
       'Use excerpts from planning artifacts and only the target implementation files.',
       'Do not read completed phase reports fully unless the plan depends on that phase detail.',
       'Use planning.impact_report before implementation when target files are identified.',
+    ],
+    workflowAcceptanceCriteria: [
+      'Uses roadmap, TODO, phase-report excerpts, and focused target-file evidence.',
+      'Creates or references an impact report after target files are known.',
+      'Defines approval, verification, rollback, risks, and non-goals before edits.',
+      'Keeps implementation context separate until the plan is approved.',
     ],
     doNotCallTools: [
       'repository.read_file_context for ROADMAP.md, TODO.md, or docs/phase-*.md',
@@ -654,6 +678,7 @@ export class IntegrationTelemetryService {
             ...entry.primaryModules,
             ...entry.relevantFiles,
             ...entry.contextPolicy,
+            ...(entry.workflowAcceptanceCriteria ?? []),
             ...entry.doNotCallTools,
             ...entry.avoidUntilNeeded,
           ]

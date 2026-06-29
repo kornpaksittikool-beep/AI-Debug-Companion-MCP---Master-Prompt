@@ -4,7 +4,9 @@ AI Engineering Platform is a production-oriented MCP foundation for evidence-dri
 
 Phase 38 provides the Core MCP Framework, Investigation Engine, bounded Repository Intelligence, summary startup mode, summary strict mode, summary project profile mode, compact project profile routing, adaptive planning gates for explicit Codex skill responses, user-facing compact reporting modes, summary excerpt byte caps, low-token file excerpts, question-type token profiles, summary symbol-search guardrails, summary search result caps, summary fallback discipline, TypeScript/JavaScript symbol intelligence, bounded import and call graphs, persistent repository graph indexing, cross-repository search, read-only SQLite Database Intelligence, PostgreSQL/MySQL connection profile validation, read-only Git Intelligence, Planning and Impact Engine, patch proposal workflow, deterministic approved patch application, rollback execution, allow-listed verification execution, versioned Project Memory, cache foundation, cache invalidation, read-only security audits, plugin marketplace readiness, semantic plugin compatibility resolution, approved local plugin state loading, remote plugin staging metadata, provider-neutral AI routing contracts, token-aware context budgeting tools, client integration telemetry, durable telemetry flush/load, workflow routing index, automatic MCP execution token telemetry, compact metadata routing, token-aware MCP routing, and an explicit Codex skill command for MCP-assisted work. It does not include automatic unapproved patch application, dynamic remote plugin installation, external plugin code execution, external database network execution, AI API execution, exact provider tokenizer integration, exact total Codex billing telemetry without host usage metadata, distributed telemetry storage, distributed cache, vector memory, cloud sync, remote Git hosting integration, automatic skill activation for ordinary prompts, or guaranteed host-level forced tool use.
 
-Phase 39 completes documentation consistency across README, roadmap, TODO, phase reports, smoke-test metadata, and Codex skill guidance before new runtime capability work starts.
+Phase 39 completed documentation consistency across README, roadmap, TODO, phase reports, smoke-test metadata, and Codex skill guidance.
+
+Phase 40 completes real integration workflow contracts for summary, debugging, code review, and planning by exposing workflow acceptance criteria through token strategy and workflow index metadata, adding regression coverage, and validating those contracts in the MCP smoke test.
 
 ## Requirements
 
@@ -118,6 +120,7 @@ The Phase 1 server uses stdio transport through the official Model Context Proto
 - Workflow index for routing task types to MCP tools, modules, and relevant files.
 - Automatic MCP tool execution telemetry with approximate input and output token estimates.
 - Automatic execution telemetry summary and reset tools.
+- Real integration workflow acceptance criteria for project summary, debugging, code review, and planning workflows.
 - Explicit Codex skill command through `$ai-engineering-platform-auto-use`.
 - Adaptive `Workflow Gate` policy for explicit skill responses: compact read-only gates for summaries and expanded execution gates for change workflows.
 - User-facing compact reporting policy with `normal_user_summary` as the default and `debug_telemetry` available for tools-used, telemetry, token-detail, evidence-detail, and debug-MCP requests.
@@ -455,7 +458,7 @@ Persists in-memory integration telemetry under `.ai-engineering-platform/integra
 
 ### `integration.workflow_index`
 
-Returns the MCP workflow index for routing task types to tools, modules, and files. Each entry includes a target token range, `gateMode`, `defaultReportMode`, `debugReportTriggers`, excerpt limits, optional `fallbackPolicy`, hard do-not-call tools, and context policy so clients can keep summary, tech stack, debug, review, and planning workflows narrow. The `project_summary` entry uses `compact_read_only` gate mode with `normal_user_summary` output, short evidence labels, one-line token reporting, `No file changes` impact, `Not required: read-only` approval wording, and no broad file context fallback.
+Returns the MCP workflow index for routing task types to tools, modules, and files. Each entry includes a target token range, `gateMode`, `defaultReportMode`, `debugReportTriggers`, excerpt limits, optional `fallbackPolicy`, hard do-not-call tools, context policy, and workflow acceptance criteria so clients can keep summary, tech stack, debug, review, and planning workflows narrow and verifiable. The `project_summary` entry uses `compact_read_only` gate mode with `normal_user_summary` output, short evidence labels, one-line token reporting, `No file changes` impact, `Not required: read-only` approval wording, and no broad file context fallback.
 
 ### `integration.auto_telemetry_summary`
 

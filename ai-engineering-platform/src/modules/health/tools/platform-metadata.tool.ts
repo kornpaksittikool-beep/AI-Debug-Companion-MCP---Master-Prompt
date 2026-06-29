@@ -59,7 +59,7 @@ export const PLATFORM_METADATA_TOOL_DEFINITION: ToolDefinition = {
         platform: {
           name: 'ai-engineering-platform',
           version: '0.1.0',
-          phase: 'phase-39-documentation-consistency',
+          phase: 'phase-40-real-integration-workflows',
         },
         tools: [],
       },
@@ -70,13 +70,13 @@ export const PLATFORM_METADATA_TOOL_DEFINITION: ToolDefinition = {
         platform: {
           name: 'ai-engineering-platform',
           version: '0.1.0',
-          phase: 'phase-39-documentation-consistency',
+          phase: 'phase-40-real-integration-workflows',
         },
         toolSummary: {
           platform: {
             name: 'ai-engineering-platform',
             version: '0.1.0',
-            phase: 'phase-39-documentation-consistency',
+            phase: 'phase-40-real-integration-workflows',
           },
           totalTools: 0,
           modules: [],
